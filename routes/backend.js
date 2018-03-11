@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 
+// DocumentDB Connection
 var DocumentDBClient = require('documentdb').DocumentClient;
 var config = require('../config');
 var TaskList = require('./tasklist');
@@ -13,9 +14,18 @@ var messageDao = new messageDao(docDbClient, config.databaseId, config.collectio
 var taskList = new TaskList(messageDao);
 messageDao.init(function(err) { if(err) throw err; });
 
+// IOT HUB Connection
+var Client = require('azure-iothub').Client;
+var client = Client.fromConnectionString(config.iothubconnection);
+
+const apiController = require('../controllers/apiController')
+
 router.get('/', taskList.showTasks.bind(taskList));
 router.post('/addtask', taskList.addTask.bind(taskList));
 router.post('/completetask', taskList.completeTask.bind(taskList));
+router.get('/invoke', (req, res) => apiController.invoke(req, res, client, config.deviceId));
+
+
 
 router.use('/static', express.static('public'))
 
