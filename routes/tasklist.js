@@ -1,4 +1,4 @@
- var DocumentDBClient = require('documentdb').DocumentClient;
+var DocumentDBClient = require('documentdb').DocumentClient;
 var async = require('async');
 
 function TaskList(messageDao) {
@@ -8,10 +8,22 @@ function TaskList(messageDao) {
 TaskList.prototype = {
   showTasks: function(req, res) {
     var self = this;
-
-    var querySpec = {
-      query: 'SELECT TOP 50 r.timestamp, r.measures FROM root r order by r.timestamp desc'
-    };
+    var querySpec = '';
+    
+    if(req.query.fromDate) {
+      querySpec = {
+        query: 'SELECT r.timestamp, r.measures FROM root r WHERE r.timestamp >= @timestamp order by r.timestamp desc',
+        parameters: [{
+          name: '@timestamp',
+          value: req.query.fromDate || new Date()
+        }]
+      }
+    }
+    else {
+      querySpec = {
+        query: 'SELECT top 50 r.timestamp, r.measures FROM root r order by r.timestamp desc',
+      };
+    }
 
     self.messageDao.find(querySpec, function(err, items) {
       if (err) {
