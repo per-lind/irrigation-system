@@ -4,7 +4,7 @@ const router = express.Router()
 //Passport authentication
 var passport = require('passport');
 var Strategy = require('passport-local').Strategy;
-var bcrypt = require('bcrypt');
+var bcrypt = require('bcryptjs');
 var db = require('../db.json');
 
 passport.use(new Strategy(
