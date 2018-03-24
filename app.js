@@ -1,5 +1,6 @@
-// Todo App
 require('dotenv').config()
+
+//Express routing
 var express = require('express');
 var bodyParser = require('body-parser');
 var app = express();
@@ -8,7 +9,7 @@ var helmet = require('helmet')
 app.use(helmet())
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 require('./routes')(app);
 
