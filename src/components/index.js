@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import {render} from 'react-dom';
-import { ComposedChart, LineChart, Line, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import Graph from './Graph';
+import TopMenu from './TopMenu';
+import LoginPopup from './LoginPopup';
 var moment = require('moment');
 
 //Materual-ui-next
@@ -18,13 +20,6 @@ import CssBaseline from 'material-ui/CssBaseline';
 import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
 import blue from 'material-ui/colors/blue';
 import green from 'material-ui/colors/green';
-import AppBar from 'material-ui/AppBar';
-import Toolbar from 'material-ui/Toolbar';
-import Typography from 'material-ui/Typography';
-import IconButton from 'material-ui/IconButton';
-import MenuIcon from 'material-ui-icons/Menu';
-import Menu, { MenuItem } from 'material-ui/Menu';
-import AccountCircle from 'material-ui-icons/AccountCircle';
 
 const styles = theme => ({
   button: {
@@ -64,13 +59,14 @@ class App extends Component {
   constructor(){
     super();
     this.state = {graphRangeFilter: 12, userName: 0, open: false, 
-     invokeResult : {status: "", payload: ""}, loading: false, anchorEl: null,
+     invokeResult : {status: "", payload: ""}, loading: false,
+     openLoginPopup: false,
     }
 
+    this.openLoginPopup = this.openLoginPopup.bind(this);
+    this.closeLoginPopup = this.closeLoginPopup.bind(this);
     this.handleClickOpen = this.handleClickOpen.bind(this);
-    this.handleMenu = this.handleMenu.bind(this),
     this.handleClose = this.handleClose.bind(this);
-    this.handleClose2 = this.handleClose2.bind(this);
     this.setGraphRange = this.setGraphRange.bind(this);
   }
 
@@ -105,9 +101,13 @@ class App extends Component {
   }
 
   handleClickOpen(url) {
-    this.invokeFunction(url);
-    //.then(response => { console.log(this.state.invokeResult);
-    this.setState({ open: true });
+    if(this.state.userName == 0) {
+      this.openLoginPopup();
+    }
+    else {
+      this.invokeFunction(url);
+      this.setState({ open: true });
+    }
   };
 
   handleClose() {
@@ -131,108 +131,31 @@ class App extends Component {
     this.fetchData()
   }
 
-  dateFormat(tickItem) {
-    return moment(tickItem).format('ddd HH:mm')
+  openLoginPopup() {
+    this.setState({openLoginPopup : true});
   }
 
-  loginForm() {
-    if(this.state.userName == 0) {
-      return(
-      <form action="/login" method="post">
-        <input type="hidden" name="username" defaultValue="user1"/>
-        <input type="password" name="password"/>
-        <input type="submit" value="Submit"/></form>)
-    }
-    else {
-      return(
-        <div>
-        <a href="/logout">Logout</a><br/>
-        </div>
-      )
-    }
+  closeLoginPopup() {
+    this.setState({openLoginPopup : false});
   }
-
-
-  handleMenu(event) {
-    this.setState({ anchorEl: event.currentTarget });
-  };
-
-  handleClose2() {
-    this.setState({ anchorEl: null });
-  };
 
   render () {
-    const open = Boolean(this.state.anchorEl);
+    
     return (
       <MuiThemeProvider theme={theme}>
+      <LoginPopup open={this.state.openLoginPopup} close={this.closeLoginPopup}/>
       <div style={styles.container}>
         <CssBaseline />
-        <div className={styles.root}>
-          <AppBar position="static">
-            <Toolbar>
-              <IconButton className={styles.menuButton} color="inherit" aria-label="Menu">
-                <MenuIcon />
-              </IconButton>
-              <Typography variant="title" color="inherit" className={styles.flex}>
-                Title
-              </Typography>
-              {!this.state.userName == 0 && (
-              <div>
-                <IconButton
-                  aria-owns={open ? 'menu-appbar' : null}
-                  aria-haspopup="true"
-                  onClick={this.handleMenu}
-                  color="inherit"
-                >
-                  <AccountCircle />
-                </IconButton>
-                <Menu
-                  id="menu-appbar"
-                  anchorEl={this.state.anchorEl}
-                  anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                  }}
-                  transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                  }}
-                  open={open}
-                  onClose={this.handleClose2}
-                >
-                  <MenuItem onClick={this.handleClose2}>Profile</MenuItem>
-                  <MenuItem onClick={this.handleClose2}>My account</MenuItem>
-                </Menu>
-              </div>
-            )}
-            </Toolbar>
-          </AppBar>
-        </div>
         <div>
+          <TopMenu styles={styles} userName={this.state.userName} openLoginPopup={this.openLoginPopup} closeLoginPopup={this.closeLoginPopup}/>
         <br/>
-        <ComposedChart width={700} height={500} data={this.state.hits}>
-          <XAxis dataKey="timestamp" name="Date" reversed={true} tickFormatter={this.dateFormat}/>
-          <YAxis yAxisId="left" type="number" domain={[10,35]}/>
-          <YAxis yAxisId="left2"/>
-          <YAxis yAxisId="right" orientation="right" type="number" domain={[975,1025]}/>
-          <Tooltip formatter={this.props.drawTooltip} /> 
-          <Legend />
-          <CartesianGrid stroke="#eee" strokeDasharray="1 1"/>
-          <Bar yAxisId="left2" name="Light" isAnimationActive={false} dataKey="measures.light" barSize={40} fill="#ffcc66"/> 
-          <Line yAxisId="left" name="Temp" isAnimationActive={false} type="monotone" dataKey="measures.temperature1" stroke="#8884d8" unit="C" dot={false}/>
-          <Line yAxisId="left" name="Humidity" isAnimationActive={false} type="monotone" dataKey="measures.humidity" legendType="square" stroke="#82ca9d" unit="%" dot={false}/>
-          <Line yAxisId="right" name="Pressure" isAnimationActive={false} type="monotone" dataKey="measures.sealevelpressure" legendType="cross" stroke="#FF0000" unit="hPa" dot={false}/>
-      </ComposedChart>
+        <Graph data={this.state.hits}/>
       </div>
       <div>
         <button id='24' onClick={this.setGraphRange}>24h</button>
         <button id='72' onClick={this.setGraphRange}>3 days</button>
         <button id='168' onClick={this.setGraphRange}>7 days</button>
       </div>
-      <div>
-        {this.loginForm()}
-      </div>
-
       <div>
         <Button variant="raised" color="primary" onClick={() => this.handleClickOpen("/api/invoke?method=getDistance")}>Get tank water level</Button>
         <br/>
@@ -270,9 +193,7 @@ class App extends Component {
     </div>
     </MuiThemeProvider>
     )
-
   }
-
 }
 
 render(<App/>, document.getElementById('app'));
