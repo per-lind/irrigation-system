@@ -1,3 +1,8 @@
+var azure = require('azure-storage');
+var moment = require('moment');
+var blobService = azure.createBlobService();
+var containerName = 'iot-data';
+
 exports.invoke = (req, res, client, deviceId) => {
     var methodParams = {
         methodName: req.query.method,
@@ -15,4 +20,27 @@ exports.invoke = (req, res, client, deviceId) => {
             res.json(result)
         }
     });
+}
+
+exports.blobSAS = (req, res) => {
+    const startDate = new Date();
+    const expiryDate = new Date(startDate);
+    expiryDate.setMinutes(startDate.getMinutes() + 45);
+    startDate.setMinutes(startDate.getMinutes() - 100);
+    
+    const sharedAccessPolicy = {
+        AccessPolicy: {
+            Permissions: azure.BlobUtilities.SharedAccessPermissions.READ+ azure.BlobUtilities.SharedAccessPermissions.LIST,
+            Start: startDate,
+            Expiry: expiryDate
+        }
+    };
+    
+    const token = blobService.generateSharedAccessSignature(containerName, null, sharedAccessPolicy);
+    console.log(token);
+    res.json(
+        {
+            sasToken: token,
+            sasExpiry: expiryDate,
+        });
 }

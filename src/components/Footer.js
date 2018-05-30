@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
-import Typography from 'material-ui/Typography';
-import Pool from 'material-ui-icons/Pool';
-import { withStyles } from 'material-ui/styles';
-import Grid from 'material-ui/Grid';
+import Typography from '@material-ui/core/Typography';
+import Pool from '@material-ui/icons/Pool';
+import { withStyles } from '@material-ui/core/styles';
+import Grid from '@material-ui/core/Grid';
 
 const styles = theme => ({
   footer: {

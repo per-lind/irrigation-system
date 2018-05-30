@@ -1,16 +1,15 @@
 import React, {Component} from 'react';
-import Button from 'material-ui/Button';
-import ExpansionPanel, {
-  ExpansionPanelSummary,
-  ExpansionPanelDetails,
-  ExpansionPanelActions
-} from 'material-ui/ExpansionPanel';
-import Typography from 'material-ui/Typography';
-import ExpandMoreIcon from 'material-ui-icons/ExpandMore';
-import { CircularProgress } from 'material-ui/Progress';
-import Pool from 'material-ui-icons/Pool';
-import Divider from 'material-ui/Divider';
-import { withStyles } from 'material-ui/styles';
+import Button from '@material-ui/core/Button';
+import ExpansionPanel from '@material-ui/core/ExpansionPanel';
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import ExpansionPanelActions from '@material-ui/core/ExpansionPanelActions';
+import Typography from '@material-ui/core/Typography';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Pool from '@material-ui/icons/Pool';
+import Divider from '@material-ui/core/Divider';
+import { withStyles } from '@material-ui/core/styles';
 
 const styles = theme => ({
 });

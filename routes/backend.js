@@ -40,7 +40,7 @@ router.get('/checkLogin', function(req, res) {
 router.post('/addtask', taskList.addTask.bind(taskList));
 router.post('/completetask', taskList.completeTask.bind(taskList));
 router.get('/invoke', isAuthenticated, (req, res) => apiController.invoke(req, res, client, config.deviceId));
-
+router.get('/blobSAS', isAuthenticated, (req, res) => apiController.blobSAS(req, res));
 
 router.use('/static', express.static('public'))
 

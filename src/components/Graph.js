@@ -1,17 +1,19 @@
 import React, {Component} from 'react';
 import { ResponsiveContainer, ComposedChart, Line, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Area } from 'recharts';
-import Input, { InputLabel } from 'material-ui/Input';
-import { MenuItem } from 'material-ui/Menu';
-import { FormControl, FormHelperText } from 'material-ui/Form';
-import Select from 'material-ui/Select';
+import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import Select from '@material-ui/core/Select';
 
 import moment from 'moment';
-import { withStyles } from 'material-ui/styles';
+import { withStyles } from '@material-ui/core/styles';
 
-import yellow from 'material-ui/colors/yellow';
-import red from 'material-ui/colors/red';
-import blueGrey from 'material-ui/colors/blueGrey';
-import green from 'material-ui/colors/green';
+import yellow from '@material-ui/core/colors/yellow';
+import red from '@material-ui/core/colors/red';
+import blueGrey from '@material-ui/core/colors/blueGrey';
+import green from '@material-ui/core/colors/green';
 
 const styles = theme => ({
   form: {
@@ -48,6 +50,22 @@ class Graph extends Component {
   render () {
     return (
       <div>
+
+        <ResponsiveContainer width='100%' aspect={5.0/3.0}>
+          <ComposedChart data={this.props.data} fontFamily='roboto'>
+            <XAxis dataKey="timestamp" name="Date" reversed={true} tickFormatter={this.dateFormat}/>
+            <YAxis yAxisId="temp" type="number" domain={[10,35]}/>
+            <YAxis yAxisId="light"/>
+            <YAxis yAxisId="pressure" orientation="right" type="number" domain={[975,1025]}/>
+            <Tooltip labelFormatter={this.dateFormatTooltip} />
+            <Legend />
+            <CartesianGrid stroke="#eee" strokeDasharray="1 1"/>
+            <Area yAxisId="temp" name="Temp" isAnimationActive={false} dataKey="measures.temperature1" fill={blueGrey[100]} stroke={blueGrey[700]} unit="C" dot={false} strokeWidth={1.5} />
+            <Bar yAxisId="light" name="Light" isAnimationActive={false} dataKey="measures.light" barSize={30} fill={yellow[700]}/>
+            <Line yAxisId="temp" name="Humidity" isAnimationActive={false} type="monotone" dataKey="measures.humidity" legendType="square" stroke={green[700]} unit="%" dot={false} strokeWidth={1.5} />
+            <Line yAxisId="pressure" name="Pressure" isAnimationActive={false} type="monotone" dataKey="measures.sealevelpressure" legendType="cross" stroke={red[700]} unit="hPa" dot={false}strokeWidth={1.5} />
+          </ComposedChart>
+        </ResponsiveContainer>
         <div className={this.props.classes.form}>
           <FormControl className={this.props.classes.formControl}>
             <InputLabel htmlFor="time-interval">Time interval</InputLabel>
@@ -69,21 +87,6 @@ class Graph extends Component {
             </Select>
           </FormControl>
         </div>
-        <ResponsiveContainer width='100%' aspect={5.0/3.0}>
-          <ComposedChart data={this.props.data} fontFamily='roboto'>
-            <XAxis dataKey="timestamp" name="Date" reversed={true} tickFormatter={this.dateFormat}/>
-            <YAxis yAxisId="temp" type="number" domain={[10,35]}/>
-            <YAxis yAxisId="light"/>
-            <YAxis yAxisId="pressure" orientation="right" type="number" domain={[975,1025]}/>
-            <Tooltip labelFormatter={this.dateFormatTooltip} />
-            <Legend />
-            <CartesianGrid stroke="#eee" strokeDasharray="1 1"/>
-            <Area yAxisId="temp" name="Temp" isAnimationActive={false} dataKey="measures.temperature1" fill={blueGrey[100]} stroke={blueGrey[700]} unit="C" dot={false} strokeWidth={1.5} />
-            <Bar yAxisId="light" name="Light" isAnimationActive={false} dataKey="measures.light" barSize={30} fill={yellow[700]}/>
-            <Line yAxisId="temp" name="Humidity" isAnimationActive={false} type="monotone" dataKey="measures.humidity" legendType="square" stroke={green[700]} unit="%" dot={false} strokeWidth={1.5} />
-            <Line yAxisId="pressure" name="Pressure" isAnimationActive={false} type="monotone" dataKey="measures.sealevelpressure" legendType="cross" stroke={red[700]} unit="hPa" dot={false}strokeWidth={1.5} />
-          </ComposedChart>
-        </ResponsiveContainer>
       </div>
     )
   }
