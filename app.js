@@ -1,16 +1,23 @@
 require('dotenv').config()
 
 //Express routing
-var express = require('express');
-var bodyParser = require('body-parser');
-var app = express();
+const express = require('express');
+const bodyParser = require('body-parser');
+const app = express();
+
 // Helmet for security best practise
-var helmet = require('helmet')
+const helmet = require('helmet')
 app.use(helmet())
+
+const cors = require('cors');
+app.use(cors())
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-require('./routes')(app);
+require('./app/routes')(app);
+
+const port = process.env.PORT || 3001
+app.listen(port);
 
 module.exports = app;
