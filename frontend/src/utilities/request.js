@@ -1,7 +1,7 @@
 import axios from 'axios';
 import auth from './auth';
 
-const baseUrl = (process.env.NODE_ENV === 'production') ? 'http://peli-iot-web.azurewebsites.net' : 'http://localhost:3001'
+const baseUrl = (process.env.NODE_ENV === 'production') ? 'https://peli-iot-web-api.azurewebsites.net' : 'http://localhost:3001'
 
 const url = (path) => baseUrl + path
 
