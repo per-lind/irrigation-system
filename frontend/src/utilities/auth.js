@@ -1,4 +1,5 @@
 const TOKEN = 'token';
+const BLOB_TOKEN = 'blobToken';
 const USER = 'user';
 
 const parse = JSON.parse;
@@ -24,6 +25,10 @@ const auth = {
     return auth.get(TOKEN);
   },
 
+  getBlobToken() {
+    return auth.get(BLOB_TOKEN);
+  },
+
   getUser() {
     return auth.get(USER);
   },
@@ -40,6 +45,10 @@ const auth = {
 
   setToken(value) {
     return auth.set(value, TOKEN);
+  },
+
+  setBlobToken(value) {
+    return auth.set(value, BLOB_TOKEN);
   },
 
   setUser(value) {

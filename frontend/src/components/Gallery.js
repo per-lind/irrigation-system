@@ -1,34 +1,78 @@
 import React, { Component } from 'react';
-import { Button } from 'reactstrap';
+import {
+  Button,
+  ButtonGroup,
+  Carousel,
+  CarouselItem,
+  CarouselControl,
+  CarouselIndicators,
+  CarouselCaption
+} from 'reactstrap';
 import request from '../utilities/request';
 import moment from 'moment';
 import i18n from '../i18n';
+import auth from '../utilities/auth';
 
 class Gallery extends Component {
   constructor() {
     super();
 
     this.state = {
-      token: undefined,
-      url: undefined,
+      activeIndex: 0,
+      slides: [],
       loading: false,
       errors: undefined,
     };
 
     this.setToken = this.setToken.bind(this);
-    this.validToken = this.validToken.bind(this);
-    this.getImage = this.getImage.bind(this);
+    this.getToken = this.getToken.bind(this);
+    this.getImages = this.getImages.bind(this);
+
+    this.next = this.next.bind(this);
+    this.previous = this.previous.bind(this);
+    this.onExiting = this.onExiting.bind(this);
+    this.onExited = this.onExited.bind(this);
+  }
+
+  onExiting() {
+    this.animating = true;
+  }
+
+  onExited() {
+    this.animating = false;
+  }
+
+  next() {
+    const { activeIndex, slides } = this.state;
+    if (this.animating || slides.length === 0) return;
+
+    if (activeIndex === slides.length - 1) {
+      const lastDate = slides.slice(-1)[0].date;
+      const date = moment(lastDate).subtract(1, "days");
+      this.getImages(date, activeIndex + 1);
+    } else {
+      this.setState({ activeIndex: activeIndex + 1 });
+    }
+  }
+
+  previous() {
+    const { activeIndex, slides } = this.state;
+    if (this.animating || activeIndex === 0 || slides.length === 0) return;
+    this.setState({ activeIndex: this.state.activeIndex - 1 });
+  }
+
+  goToIndex(newIndex) {
+    if (this.animating) return;
+    this.setState({ activeIndex: newIndex });
   }
 
   setToken() {
     return request({
       url: '/api/blobToken'
     }).then(result => {
-      return new Promise((resolve, reject) => {
-        this.setState({ token: result.data.token }, () => {
-          resolve(true);
-        })
-      });
+      const token = result.data.token;
+      auth.setBlobToken(token);
+      return token;
     }).catch(error => {
       this.setState({
         errors: 'Failed to retrieve token',
@@ -38,52 +82,84 @@ class Gallery extends Component {
     });
   }
 
-  validToken() {
+  getToken() {
+    const token = auth.getBlobToken();
     // Token doesn't exist
-    if (!this.state.token) return false;
+    if (!token)
+      return false;
+
     // Token exists but is expired
-    if (new Date(this.state.token.expiresAt) < (new Date()+10)) return false;
-    return true;
+    if (new Date(token.expiresAt) < (new Date()+10)) return false;
+    return token;
   }
 
-  async getImage() {
-    this.setState({ loading: true, errors: false, url: undefined })
+  async getImages(date = undefined, nextIndex = undefined) {
+    this.setState({ loading: true, errors: false })
+    let token = this.getToken();
 
-    if (!this.validToken()) {
-      const token = await this.setToken();
+    if (!token) {
+      token = await this.setToken();
       if (!token) return;
     }
 
     const containerName = 'iot-data'
-    const filter = 'Huvudsta/' + moment().format('YYYYMMDD');
+    const filter = 'Huvudsta/' + moment(date).format('YYYYMMDD');
+    // const filter = 'Huvudsta/' + moment().format('YYYYMMDD');
     const blobUri = "https://peliiot.blob.core.windows.net";
-    const blobSAS = this.state.token.token;
+    const blobSAS = token.token;
     /* global AzureStorage */
     const blobService = AzureStorage.Blob.createBlobServiceWithSas(blobUri, blobSAS);
     blobService.listBlobsSegmentedWithPrefix(containerName, filter, null, {delimiter: "", maxResults : 10}, (error, result) => {
       if (error) {
         this.setState({ errors: "Couldn't list blobs for container", loading: false });
       } else {
-        const blobURL = blobService.getUrl(containerName, result.entries[0].name, blobSAS);
-        this.setState({ url: blobURL, loading: false });
+        let slides = [];
+        if (Array.isArray(result.entries)) {
+          slides = result.entries.map(entry => ({
+            url: blobService.getUrl(containerName, entry.name, blobSAS),
+            date: entry.lastModified,
+          }));
+        }
+        const state = { slides: this.state.slides.concat(slides), loading: false };
+        this.setState({ slides: this.state.slides.concat(slides), loading: false }, () => {
+          if (nextIndex) this.setState({ activeIndex: nextIndex });
+        });
       }
     });
   }
 
   render() {
     return (
-      <div>
-        <Button
-          color="primary"
-          onClick={this.getImage}
-          disabled={this.state.loading}
-          >
-          {i18n.t('getImage')}
-        </Button>
-        <br/>
-        {this.state.loading && <div>Loading...</div>}
+      <div className='blob-gallery'>
+        <ButtonGroup className='btn-group-block'>
+          <Button
+            color="primary"
+            onClick={this.getImages}
+            disabled={this.state.loading || this.state.slides.length > 0}
+            >
+            {i18n.t('getTodaysImage')}
+          </Button>
+        </ButtonGroup>
         {this.state.errors && <div className='text-danger'>{this.state.errors}</div>}
-        {this.state.url && <img width='400' src={this.state.url}/>}
+        <Carousel
+          activeIndex={this.state.activeIndex}
+          next={this.next}
+          previous={this.previous}
+          interval={false}
+        >
+          {this.state.slides.map(slide =>
+            <CarouselItem
+              onExiting={this.onExiting}
+              onExited={this.onExited}
+              key={slide.url}
+            >
+              <img src={slide.url} />
+              <CarouselCaption captionText={slide.date} captionHeader='Huvudsta' />
+            </CarouselItem>
+          )}
+          <CarouselControl direction="prev" directionText="Previous" onClickHandler={this.previous} />
+          <CarouselControl direction="next" directionText="Next" onClickHandler={this.next} />
+        </Carousel>
       </div>
     );
   }
