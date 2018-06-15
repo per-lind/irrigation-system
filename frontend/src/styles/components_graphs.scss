@@ -1,0 +1,31 @@
+.btn-group-block {
+  display: flex;
+  justify-content: center;
+  border-top: 1px solid $gray-200;
+  border-bottom: 1px solid $gray-200;
+  padding: $spacer * 0.5;
+  flex-wrap: wrap;
+  margin-bottom: $spacer;
+
+  .btn {
+    min-width: 100px;
+  }
+}
+
+.tooltip-graph {
+  background-color: white;
+  opacity: 0.95;
+  color: black;
+  font-family: $font-family-base;
+
+  .tooltip-graph-title {
+    padding: $spacer * 0.5;
+    background-color: #292B28;
+    color: white;
+  }
+
+  .tooltip-graph-inner {
+    border: 1px solid $gray-200;
+    padding: $spacer;
+  }
+}

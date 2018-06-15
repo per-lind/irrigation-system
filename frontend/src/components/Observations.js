@@ -8,10 +8,65 @@ import {
   XAxis,
   YAxis,
   CartesianGrid,
-  Tooltip, Legend,
-  Area } from 'recharts';
+  Tooltip,
+  Legend } from 'recharts';
 import moment from 'moment';
 import request from '../utilities/request'
+
+const common = {
+  isAnimationActive: false,
+  strokeWidth: 2,
+  dot: false,
+}
+
+const settings = {
+  light: {
+    yAxisId: "light",
+    name: "Light",
+    dataKey: "measures.light",
+    barSize: 30,
+    unit: "lx",
+    fill: "#AD9388",
+  },
+  temp: {
+    yAxisId: "temp",
+    name: "Temp",
+    type: "monotone",
+    dataKey: "measures.temperature1",
+    unit: "ºC",
+    stroke: "#292B28",
+  },
+  humidity: {
+    yAxisId: "temp",
+    name: "Humidity",
+    type: "monotone",
+    dataKey: "measures.humidity",
+    unit: "%",
+    stroke: "#44758c",
+  },
+  pressure: {
+    yAxisId: "pressure",
+    name: "Pressure",
+    type: "monotone",
+    dataKey: "measures.sealevelpressure",
+    unit: "hPa",
+    stroke: "#ADC948",
+  }
+}
+
+const renderTooltip = props => {
+  const { label, labelFormatter, payload } = props;
+  return (
+    <div className='tooltip-graph'>
+      <div className='tooltip-graph-title'>{labelFormatter(label)}</div>
+      <div className='tooltip-graph-inner'>
+        {payload && payload.map(item =>
+          <div style={{ color: item.color }}><strong>{item.name}:</strong> {item.value} {item.unit}</div>
+        )}
+      </div>
+    </div>
+  );
+}
 
 class Observations extends Component {
   constructor() {
@@ -57,7 +112,7 @@ class Observations extends Component {
   render() {
     return (
       <div>
-        <ButtonGroup>
+        <ButtonGroup className='btn-group-block'>
           {[
             { label: '12h', value: 12 },
             { label: '24h', value: 24 },
@@ -78,13 +133,13 @@ class Observations extends Component {
             <YAxis yAxisId="temp" type="number" domain={[10,35]}/>
             <YAxis yAxisId="light"/>
             <YAxis yAxisId="pressure" orientation="right" type="number" domain={[975,1025]}/>
-            <Tooltip labelFormatter={this.dateFormatTooltip} />
+            <Tooltip labelFormatter={this.dateFormatTooltip} content={renderTooltip} />
             <Legend />
             <CartesianGrid stroke="#eee" strokeDasharray="1 1"/>
-            <Area yAxisId="temp" name="Temp" isAnimationActive={false} dataKey="measures.temperature1" unit="C" dot={false} strokeWidth={1.5} />
-            <Bar yAxisId="light" name="Light" isAnimationActive={false} dataKey="measures.light" barSize={30} />
-            <Line yAxisId="temp" name="Humidity" isAnimationActive={false} type="monotone" dataKey="measures.humidity" legendType="square" unit="%" dot={false} strokeWidth={1.5} />
-            <Line yAxisId="pressure" name="Pressure" isAnimationActive={false} type="monotone" dataKey="measures.sealevelpressure" legendType="cross" unit="hPa" dot={false} strokeWidth={1.5} />
+            <Bar {...common} {...settings.light} />
+            <Line {...common} {...settings.temp} />
+            <Line {...common} {...settings.humidity} />
+            <Line {...common} {...settings.pressure} />
           </ComposedChart>
         </ResponsiveContainer>
       </div>

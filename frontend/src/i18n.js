@@ -9,6 +9,16 @@ i18next
     resources: {
       en: {
         translation: {
+          methods: {
+            ToggleRelay1: 'Pump no 1',
+            ToggleRelay2: 'Pump no 2',
+            ToggleRelay3: 'Pump no 3',
+            TogglePow1: 'Pow 1',
+            getDistance: 'Get water level',
+          },
+          headers: {
+            pumps: 'Pumps'
+          },
           actions: {
             button: {
               ToggleRelay1: 'Relay 1',
@@ -25,7 +35,7 @@ i18next
               getDistance: 'Tank water level',
             }
           },
-          getImage: 'Get image',
+          getTodaysImage: "Get today's image",
         }
       }
     }
