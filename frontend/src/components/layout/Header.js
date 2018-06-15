@@ -1,11 +1,12 @@
-import React, {Component} from 'react';
-import TopMenu from './TopMenu';
+import React, { Component } from 'react';
+import Logo from './Logo';
 
 class Header extends Component {
   render () {
     return (
       <header className="App-header">
-        <TopMenu {...this.props}/>
+        <Logo size={60} />
+        <h1>Irrigation system</h1>
       </header>
     );
   }
