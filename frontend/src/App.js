@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import Header from './components/layout/Header';
+import TopMenu from './components/layout/TopMenu';
 import Footer from './components/layout/Footer';
+import PumpContainer from './components/PumpContainer';
 import Observations from './components/Observations';
 import Action from './components/Action';
 import Gallery from './components/Gallery';
@@ -63,6 +65,7 @@ class App extends Component {
 
     return (
       <div className="App">
+        <TopMenu id='top-menu' {...userProps}/>
         <Header {...userProps} />
         <main>
           <h2>Observations</h2>
@@ -70,9 +73,7 @@ class App extends Component {
           {this.state.user &&
             <div>
               <h2>Actions</h2>
-              <Action method='ToggleRelay1' {...userProps} />
-              <Action method='ToggleRelay2' {...userProps} />
-              <Action method='ToggleRelay3' {...userProps} />
+              <PumpContainer {...userProps}/>
               <Action method='TogglePow1' {...userProps} />
               <Action method='getDistance' {...userProps} />
               <h2>Gallery</h2>
