@@ -8,10 +8,25 @@ exports.data = (req, res) => {
   })
 };
 
+exports.pump = (req, res) => {
+  const id = parseInt(req.params.id);
+  const duration = parseInt(req.query.duration);
+
+  if (![1,2,3].includes(id))
+    return res.status(400).json({message: `No pump with id ${id} exists.`});
+
+  if (duration < 1 || duration > 60)
+    return res.status(400).json({message: 'Invalid duration'});
+
+  iothub.invoke({methodName: `ToggleRelay${id}`, duration: duration})
+    .then(result => res.json(result))
+    .catch(error => res.status(400).json({message: 'Failed to invoke method ToggleRelay' + id}));
+};
+
 exports.invoke = (req, res) => {
   iothub.invoke({methodName: req.query.method, payload: req.query.payload || ''})
     .then(result => res.json(result))
-    .catch(error => res.status(400).json({message: 'Failed to invoke method \'' + req.query.method}));
+    .catch(error => res.status(400).json({message: 'Failed to invoke method ' + req.query.method}));
 };
 
 exports.blobToken = (req, res) => {

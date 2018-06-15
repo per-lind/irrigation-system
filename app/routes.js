@@ -22,6 +22,9 @@ module.exports = (app) => {
   // Logout route
   router.get('/logout', usersController.logout);
 
+  // Pump water
+  router.get('/pump/:id', apiController.pump);
+
   // Invoke function
   router.get('/invoke', apiController.invoke);
 
