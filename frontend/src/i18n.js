@@ -10,10 +10,6 @@ i18next
       en: {
         translation: {
           methods: {
-            StartPump1: 'Pump no 1',
-            StartPump2: 'Pump no 2',
-            StartPump3: 'Pump no 3',
-            TogglePow1: 'Pow 1',
             GetDistance: 'Get water level',
           },
           headers: {
@@ -21,16 +17,14 @@ i18next
           },
           actions: {
             button: {
-              StartPump1: 'Relay 1',
-              StartPump2: 'Relay 2',
-              StartPump3: 'Relay 3',
+              startPump1: 'Run PUMP 1 for {{duration}} seconds',
+              startPump2: 'Run PUMP 2 for {{duration}} seconds',
+              startPump3: 'Run PUMP 3 for {{duration}} seconds',
               TogglePow1: 'Pow 1',
               GetDistance: 'Get water level',
+              GetSoilMoisture: 'Get soil moisture',
             },
             result: {
-              StartPump1: 'Relay 1',
-              StartPump2: 'Relay 2',
-              StartPump3: 'Relay 3',
               TogglePow1: 'Pow 1',
               GetDistance: 'Tank water level',
             }

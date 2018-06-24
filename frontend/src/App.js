@@ -72,9 +72,11 @@ class App extends Component {
           <Observations />
           {this.state.user &&
             <div>
-              <h2>Actions</h2>
+              <h2>Pumps</h2>
               <PumpContainer {...userProps}/>
+              <h2>Other measures</h2>
               <Action method='GetDistance' dataKey='distance' {...userProps} />
+              <Action method='GetSoilMoisture' dataKey='soil_moisture' {...userProps} />
               <h2>Gallery</h2>
               <Gallery {...userProps} />
           <br/>
