@@ -10,32 +10,42 @@ i18next
       en: {
         translation: {
           methods: {
-            ToggleRelay1: 'Pump no 1',
-            ToggleRelay2: 'Pump no 2',
-            ToggleRelay3: 'Pump no 3',
+            StartPump1: 'Pump no 1',
+            StartPump2: 'Pump no 2',
+            StartPump3: 'Pump no 3',
             TogglePow1: 'Pow 1',
-            getDistance: 'Get water level',
+            GetDistance: 'Get water level',
           },
           headers: {
             pumps: 'Pumps'
           },
           actions: {
             button: {
-              ToggleRelay1: 'Relay 1',
-              ToggleRelay2: 'Relay 2',
-              ToggleRelay3: 'Relay 3',
+              StartPump1: 'Relay 1',
+              StartPump2: 'Relay 2',
+              StartPump3: 'Relay 3',
               TogglePow1: 'Pow 1',
-              getDistance: 'Get water level',
+              GetDistance: 'Get water level',
             },
             result: {
-              ToggleRelay1: 'Relay 1',
-              ToggleRelay2: 'Relay 2',
-              ToggleRelay3: 'Relay 3',
+              StartPump1: 'Relay 1',
+              StartPump2: 'Relay 2',
+              StartPump3: 'Relay 3',
               TogglePow1: 'Pow 1',
-              getDistance: 'Tank water level',
+              GetDistance: 'Tank water level',
             }
           },
           getTodaysImage: "Get today's image",
+          imageMissing: 'No image',
+          graph: {
+            light: 'Light',
+            light_analog: 'Light analog',
+            temperature_BMP085: 'Temperature (BMP085)',
+            temperature_AM2320: 'Temperature (AM2320)',
+            temperature_analog: 'Temperature (analog)',
+            humidity: 'Humidity',
+            sealevelpressure: 'Sealevel pressure',
+          }
         }
       }
     }

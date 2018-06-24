@@ -12,6 +12,7 @@ import {
   Legend } from 'recharts';
 import moment from 'moment';
 import request from '../utilities/request'
+import i18n from '../i18n';
 
 const common = {
   isAnimationActive: false,
@@ -21,34 +22,47 @@ const common = {
 
 const settings = {
   light: {
+    component: Bar,
     yAxisId: "light",
-    name: "Light",
-    dataKey: "measures.light",
+    barSize: 30,
+    unit: "lx",
+    fill: "#825843",
+  },
+  light_analog: {
+    component: Bar,
+    yAxisId: "light",
     barSize: 30,
     unit: "lx",
     fill: "#AD9388",
   },
-  temp: {
+  temperature_BMP085: {
     yAxisId: "temp",
-    name: "Temp",
     type: "monotone",
-    dataKey: "measures.temperature1",
     unit: "ºC",
     stroke: "#292B28",
   },
+  temperature_AM2320: {
+    yAxisId: "temp",
+    type: "monotone",
+    dataKey: "measures.temperature1",
+    unit: "ºC",
+    stroke: "#4d4d51",
+  },
+  temperature_analog: {
+    yAxisId: "temp",
+    type: "monotone",
+    unit: "ºC",
+    stroke: "#8f8f93",
+  },
   humidity: {
     yAxisId: "temp",
-    name: "Humidity",
     type: "monotone",
-    dataKey: "measures.humidity",
     unit: "%",
     stroke: "#44758c",
   },
-  pressure: {
+  sealevelpressure: {
     yAxisId: "pressure",
-    name: "Pressure",
     type: "monotone",
-    dataKey: "measures.sealevelpressure",
     unit: "hPa",
     stroke: "#ADC948",
   }
@@ -74,6 +88,7 @@ class Observations extends Component {
     this.state = {
       range: 12,
       data: [],
+      items: ['humidity', 'light_analog', 'sealevelpressure', 'temperature_BMP085']
     }
 
     this.setRange = this.setRange.bind(this);
@@ -105,6 +120,18 @@ class Observations extends Component {
     this.setState({ range: range }, () => this.getData());
   }
 
+  toggleItem(key) {
+    let items;
+    if (this.state.items.includes(key)) {
+      items = this.state.items.filter(item => item !== key)
+    } else {
+      items = this.state.items.slice();
+      items.push(key)
+    }
+    console.log(items)
+    this.setState({ items: items.sort() })
+  }
+
   componentDidMount() {
     this.getData();
   }
@@ -127,6 +154,34 @@ class Observations extends Component {
               >{item.label}</Button>
           )}
         </ButtonGroup>
+        <ButtonGroup className='btn-group-block'>
+          {Object.keys(settings).map(key => {
+            let attributes = settings[key]
+            let styling = {}
+            let color = attributes.stroke || attributes.fill
+            if (this.state.items.includes(key)) {
+              styling = {
+                style: {
+                  backgroundColor: color,
+                  border: color,
+                }
+              }
+            } else {
+              styling = {
+                color: 'link',
+                style: {
+                  color: color,
+                }
+              }
+            }
+            return <Button
+              key={key}
+              value={key}
+              onClick={() => this.toggleItem(key)}
+              {...styling}
+              >{i18n.t('graph.' + key)}</Button>
+          })}
+        </ButtonGroup>
         <ResponsiveContainer width='100%' aspect={5.0/3.0}>
           <ComposedChart width={600} height={400} data={this.state.data}>
             <XAxis dataKey="timestamp" name="Date" reversed={true} tickFormatter={this.dateFormat}/>
@@ -136,10 +191,16 @@ class Observations extends Component {
             <Tooltip labelFormatter={this.dateFormatTooltip} content={renderTooltip} />
             <Legend />
             <CartesianGrid stroke="#eee" strokeDasharray="1 1"/>
-            <Bar {...common} {...settings.light} />
-            <Line {...common} {...settings.temp} />
-            <Line {...common} {...settings.humidity} />
-            <Line {...common} {...settings.pressure} />
+            {this.state.items.map(item => {
+              const attributes = settings[item]
+              let GraphComponent = attributes.component || Line
+              return <GraphComponent
+                {...common}
+                {...attributes}
+                name={i18n.t('graph.' + item)}
+                dataKey={'measures.' + item}
+              />
+            })}
           </ComposedChart>
         </ResponsiveContainer>
       </div>
