@@ -13,6 +13,7 @@ import {
 import moment from 'moment';
 import request from '../utilities/request'
 import i18n from '../i18n';
+import CheckboxGroup from './CheckboxGroup';
 
 const common = {
   isAnimationActive: false,
@@ -95,6 +96,7 @@ class Observations extends Component {
     this.dateFormat = this.dateFormat.bind(this);
     this.dateFormatTooltip = this.dateFormatTooltip.bind(this);
     this.getData = this.getData.bind(this);
+    this.toggleItem = this.toggleItem.bind(this);
   }
 
   getData() {
@@ -154,34 +156,6 @@ class Observations extends Component {
               >{item.label}</Button>
           )}
         </ButtonGroup>
-        <ButtonGroup className='btn-group-block'>
-          {Object.keys(settings).map(key => {
-            let attributes = settings[key]
-            let styling = {}
-            let color = attributes.stroke || attributes.fill
-            if (this.state.items.includes(key)) {
-              styling = {
-                style: {
-                  backgroundColor: color,
-                  border: color,
-                }
-              }
-            } else {
-              styling = {
-                color: 'link',
-                style: {
-                  color: color,
-                }
-              }
-            }
-            return <Button
-              key={key}
-              value={key}
-              onClick={() => this.toggleItem(key)}
-              {...styling}
-              >{i18n.t('graph.' + key)}</Button>
-          })}
-        </ButtonGroup>
         <ResponsiveContainer width='100%' aspect={5.0/3.0}>
           <ComposedChart width={600} height={400} data={this.state.data}>
             <XAxis dataKey="timestamp" name="Date" reversed={true} tickFormatter={this.dateFormat}/>
@@ -189,7 +163,6 @@ class Observations extends Component {
             <YAxis yAxisId="light"/>
             <YAxis yAxisId="pressure" orientation="right" type="number" domain={[975,1025]}/>
             <Tooltip labelFormatter={this.dateFormatTooltip} content={renderTooltip} />
-            <Legend />
             <CartesianGrid stroke="#eee" strokeDasharray="1 1"/>
             {this.state.items.map(item => {
               const attributes = settings[item]
@@ -203,6 +176,11 @@ class Observations extends Component {
             })}
           </ComposedChart>
         </ResponsiveContainer>
+        <CheckboxGroup
+          items={settings}
+          selected={this.state.items}
+          onClick={this.toggleItem}
+        />
       </div>
     );
   }
