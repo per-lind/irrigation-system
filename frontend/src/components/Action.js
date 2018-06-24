@@ -24,7 +24,7 @@ class Action extends Component {
       params: { method: this.props.method }
     }).then(response => {
       this.setState({
-        value: response.data.payload.Response,
+        value: response.data.Response[this.props.dataKey],
         loading: false,
       });
     }).catch(error => {

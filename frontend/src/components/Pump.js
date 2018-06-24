@@ -27,7 +27,7 @@ class Pump extends Component {
       params: { method: this.props.method, duration: duration }
     }).then(response => {
       this.setState({
-        value: response.data.payload.Response,
+        value: true,
         loading: false,
       });
     }).catch(error => {
@@ -43,7 +43,7 @@ class Pump extends Component {
 
     return (
       <div>
-        <h4>{i18n.t('methods.ToggleRelay' + id)}</h4>
+        <h4>{i18n.t('methods.StartPump' + id)}</h4>
         <ButtonGroup className='btn-group-block'>
           {durations.map(duration =>
             <Button
@@ -57,7 +57,7 @@ class Pump extends Component {
         </ButtonGroup>
         {this.state.loading && <div>Loading...</div>}
         {this.state.errors && <div className='text-danger'>{this.state.errors}</div>}
-        {this.state.value && <div>{i18n.t('actions.result.ToggleRelay' + id)}: {this.state.value}</div>}
+        {this.state.value && <div>{i18n.t('actions.result.StartPump' + id)}: {this.state.value}</div>}
       </div>
     );
   }

@@ -18,14 +18,14 @@ exports.pump = (req, res) => {
   if (duration < 1 || duration > 60)
     return res.status(400).json({message: 'Invalid duration'});
 
-  iothub.invoke({methodName: `ToggleRelay${id}`, duration: duration})
-    .then(result => res.json(result))
-    .catch(error => res.status(400).json({message: 'Failed to invoke method ToggleRelay' + id}));
+  iothub.invoke({ methodName: `StartPump${id}`, payload: { duration: duration } })
+    .then(result => res.status(result.status).json(result.payload))
+    .catch(error => res.status(400).json({message: 'Failed to invoke method StartPump' + id}));
 };
 
 exports.invoke = (req, res) => {
   iothub.invoke({methodName: req.query.method, payload: req.query.payload || ''})
-    .then(result => res.json(result))
+    .then(result => res.status(result.status).json(result.payload))
     .catch(error => res.status(400).json({message: 'Failed to invoke method ' + req.query.method}));
 };
 

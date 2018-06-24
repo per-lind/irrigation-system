@@ -74,8 +74,7 @@ class App extends Component {
             <div>
               <h2>Actions</h2>
               <PumpContainer {...userProps}/>
-              <Action method='TogglePow1' {...userProps} />
-              <Action method='getDistance' {...userProps} />
+              <Action method='GetDistance' dataKey='distance' {...userProps} />
               <h2>Gallery</h2>
               <Gallery {...userProps} />
           <br/>
