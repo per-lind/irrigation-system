@@ -104,7 +104,6 @@ class Gallery extends Component {
 
     const containerName = 'iot-data'
     const filter = 'Huvudsta/' + moment(date).format('YYYYMMDD');
-    // const filter = 'Huvudsta/' + moment().format('YYYYMMDD');
     const blobUri = "https://peliiot.blob.core.windows.net";
     const blobSAS = token.token;
     /* global AzureStorage */
@@ -114,11 +113,16 @@ class Gallery extends Component {
         this.setState({ errors: "Couldn't list blobs for container", loading: false });
       } else {
         let slides = [];
-        if (Array.isArray(result.entries)) {
+        if (Array.isArray(result.entries) && result.entries.length > 0) {
           slides = result.entries.map(entry => ({
             url: blobService.getUrl(containerName, entry.name, blobSAS),
             date: entry.lastModified,
           }));
+        } else {
+          slides = [{
+            date: moment(date).format('dddd, DD MMM YYYY'),
+            header: i18n.t('imageMissing'),
+          }];
         }
         const state = { slides: this.state.slides.concat(slides), loading: false };
         this.setState({ slides: this.state.slides.concat(slides), loading: false }, () => {
@@ -153,8 +157,8 @@ class Gallery extends Component {
               onExited={this.onExited}
               key={slide.url}
             >
-              <img src={slide.url} />
-              <CarouselCaption captionText={slide.date} captionHeader='Huvudsta' />
+              {slide.url ? <img src={slide.url}/> : <div className='no-image'><div className="content"></div></div>}
+              <CarouselCaption captionText={slide.date} captionHeader={slide.header || 'Huvudsta'} />
             </CarouselItem>
           )}
           <CarouselControl direction="prev" directionText="Previous" onClickHandler={this.previous} />
