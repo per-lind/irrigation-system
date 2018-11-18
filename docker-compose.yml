@@ -1,0 +1,8 @@
+version: '3.7'
+
+services:
+  pi-app:
+    build:
+      context: ./pi/app
+    environment:
+      MOCK_HARDWARE: 'true'

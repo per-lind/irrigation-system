@@ -1,0 +1,25 @@
+[
+  {
+    "id": "humidity",
+    "name": "Humidity and temperature sensor",
+    "driver": "AM2320"
+  },
+  {
+    "id": "light",
+    "name": "Light sensor",
+    "driver": "TSL2561"
+  },
+  {
+    "id": "chip",
+    "name": "Chip",
+    "driver": "MCP23017",
+    "relays": [
+      {
+        "id": "pump1",
+        "name": "Pump 1",
+        "type": "Pump",
+        "pin": 9
+      }
+    ]
+  }
+]
