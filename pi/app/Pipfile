@@ -9,6 +9,7 @@ azure-iothub-device-client = "*"
 "tsl2561" = "*"
 adafruit-gpio = "*"
 pytz = "*"
+schedule = "*"
 
 [dev-packages]
 

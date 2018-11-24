@@ -1,3 +1,5 @@
+import time
+import json
 import drivers
 from config import hardware_config, MOCK_HARDWARE
 import db
@@ -14,6 +16,25 @@ class Hardware:
       c['driver'] = Driver(config=c)
       self.hardware[c['id']] = c
       db.Hardware.get_or_create(hardware_id=c['id'])
+
+  def read(self, hardware=None):
+    if hardware is None:
+      selected = self.hardware.values()
+    elif isinstance(hardware, str):
+      selected = [self.hardware[hardware]] if hardware in self.hardware else []
+    elif isinstance(hardware, list):
+      selected = [h for h in self.hardware.values() if h in self.hardware]
+    else:
+      raise TypeError
+
+    readings = {}
+    for h in selected:
+      periodic_reading = h['periodicReading'] if 'periodicReading' in h else False
+      if h['driver'].readable and periodic_reading:
+        readings[h['id']] = h['driver'].read()
+        # Wait 10ms before next reading
+        time.sleep(0.010)
+    return json.dumps(readings)
 
   def stop_all(self):
     success = True

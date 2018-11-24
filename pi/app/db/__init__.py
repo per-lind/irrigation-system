@@ -13,5 +13,10 @@ class Hardware(BaseModel):
   last_read_at = DateTimeField(null=True)
   last_reading = TextField(null=True)
 
+class Reading(BaseModel):
+  data = TextField()
+  timestamp = DateTimeField(default=datetime.now())
+  uploaded = BooleanField(default=False)
+
 # Create the tables
-db.create_tables([Hardware])
+db.create_tables([Hardware, Reading])

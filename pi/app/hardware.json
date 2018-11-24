@@ -2,12 +2,14 @@
   {
     "id": "humidity",
     "name": "Humidity and temperature sensor",
-    "driver": "AM2320"
+    "driver": "AM2320",
+    "periodicReading": true
   },
   {
     "id": "light",
     "name": "Light sensor",
-    "driver": "TSL2561"
+    "driver": "TSL2561",
+    "periodicReading": true
   },
   {
     "id": "chip",

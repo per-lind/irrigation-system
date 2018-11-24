@@ -1,17 +1,31 @@
 import db
+from jobs import periodic_reading
 from utils import Hardware, IotHub
+from config import PERIODIC_READING_INTERVAL
+
+import threading
+import schedule
 import time
+
+def run_threaded(job_func):
+    job_thread = threading.Thread(target=job_func)
+    job_thread.start()
 
 def main_loop():
   hardware = None
   try:
     print('Setting up hardware...')
     hardware = Hardware()
-    print('done')
-
+    print('Connecting to Iot Hub...')
     iothub = IotHub()
 
+    print('Setting up background jobs...')
+    schedule.every(PERIODIC_READING_INTERVAL).seconds.do(run_threaded, lambda: periodic_reading.run(hardware))
+
+    print('App ready!')
+
     while True:
+      schedule.run_pending()
       time.sleep(1)
 
   except KeyboardInterrupt:
