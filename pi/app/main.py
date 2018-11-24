@@ -1,5 +1,5 @@
 import db
-from jobs import periodic_reading
+from jobs import periodic_reading, clean_data
 from utils import Hardware, IotHub
 from config import PERIODIC_READING_INTERVAL
 
@@ -21,6 +21,7 @@ def main_loop():
 
     print('Setting up background jobs...')
     schedule.every(PERIODIC_READING_INTERVAL).seconds.do(run_threaded, lambda: periodic_reading.run(hardware))
+    schedule.every().hour.do(job).do(run_threaded, lambda: clean_data.run())
 
     print('App ready!')
 
