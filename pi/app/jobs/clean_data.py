@@ -4,18 +4,17 @@ from config import PURGE_DATA
 
 def run():
   print("Cleaning database")
-  while True:
-    try:
-      # Remove readings that have been uploaded
-      db.Reading.delete().where(uploaded=True).execute()
+  try:
+    # Remove readings that have been uploaded
+    db.Reading.delete().where(uploaded=True).execute()
 
-      # Remove any readings older than `PURGE_DATA` days
-      db.Reading.delete().where(db.Reading.timestamp < datetime.now() - timedelta(days=PURGE_DATA)).execute()
+    # Remove any readings older than `PURGE_DATA` days
+    db.Reading.delete().where(db.Reading.timestamp < datetime.now() - timedelta(days=PURGE_DATA)).execute()
 
-      print('Cleaning done')
+    print('Cleaning done')
 
-    except Exception as inst:
-      print('Unexpected error with cleaning work!')
-      print(type(inst))
-      print(inst.args)
-      print(inst)
+  except Exception as inst:
+    print('Unexpected error with cleaning work!')
+    print(type(inst))
+    print(inst.args)
+    print(inst)
