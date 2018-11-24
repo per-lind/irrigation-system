@@ -1,5 +1,6 @@
 import db
-from utils import Hardware
+from utils import Hardware, IotHub
+import time
 
 def main_loop():
   hardware = None
@@ -7,6 +8,11 @@ def main_loop():
     print('Setting up hardware...')
     hardware = Hardware()
     print('done')
+
+    iothub = IotHub()
+
+    while True:
+      time.sleep(1)
 
   except KeyboardInterrupt:
     print('Process ended by user.')

@@ -4,5 +4,7 @@ services:
   pi-app:
     build:
       context: ./pi/app
+    env_file:
+      - env.pi-app
     environment:
       MOCK_HARDWARE: 'true'
