@@ -1,69 +1,52 @@
 import React, { Component } from 'react';
-import {
-  Button,
-  Navbar,
-  NavbarBrand,
-  Nav,
-  NavItem } from 'reactstrap';
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
 
-class TopMenu extends Component {
-  constructor() {
-    super();
+const styles = {
+  root: {
+    flexGrow: 1,
+  },
+  grow: {
+    flexGrow: 1,
+  },
+  menuButton: {
+    marginLeft: -12,
+    marginRight: 20,
+  },
+};
 
-    this.state = { prevOffset: 0, scrollClass: 'visible' };
+function TopMenu(props) {
+  const {
+    classes,
+    user,
+    openLoginPopup,
+    logout,
+  } = props;
 
-    this.handleScroll = this.handleScroll.bind(this);
-  }
-
-
-  componentDidMount() {
-    window.addEventListener('scroll', this.handleScroll);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('scroll', this.handleScroll);
-  }
-
-  handleScroll(event) {
-    let currentOffset = window.pageYOffset;
-    let scrollClass;
-    if (currentOffset == 0) scrollClass = 'visible';
-    if (currentOffset - this.state.prevOffset > 50) scrollClass = 'hidden';
-    if (this.state.prevOffset - currentOffset > 50) scrollClass = 'up';
-
-    if (scrollClass) {
-      this.setState({
-        prevOffset: currentOffset,
-        scrollClass: scrollClass,
-      });
-    }
-  }
-
-  render() {
-    const props = this.props;
-
-    return (
-      <Navbar className={this.state.scrollClass} id={props.id || ''}>
-        <NavbarBrand href="/">Irrigation system</NavbarBrand>
-        {props.user ?
-          <Nav className="ml-auto" navbar>
-            <NavItem>
-              Hello, {props.user.username}!
-            </NavItem>
-            <NavItem>
-              <Button className='navbar-btn' onClick={props.logout}>Logout</Button>
-            </NavItem>
-          </Nav>
-          :
-          <Nav className="ml-auto" navbar>
-            <NavItem>
-              <Button className='navbar-btn' onClick={props.openLoginPopup}>Login</Button>
-            </NavItem>
-          </Nav>
-        }
-      </Navbar>
-    );
-  }
+  return (
+    <div className={classes.root}>
+      <AppBar position="static">
+        <Toolbar>
+          <Typography variant="h6" color="inherit" className={classes.grow}>
+            Irrigation system
+          </Typography>
+          {user ?
+            <Button color="inherit" onClick={logout}>Logout</Button>
+            :
+            <Button color="inherit" onClick={openLoginPopup}>Login</Button>
+          }
+        </Toolbar>
+      </AppBar>
+    </div>
+  );
 }
 
-export default TopMenu;
+TopMenu.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
+
+export default withStyles(styles)(TopMenu);
