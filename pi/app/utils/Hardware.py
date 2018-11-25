@@ -36,6 +36,13 @@ class Hardware:
         time.sleep(0.010)
     return json.dumps(readings)
 
+  def call(self, id, payload={}):
+    hardware = self.hardware[id] if id in self.hardware else None
+    if hardware and hardware['driver'].callable:
+      return hardware['driver'].call(payload)
+    else:
+      return None
+
   def stop_all(self):
     success = True
     for _, h in self.hardware.items():

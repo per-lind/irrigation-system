@@ -16,13 +16,13 @@ def main_loop():
   try:
     print('Setting up hardware...')
     hardware = Hardware()
-    # print('Connecting to Iot Hub...')
-    # iothub = IotHub()
+    print('Connecting to Iot Hub...')
+    iothub = IotHub()
 
     print('Setting up background jobs...')
     schedule.every(PERIODIC_READING_INTERVAL).seconds.do(run_threaded, lambda: periodic_reading.run(hardware))
     schedule.every().hour.do(run_threaded, lambda: clean_data.run())
-    schedule.every(UPLOAD_INTERVAL).seconds.do(run_threaded, lambda: upload_readings.run(iothub=None))
+    schedule.every(UPLOAD_INTERVAL).seconds.do(run_threaded, lambda: upload_readings.run(iothub))
 
     print('App ready!')
 
