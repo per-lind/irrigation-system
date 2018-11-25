@@ -1,84 +1,92 @@
 import React, { Component } from 'react';
-import {
-  Input,
-  FormFeedback,
-  FormGroup,
-  Button,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter } from 'reactstrap';
-import request from '../utilities/request';
-import auth from '../utilities/auth';
+import PropTypes from 'prop-types';
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import FormControl from '@material-ui/core/FormControl';
+import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import withMobileDialog from '@material-ui/core/withMobileDialog';
+import { login } from '../actions';
 
 class LoginPopup extends Component {
-  constructor() {
-    super()
-    this.state = { password: '', errors: undefined }
+  state = {
+    password: '',
+    errors: undefined
+  };
 
-    this.handleChange = this.handleChange.bind(this)
-    this.handleKeyPress = this.handleKeyPress.bind(this)
-    this.closeDialog = this.closeDialog.bind(this)
-    this.submit = this.submit.bind(this)
-  }
-
-  handleKeyPress(event) {
+  handleKeyPress = event => {
     if (event.key === 'Enter') this.submit();
-  }
+  };
 
-  handleChange(event) {
+  handleChange = event => {
     this.setState({ password: event.target.value, errors: undefined })
-  }
+  };
 
-  closeDialog() {
-    this.setState({ password: undefined, errors: undefined })
+  handleClose = () => {
+    this.setState({ password: '', errors: undefined })
     this.props.onClose();
-  }
+  };
 
-  submit() {
-    request({
-      url: '/api/login',
-      method: 'post',
-      data: { username: 'user1', password: this.state.password }
-    }).then(response => {
-      auth.setToken(response.data.token);
-      auth.setUser(response.data.user);
+  submit = () => {
+    login(this.state.password).then(() => {
       this.props.loadUser();
-      this.closeDialog();
-    }).catch(error => {
-      this.setState({ errors: 'Login failed' })
+      this.handleClose();
     })
+    .catch(error => {
+      this.setState({ errors: 'Login failed' })
+    });
   }
 
-  render () {
-    return(
-      <Modal
-        isOpen={this.props.isOpen}
-        toggle={this.closeDialog}
-        autoFocus={false}
+  render() {
+    const { fullScreen, isOpen } = this.props;
+
+    return (
+      <div>
+        <Dialog
+          fullScreen={fullScreen}
+          open={isOpen}
+          onClose={this.handleClose}
         >
-        <ModalHeader toggle={this.closeDialog}>Log in to Irrigation System</ModalHeader>
-        <ModalBody>
-          <div>
-            <FormGroup>
+          <DialogTitle>Log in to Irrigation System</DialogTitle>
+          <DialogContent>
+            <FormControl fullWidth error={this.state.errors !== undefined} aria-describedby="component-error-text">
+              <InputLabel>Password</InputLabel>
               <Input
                 onChange={this.handleChange}
                 onKeyPress={this.handleKeyPress}
+                value={this.state.password}
+                error={this.state.errors !== undefined}
+                autoFocus
+                margin="dense"
+                id="password"
+                label="Password"
                 type="password"
-                placeholder="password"
-                invalid={this.state.errors !== undefined}
-                autoFocus/>
-              <FormFeedback>{this.state.errors}</FormFeedback>
-            </FormGroup>
-          </div>
-        </ModalBody>
-        <ModalFooter>
-          <Button onClick={this.closeDialog} color='link'>Cancel</Button>
-          <Button onClick={this.submit} color='primary'>Login</Button>
-        </ModalFooter>
-      </Modal>
+                fullWidth
+              />
+              <FormHelperText>{this.state.errors}</FormHelperText>
+            </FormControl>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleClose} color="primary">
+              Cancel
+            </Button>
+            <Button onClick={this.submit} color="primary">
+              Log in
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </div>
     );
   }
 }
 
-export default LoginPopup;
+LoginPopup.propTypes = {
+  fullScreen: PropTypes.bool.isRequired,
+};
+
+export default withMobileDialog()(LoginPopup);

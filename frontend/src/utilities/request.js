@@ -1,9 +1,9 @@
 import axios from 'axios';
 import auth from './auth';
+import { API_URL } from './config';
 
-const baseUrl = (process.env.NODE_ENV === 'production') ? 'https://peli-iot-web-api.azurewebsites.net' : 'http://localhost:3001'
 
-const url = (path) => baseUrl + path
+const url = (path) => API_URL + path
 
 const request = (options) => {
   // Set headers
