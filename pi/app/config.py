@@ -11,6 +11,8 @@ IOTHUB_MESSAGE_TIMEOUT = os.getenv('IOTHUB_MESSAGE_TIMEOUT', 10000)
 
 # Interval (in seconds) between periodic readings
 PERIODIC_READING_INTERVAL = os.getenv('PERIODIC_READING_INTERVAL', 15 * 60)
+# How frequently (in seconds) stuff should be uploaded to iothub
+UPLOAD_INTERVAL = os.getenv('UPLOAD_INTERVAL', 15)
 # How old (in days) data should be deleted
 PURGE_DATA = os.getenv('PURGE_DATA', 2)
 

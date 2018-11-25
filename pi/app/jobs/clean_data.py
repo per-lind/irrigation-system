@@ -6,7 +6,7 @@ def run():
   print("Cleaning database")
   try:
     # Remove readings that have been uploaded
-    db.Reading.delete().where(uploaded=True).execute()
+    db.Reading.delete().where(db.Reading.uploaded == True).execute()
 
     # Remove any readings older than `PURGE_DATA` days
     db.Reading.delete().where(db.Reading.timestamp < datetime.now() - timedelta(days=PURGE_DATA)).execute()

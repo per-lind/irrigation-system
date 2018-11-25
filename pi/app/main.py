@@ -1,7 +1,7 @@
 import db
-from jobs import periodic_reading, clean_data
+from jobs import periodic_reading, clean_data, upload_readings
 from utils import Hardware, IotHub
-from config import PERIODIC_READING_INTERVAL
+from config import PERIODIC_READING_INTERVAL, UPLOAD_INTERVAL
 
 import threading
 import schedule
@@ -16,12 +16,13 @@ def main_loop():
   try:
     print('Setting up hardware...')
     hardware = Hardware()
-    print('Connecting to Iot Hub...')
-    iothub = IotHub()
+    # print('Connecting to Iot Hub...')
+    # iothub = IotHub()
 
     print('Setting up background jobs...')
     schedule.every(PERIODIC_READING_INTERVAL).seconds.do(run_threaded, lambda: periodic_reading.run(hardware))
-    schedule.every().hour.do(job).do(run_threaded, lambda: clean_data.run())
+    schedule.every().hour.do(run_threaded, lambda: clean_data.run())
+    schedule.every(UPLOAD_INTERVAL).seconds.do(run_threaded, lambda: upload_readings.run(iothub=None))
 
     print('App ready!')
 
