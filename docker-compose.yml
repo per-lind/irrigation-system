@@ -8,3 +8,14 @@ services:
       - env.pi-app
     environment:
       MOCK_HARDWARE: 'true'
+
+  api:
+    build:
+      context: ./api
+    environment:
+      PORT: 3001
+      JWT_SECRET: jwt_secret
+    ports:
+      - 3001:3001
+    expose:
+      - 3001
