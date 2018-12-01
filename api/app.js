@@ -5,7 +5,7 @@ const express = require('express');
 const router = express.Router();
 const bodyParser = require('body-parser');
 const app = express();
-const { usersController } = require('./controllers');
+const { usersController, apiController } = require('./controllers');
 
 // Helmet for security best practise
 const helmet = require('helmet')
@@ -30,6 +30,9 @@ router.use('/', passport.authenticateBearer());
 
 // Logout route
 router.get('/logout', usersController.logout);
+
+// Invoke device method
+router.get('/invoke', apiController.invoke);
 
 // Namespace routes
 app.use('/api', router);

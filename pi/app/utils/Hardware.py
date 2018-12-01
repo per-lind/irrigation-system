@@ -43,6 +43,9 @@ class Hardware:
     else:
       return None
 
+  def list(self):
+    return hardware_config
+
   def stop_all(self):
     success = True
     for _, h in self.hardware.items():

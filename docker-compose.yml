@@ -12,6 +12,8 @@ services:
   api:
     build:
       context: ./api
+    env_file:
+      - env.api
     environment:
       PORT: 3001
       JWT_SECRET: jwt_secret

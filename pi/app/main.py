@@ -17,7 +17,7 @@ def main_loop():
     print('Setting up hardware...')
     hardware = Hardware()
     print('Connecting to Iot Hub...')
-    iothub = IotHub()
+    iothub = IotHub(hardware=hardware)
 
     print('Setting up background jobs...')
     schedule.every(PERIODIC_READING_INTERVAL).seconds.do(run_threaded, lambda: periodic_reading.run(hardware))

@@ -8,8 +8,9 @@ def send_confirmation_callback(message, result, user_context):
     print("Confirmation received for message with result = %s" % (result))
 
 class IotHub:
-  def __init__(self):
+  def __init__(self, hardware):
     self.method_callbacks = 0
+    self.hardware = hardware
     self._init_client()
 
   def _init_client(self):
@@ -40,6 +41,8 @@ class IotHub:
     try:
       if method_name == 'call':
         self.hardware.call(msg['id'], msg['payload'])
+      elif method_name == 'list':
+        response = self.hardware.list()
       else:
         raise NotImplementedError
       status = 200
