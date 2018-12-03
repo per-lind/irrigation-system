@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Hardware from './Hardware';
-import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 
 const styles = {
@@ -20,11 +19,10 @@ function HardwareList(props) {
 
   return (
     <div className={classes.root}>
-      <Typography variant="h3" gutterBottom>Hardware</Typography>
-      <Grid container className={classes.container} spacing={0}>
+      <Grid container className={classes.container} spacing={16}>
         {hardware.map((item, index) => (
-          <Grid key={index} item xs={12}>
-            <Hardware definitions={item} />
+          <Grid key={index} item xs={12} md={item.relays ? 12 : 6}>
+            <Hardware key={index} definitions={item} />
           </Grid>
         ))}
       </Grid>

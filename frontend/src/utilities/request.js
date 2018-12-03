@@ -12,7 +12,7 @@ const request = (options) => {
   const token = auth.getToken();
   if (token) options.headers.Authorization = `Bearer ${token}`
 
-  return axios({...{ method: 'get' }, ...options, ...{ url: url(options.url) }})
+  return axios({ method: 'get', ...options, url: url(options.url) })
 }
 
 export { url };

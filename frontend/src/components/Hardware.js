@@ -4,19 +4,25 @@ import { withStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
-import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
+import Divider from '@material-ui/core/Divider';
+import Action from './Action';
+import { invoke } from '../actions';
 
 const styles = {
+  divider: {
+    marginTop: 15,
+    marginBottom: 15,
+  }
 };
 
 class RenderItem extends Component {
   render () {
-
     const {
       classes,
       definitions,
       children,
+      invokeMethod,
     } = this.props;
 
     const {
@@ -37,11 +43,25 @@ class RenderItem extends Component {
           <Typography className={classes.pos} color="textSecondary">
             {driver}
           </Typography>
+          {readable && <div className={classes.divider}><Divider /></div>}
+          {readable &&
+            <Action
+              onClick={payload => invokeMethod('read', payload)}
+              method={"read"}
+              payload={definitions.readPayload}
+              id={id}
+            />
+          }
+          {callable && <div className={classes.divider}><Divider /></div>}
+          {callable &&
+            <Action
+              onClick={payload => invokeMethod('call', payload)}
+              method={"call"}
+              payload={definitions.callPayload}
+              id={id}
+            />
+          }
         </CardContent>
-        <CardActions>
-          {readable && <Button size="small">Read</Button>}
-          {callable && <Button size="small">Invoke</Button>}
-        </CardActions>
         {children}
       </Card>
     );
@@ -55,9 +75,20 @@ function Hardware(props) {
   } = props;
 
   return (
-    <RenderItem definitions={definitions} classes={classes}>
+    <RenderItem
+      definitions={definitions}
+      classes={classes}
+      invokeMethod={(method, payload) => invoke(method, { ...payload, id: definitions.id })}
+    >
       {definitions.relays &&
-        definitions.relays.map(relay => <RenderItem definitions={relay} classes={classes} />)}
+        definitions.relays.map((relay, index) => (
+          <RenderItem
+            key={index}
+            definitions={relay}
+            classes={classes}
+            invokeMethod={(method, payload) => invoke(method, { ...payload, relay: relay.id, id: definitions.id })}
+          />
+        ))}
     </RenderItem>
   );
 }

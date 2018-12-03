@@ -19,7 +19,31 @@ const logout = () => {
   });
 };
 
+const getHardwareList = () => {
+  return request({
+    url: '/api/invoke',
+    params: {
+      method: 'list',
+    }
+  })
+  .then(response => JSON.parse(response))
+  .then(response => response.hardware);
+}
+
+const invoke = (method, payload) => {
+  return request({
+    url: '/api/invoke',
+    params: {
+      method,
+      payload,
+    }
+  })
+  .then(response => JSON.parse(response))
+};
+
 export {
   login,
   logout,
+  getHardwareList,
+  invoke,
 };
