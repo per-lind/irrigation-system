@@ -1,15 +1,10 @@
 import React, { Component } from 'react';
-import Header from './components/layout/Header';
 import TopMenu from './components/layout/TopMenu';
-import Footer from './components/layout/Footer';
-import PumpContainer from './components/PumpContainer';
-import Observations from './components/Observations';
-import Action from './components/Action';
-import Gallery from './components/Gallery';
+import Section from './components/layout/Section';
 import LoginPopup from './components/LoginPopup';
-import request from './utilities/request';
-import auth from './utilities/auth';
-import './styles/main.scss';
+import HardwareList from './components/HardwareList';
+import { logout, getHardwareList } from './actions';
+import { auth } from './utilities';
 
 class App extends Component {
   constructor() {
@@ -18,12 +13,14 @@ class App extends Component {
     this.state = {
       user: undefined,
       dialog: undefined,
+      hardware: [],
     }
 
     this.logout = this.logout.bind(this);
     this.openDialog = this.openDialog.bind(this);
     this.closeDialogs = this.closeDialogs.bind(this);
     this.loadUser = this.loadUser.bind(this);
+    this.retrieveHardware = this.retrieveHardware.bind(this);
   }
 
   openDialog(name) {
@@ -31,14 +28,15 @@ class App extends Component {
   }
 
   loadUser() {
-    this.setState({user: auth.getUser()})
+    const user = auth.getUser();
+    this.setState({ user });
+    if (user) {
+      this.retrieveHardware();
+    }
   }
 
   logout() {
-    request({
-      url: '/api/logout',
-    }).then(response => {
-      auth.clearAppStorage();
+    logout().then(response => {
       this.loadUser();
     });
   }
@@ -51,9 +49,20 @@ class App extends Component {
     this.loadUser();
   }
 
+  retrieveHardware() {
+    getHardwareList()
+      .then(hardware => this.setState({ hardware: hardware }))
+      .catch(error => {
+        console.log('Error retrieving list of hardware!')
+        console.log(error)
+      })
+  }
+
   render() {
+    const { hardware, user } = this.state;
+
     const userProps = {
-      user: this.state.user,
+      user: user,
       loadUser: this.loadUser,
       openLoginPopup: () => this.openDialog('login'),
       logout: this.logout,
@@ -64,28 +73,17 @@ class App extends Component {
     });
 
     return (
-      <div className="App">
-        <TopMenu id='top-menu' {...userProps}/>
-        <Header {...userProps} />
-        <main>
-          <h2>Observations</h2>
-          <Observations />
-          {this.state.user &&
-            <div>
-              <h2>Pumps</h2>
-              <PumpContainer {...userProps}/>
-              <h2>Other measures</h2>
-              <Action method='GetDistance' dataKey='distance' {...userProps} />
-              <Action method='GetSoilMoisture' dataKey='soil_moisture' {...userProps} />
-              <h2>Gallery</h2>
-              <Gallery {...userProps} />
-          <br/>
-          <img width='400'src={this.state.blobURL}/>
-            </div>
-          }
-        </main>
-        <Footer/>
-        <LoginPopup {...{...userProps, ...modalProps('login')}} />
+      <div>
+        <TopMenu {...userProps}/>
+        <LoginPopup {...userProps} {...modalProps('login')} />
+        <Section title={"Data"} >
+          <p>(graph)</p>
+        </Section>
+        {user &&
+          <Section title={"Hardware"}>
+            <HardwareList hardware={hardware} />
+          </Section>
+        }
       </div>
     );
   }
