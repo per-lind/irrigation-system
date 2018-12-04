@@ -118,3 +118,9 @@ class Driver:
   # Make sure sensor is off
   def _shutdown(self):
     return True
+
+  def to_json(self):
+    return {
+      'callable': self.callable,
+      'readable': self.readable,
+    }
