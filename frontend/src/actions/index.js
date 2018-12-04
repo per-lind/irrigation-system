@@ -26,8 +26,7 @@ const getHardwareList = () => {
       method: 'list',
     }
   })
-  .then(response => JSON.parse(response))
-  .then(response => response.hardware);
+  .then(response => response.data.Response);
 }
 
 const invoke = (method, payload) => {

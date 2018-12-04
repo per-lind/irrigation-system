@@ -20,18 +20,20 @@ class RenderItem extends Component {
   render () {
     const {
       classes,
-      definitions,
       children,
       invokeMethod,
-    } = this.props;
-
-    const {
       id,
       name,
+      type,
       driver,
+    } = this.props;
+
+    const definitions = (type || driver);
+    const {
       readable,
       callable,
-      relays,
+      readPayload,
+      callPayload,
     } = definitions;
 
     return (
@@ -41,14 +43,14 @@ class RenderItem extends Component {
             {name}
           </Typography>
           <Typography className={classes.pos} color="textSecondary">
-            {driver}
+            {definitions.name}
           </Typography>
           {readable && <div className={classes.divider}><Divider /></div>}
           {readable &&
             <Action
               onClick={payload => invokeMethod('read', payload)}
               method={"read"}
-              payload={definitions.readPayload}
+              payload={readPayload}
               id={id}
             />
           }
@@ -57,7 +59,7 @@ class RenderItem extends Component {
             <Action
               onClick={payload => invokeMethod('call', payload)}
               method={"call"}
-              payload={definitions.callPayload}
+              payload={callPayload}
               id={id}
             />
           }
@@ -69,24 +71,21 @@ class RenderItem extends Component {
 }
 
 function Hardware(props) {
-  const {
-    classes,
-    definitions,
-  } = props;
+  const { classes, ...rest } = props;
 
   return (
     <RenderItem
-      definitions={definitions}
+      {...rest}
       classes={classes}
-      invokeMethod={(method, payload) => invoke(method, { ...payload, id: definitions.id })}
+      invokeMethod={(method, payload) => invoke(method, { ...payload, id: rest.id })}
     >
-      {definitions.relays &&
-        definitions.relays.map((relay, index) => (
+      {rest.relays &&
+        rest.relays.map((relay, index) => (
           <RenderItem
             key={index}
-            definitions={relay}
+            {...relay}
             classes={classes}
-            invokeMethod={(method, payload) => invoke(method, { ...payload, relay: relay.id, id: definitions.id })}
+            invokeMethod={(method, payload) => invoke(method, { ...payload, relay: relay.id, id: rest.id })}
           />
         ))}
     </RenderItem>
@@ -95,7 +94,6 @@ function Hardware(props) {
 
 Hardware.propTypes = {
   classes: PropTypes.object.isRequired,
-  definitions: PropTypes.object.isRequired,
 };
 
 export default withStyles(styles)(Hardware);

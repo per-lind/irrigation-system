@@ -22,7 +22,7 @@ function HardwareList(props) {
       <Grid container className={classes.container} spacing={16}>
         {hardware.map((item, index) => (
           <Grid key={index} item xs={12} md={item.relays ? 12 : 6}>
-            <Hardware key={index} definitions={item} />
+            <Hardware key={index} {...item} />
           </Grid>
         ))}
       </Grid>
