@@ -6,8 +6,10 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
+import Grid from '@material-ui/core/Grid';
 import Action from './Action';
 import { invoke } from '../actions';
+import _ from 'lodash';
 
 const styles = {
   divider: {
@@ -26,14 +28,13 @@ class RenderItem extends Component {
       name,
       type,
       driver,
+      data,
     } = this.props;
 
     const definitions = (type || driver);
     const {
-      readable,
-      callable,
-      readPayload,
-      callPayload,
+      methods,
+      healthy,
     } = definitions;
 
     return (
@@ -45,24 +46,24 @@ class RenderItem extends Component {
           <Typography className={classes.pos} color="textSecondary">
             {definitions.name}
           </Typography>
-          {readable && <div className={classes.divider}><Divider /></div>}
-          {readable &&
-            <Action
-              onClick={payload => invokeMethod('read', payload)}
-              method={"read"}
-              payload={readPayload}
-              id={id}
-            />
-          }
-          {callable && <div className={classes.divider}><Divider /></div>}
-          {callable &&
-            <Action
-              onClick={payload => invokeMethod('call', payload)}
-              method={"call"}
-              payload={callPayload}
-              id={id}
-            />
-          }
+          <Typography className={classes.pos} color="textSecondary">
+            Healthy: {healthy ? 'true': 'false'}
+          </Typography>
+          {methods && methods.map(method => {
+            const responseData = _.get(data, [method.id, id]);
+            return (
+              <div>
+                <div className={classes.divider}><Divider /></div>
+                <div>{JSON.stringify(responseData)}</div>
+                <Action
+                  onClick={payload => invokeMethod(method.id, payload)}
+                  method={method.id}
+                  payload={method.payload}
+                  id={id}
+                />
+              </div>
+            )
+          })}
         </CardContent>
         {children}
       </Card>
@@ -70,26 +71,50 @@ class RenderItem extends Component {
   }
 }
 
-function Hardware(props) {
-  const { classes, ...rest } = props;
+class Hardware extends Component {
+  state = { data: {} };
 
-  return (
-    <RenderItem
-      {...rest}
-      classes={classes}
-      invokeMethod={(method, payload) => invoke(method, { ...payload, id: rest.id })}
-    >
-      {rest.relays &&
-        rest.relays.map((relay, index) => (
-          <RenderItem
-            key={index}
-            {...relay}
-            classes={classes}
-            invokeMethod={(method, payload) => invoke(method, { ...payload, relay: relay.id, id: rest.id })}
-          />
-        ))}
-    </RenderItem>
-  );
+  handleInvoke = (method, payload) =>
+    invoke(method, payload)
+    .then(result => {
+      const data = this.state.data[method] || {};
+      this.setState({ data: {
+        ...this.state.data,
+        [method]: { ...data, ...result }
+      }});
+    })
+    .catch(response => {
+      console.log(response);
+    });
+
+  render() {
+    const { classes, ...rest } = this.props;
+
+    return (
+      <RenderItem
+        {...rest}
+        classes={classes}
+        data={this.state.data}
+        invokeMethod={(method, payload) => this.handleInvoke(method, { ...payload, id: rest.id })}
+      >
+        {rest.relays &&
+          <Grid container spacing={16}>
+            {rest.relays.map((relay, index) => (
+              <Grid key={index} item xs={12} md={6}>
+                <RenderItem
+                  key={index}
+                  {...relay}
+                  data={this.state.data}
+                  classes={classes}
+                  invokeMethod={(method, payload) => this.handleInvoke(method, { ...payload, relay: relay.id, id: rest.id })}
+                />
+              </Grid>
+            ))}
+          </Grid>
+        }
+      </RenderItem>
+    );
+  }
 }
 
 Hardware.propTypes = {

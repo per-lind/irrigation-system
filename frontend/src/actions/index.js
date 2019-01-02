@@ -37,7 +37,7 @@ const invoke = (method, payload) => {
       payload,
     }
   })
-  .then(response => JSON.parse(response))
+  .then(response => response.data.Response)
 };
 
 export {
