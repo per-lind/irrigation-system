@@ -1,4 +1,3 @@
-import db
 import relays
 from utils.Driver import Driver
 from config import MOCK_HARDWARE
@@ -18,30 +17,30 @@ class MCP23017(Driver):
     self.config = config
     self.relays = {}
 
-    Driver.__init__(self, name='MCP23017', id=config['id'], readable=True, callable=True)
+    Driver.__init__(self, name='MCP23017')
 
-  def _validate_read_payload(self, payload):
+  def invoke(self, method, payload={}):
+    self._validate_payload(method, payload)
+
+    try:
+      return getattr(self, "_{}".format(method))(payload)
+    except AttributeError:
+      raise NotImplementedError
+
+  def _validate_payload(self, method, payload):
     # Relay must exist
     relay = payload['relay']
     if not relay or relay not in self.relays:
       raise ValueError('Relay {} not found'.format(relay))
 
-  def _validate_call_payload(self, payload):
-    # Same as read validation
-    self._validate_read_payload(payload)
+  def _status(self, payload={}):
+    return { payload['relay']: self.relays[payload['relay']]['type'].invoke('status', payload) }
 
-  def _get_last_reading(self, payload):
-    return self.relays[payload['relay']]['type']._get_last_reading(payload)
-
-  def _get_new_reading(self, payload):
-    return self.relays[payload['relay']]['type']._read(payload)
-
-  def _run(self, payload={}):
-    return self.relays[payload['relay']]['type'].call(payload)
+  def _call(self, payload={}):
+    return { payload['relay']: self.relays[payload['relay']]['type'].invoke('call', payload) }
 
   def _connect_to_hardware(self):
     for relay in self.config['relays']:
       Type = getattr(getattr(relays, relay['type']), filename)
       relay['type'] = Type(config=relay)
-      db.Hardware.get_or_create(hardware_id=relay['id'])
       self.relays[relay['id']] = relay

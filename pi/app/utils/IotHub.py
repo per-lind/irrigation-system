@@ -39,12 +39,12 @@ class IotHub:
     msg = json.loads(payload)
 
     try:
-      if method_name == 'call':
-        self.hardware.call(msg['id'], msg['payload'])
-      elif method_name == 'list':
+      if method_name == 'list':
         response = self.hardware.list()
       else:
-        raise NotImplementedError
+        payload = msg['payload'] if 'payload' in msg else {}
+        response = self.hardware.invoke(method_name, msg['id'], payload)
+
       status = 200
 
     except NotImplementedError:

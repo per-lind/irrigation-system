@@ -3,9 +3,25 @@ from random import random
 
 class AM2320(Driver):
   def __init__(self, config):
-    Driver.__init__(self, name='AM2320', id=config['id'], readable=True, callable=False)
+    methods = [
+      {
+        'id': 'read',
+        'min_pause': 2,
+        'response': [{
+          'id': 'humidity',
+          'name': 'Humidity',
+          'unit': 'percent',
+        },
+        {
+          'id': 'temperature',
+          'name': 'Temperature',
+          'unit': 'celsius',
+        }]
+      }
+    ]
+    Driver.__init__(self, name='AM2320', methods=methods)
 
-  def _get_new_reading(self):
+  def _read(self, payload={}):
     return {
       'temperature': 10 + random() * 20,
       'humidity': 20 + random() * 20

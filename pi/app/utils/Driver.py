@@ -1,90 +1,57 @@
-import db
 from datetime import datetime
 import json
 
 class Driver:
-  def __init__(self, name, id, readable=False, callable=False, read_min_pause=10, call_min_pause=60):
+  def __init__(self, name, methods=[]):
     # Name of driver
     self.name = name
-    # If in hardware.json
-    self.id = id
-    # Whether `call` and `read`-methods are available
-    self.readable = readable
-    self.callable = callable
-    # Minimum time to wait between readings/calls
-    self.call_min_pause = call_min_pause
-    self.read_min_pause = read_min_pause
+    # Available methods
+    self.methods = {item['id']:item for item in methods}
+    # Last method calls
+    self.method_calls = {}
+
     self.connect()
 
   def is_healthy(self):
     return self.connected
 
-  def read(self, payload={}):
-    # If this hardware is not readable, 'fail' silently
-    if not self.readable:
-      return {}
+  def invoke(self, method, payload={}):
+    # If method not available, do nothing
+    if method not in self.methods:
+      return None
 
-    self._validate_read_payload(payload)
+    self._can_invoke_method(method)
+    self._validate_payload(method, payload)
+    self._enough_time_elapsed(method)
 
-    if (self._enough_time_since_last_reading()):
-      reading = self._get_new_reading()
-      db.Hardware.update(
-        last_read_at=datetime.now(),
-        last_reading=json.dumps(reading)
-      ).where(db.Hardware.hardware_id == self.id).execute()
-      return reading
-    else:
-      return self._get_last_reading()
+    self.method_calls[method] = {'timestamp': datetime.now()}
 
-  # Make sure enough time has passed since last reading
-  def _enough_time_since_last_reading(self):
-    h = db.Hardware.get(db.Hardware.hardware_id == self.id)
+    try:
+      return getattr(self, "_{}".format(method))(payload)
+    except AttributeError:
+      raise NotImplementedError
 
-    return h.last_read_at is None or \
-           h.last_reading is None or \
-           (datetime.now() - h.last_read_at).total_seconds() >= self.read_min_pause
+  def _validate_payload(self, method, payload):
+    try:
+      getattr(self, "_validate_{}_payload".format(method))(payload)
+    except AttributeError:
+      return True
 
-  # Enough time has passed since last call
-  def _enough_time_since_last_call(self):
-    h = db.Hardware.get(db.Hardware.hardware_id == self.id)
+  # Make sure enough time has passed since last call
+  def _enough_time_elapsed(self, method):
+    last_call = self.method_calls[method] if method in self.method_calls else None
+    # Minimum pause between calls (defaults to 60 seconds)
+    min_pause = self.methods[method].get('min_pause', 60)
 
-    return h.last_call_at is None or \
-           (datetime.now() - h.last_call_at).total_seconds() >= self.call_min_pause
-
-  def _get_last_reading(self, payload={}):
-    return json.loads(db.Hardware.get(db.Hardware.hardware_id == self.id).last_reading)
-
-  def _get_new_reading(self, payload={}):
-    raise NotImplementedError
-
-  def _validate_read_payload(self, payload):
-    return True
-
-  def call(self, payload={}):
-    # If hw is not callable, fail silently
-    if not self.callable:
-      return False
-
-    self._validate_call_payload(payload)
-
-    if not self._enough_time_since_last_call():
+    if last_call is not None and last_call['timestamp'] is not None and \
+       (datetime.now() - last_call['timestamp']).total_seconds() < min_pause:
       raise Exception('not enough time elapsed since last call!')
 
-    self._other_call_validations()
-
-    db.Hardware.update(
-      last_call_at=datetime.now(),
-    ).where(db.Hardware.hardware_id == self.id).execute()
-    return self._run(payload)
-
-  def _validate_call_payload(self, payload={}):
-    return True
-
-  def _other_call_validations(self):
-    return True
-
-  def _run(self, payload={}):
-    raise NotImplementedError
+  def _can_invoke_method(self, method):
+    try:
+      getattr(self, "_can_invoke_{}_method".format(method))()
+    except AttributeError:
+      return True
 
   def connect(self):
     try:
@@ -121,6 +88,7 @@ class Driver:
 
   def to_json(self):
     return {
-      'callable': self.callable,
-      'readable': self.readable,
+      'name': self.name,
+      'methods': list(self.methods.values()),
+      'healthy': self.is_healthy(),
     }

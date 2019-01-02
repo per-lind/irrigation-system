@@ -2,7 +2,6 @@ import time
 import json
 import drivers
 from config import hardware_config, MOCK_HARDWARE
-import db
 
 filename = 'mock' if MOCK_HARDWARE else 'main'
 
@@ -15,33 +14,21 @@ class Hardware:
       Driver = getattr(getattr(drivers, c['driver']), filename)
       c['driver'] = Driver(config=c)
       self.hardware[c['id']] = c
-      db.Hardware.get_or_create(hardware_id=c['id'])
 
-  def read(self, hardware=None):
-    if hardware is None:
-      selected = self.hardware.values()
-    elif isinstance(hardware, str):
-      selected = [self.hardware[hardware]] if hardware in self.hardware else []
-    elif isinstance(hardware, list):
-      selected = [h for h in self.hardware.values() if h in self.hardware]
+  def invoke(self, method, id, payload={}):
+    if isinstance(id, str):
+      selected = [self.hardware[id]] if id in self.hardware else []
+    elif isinstance(id, list):
+      selected = [h for h in self.hardware.values() if h in id]
     else:
       raise TypeError
 
-    readings = {}
+    result = {}
     for h in selected:
-      periodic_reading = h['periodicReading'] if 'periodicReading' in h else False
-      if h['driver'].readable and periodic_reading:
-        readings[h['id']] = h['driver'].read()
-        # Wait 10ms before next reading
-        time.sleep(0.010)
-    return json.dumps(readings)
-
-  def call(self, id, payload={}):
-    hardware = self.hardware[id] if id in self.hardware else None
-    if hardware and hardware['driver'].callable:
-      return hardware['driver'].call(payload)
-    else:
-      return None
+      result[h['id']] = h['driver'].invoke(method, payload)
+      # Wait 10ms before next call
+      time.sleep(0.010)
+    return result
 
   def list(self):
     items = []

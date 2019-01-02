@@ -9,9 +9,25 @@ class AM2320(Driver):
   I2C_BUS = 1
 
   def __init__(self, config):
-    Driver.__init__(self, name='AM2320', id=config['id'], readable=True, callable=False)
+    methods = [{
+      'id': 'read',
+      'min_pause': 2,
+      'response': [
+        {
+          'id': 'humidity',
+          'name': 'Humidity',
+          'unit': 'percent',
+        },
+        {
+          'id': 'temperature',
+          'name': 'Temperature',
+          'unit': 'celsius',
+        }
+      ]
+    }]
+    Driver.__init__(self, name='AM2320', methods=methods)
 
-  def _get_values(self, payload={}):
+  def _read(self, payload={}):
     fd = posix.open("/dev/i2c-%d" % self.I2C_BUS, posix.O_RDWR)
     ioctl(fd, self.I2C_SLAVE, self.I2C_ADDR)
 
