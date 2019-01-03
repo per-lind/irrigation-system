@@ -19,7 +19,7 @@ class Hardware:
     if isinstance(id, str):
       selected = [self.hardware[id]] if id in self.hardware else []
     elif isinstance(id, list):
-      selected = [h for h in self.hardware.values() if h in id]
+      selected = [self.hardware[h] for h in self.hardware if h in id]
     else:
       raise TypeError
 
