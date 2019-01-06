@@ -1,5 +1,5 @@
 from utils.Driver import Driver
-from tsl2561 import TSL2561
+from tsl2561 import TSL2561 as TSL2561Drv
 
 class TSL2561(Driver):
   def __init__(self, config):
@@ -17,7 +17,7 @@ class TSL2561(Driver):
     Driver.__init__(self, name='TSL2561', methods=methods)
 
   def _connect_to_hardware(self):
-    self.sensor = tsl2561(autogain=True)
+    self.sensor = TSL2561Drv(autogain=True)
 
   def _read(self, payload={}):
     return {

@@ -1,4 +1,6 @@
+import Adafruit_GPIO as GPIO
 import relays
+import Adafruit_GPIO.MCP230xx as MCP 
 from utils.Driver import Driver
 from config import MOCK_HARDWARE
 
@@ -17,7 +19,7 @@ class MCP23017(Driver):
     self.config = config
     self.relays = {}
 
-    Driver.__init__(self, name='MCP23017', id=config['id'], readable=True, callable=True)
+    Driver.__init__(self, name='MCP23017')
 
   def _validate_read_payload(self, payload):
     # Relay must exist
@@ -44,8 +46,7 @@ class MCP23017(Driver):
     for relay in self.config['relays']:
       Type = getattr(getattr(relays, relay['type']), filename)
       relay['type'] = Type(config=relay)
-      self.sensor.setup(self.pin, GPIO.OUT)
-      db.Hardware.get_or_create(hardware_id=relay['id'])
+      self.sensor.setup(relay['type'].pin, GPIO.OUT)
       self.relays[relay['id']] = relay
 
   def _input(self, pin):
@@ -71,7 +72,7 @@ class MCP23017(Driver):
 
   def _shutdown(self):
     success = True
-    for relay in self.relays.items():
-      status = self._output(relay['pin'], GPIO.LOW)
+    for id, relay in self.relays.items():
+      status = self._output(relay['type'].pin, GPIO.LOW)
       success = success and status
     return success
