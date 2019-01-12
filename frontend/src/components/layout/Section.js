@@ -1,7 +1,6 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import Wrapper from '../Wrapper';
 import Typography from '@material-ui/core/Typography';
 
 const styles = {

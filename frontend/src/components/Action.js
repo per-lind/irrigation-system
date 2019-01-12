@@ -21,7 +21,6 @@ class Action extends Component {
   render() {
     const {
       classes,
-      id,
       onClick,
       method,
       payload,
