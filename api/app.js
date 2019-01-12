@@ -25,6 +25,9 @@ app.use(passport.initialize());
 app.use('/api/login', passport.authenticateLocal());
 app.post('/api/login', usersController.login);
 
+// Retrieve graph data
+app.get('/api/data', apiController.data);
+
 // Use bearer authentication for other routes
 router.use('/', passport.authenticateBearer());
 
