@@ -53,11 +53,11 @@ class RenderItem extends Component {
             return (
               <div>
                 <div className={classes.divider}><Divider /></div>
-                <div>{JSON.stringify(responseData)}</div>
                 <Action
                   onClick={payload => invokeMethod(method.id, payload)}
+                  value={responseData}
                   method={method.id}
-                  payload={method.payload}
+                  {...method}
                   id={id}
                 />
               </div>

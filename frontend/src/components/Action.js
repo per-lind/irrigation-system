@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Input from './Input';
+import { formatter } from '../utilities';
 
 const styles = {
   buttonContainer: {
@@ -24,6 +25,8 @@ class Action extends Component {
       onClick,
       method,
       payload,
+      response,
+      value,
     } = this.props;
 
     return (
@@ -38,6 +41,18 @@ class Action extends Component {
             />
           )
         }
+        <div className={classes.responseContainer}>
+          {value &&
+            Object.keys(value).map(key => {
+              const { name, unit } = response.find(item => item.id === key) || {};
+              return (
+                <div key={key} className={classes.data} >
+                  {name || key}: {formatter[unit] ? formatter[unit](value[key]) : `${value[key]} ${unit}`}
+                </div>
+              )
+            })
+          }
+        </div>
         <div className={classes.buttonContainer}>
           <Button
             size="small"
