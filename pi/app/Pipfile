@@ -8,6 +8,7 @@ peewee = "*"
 azure-iothub-device-client = "*"
 "tsl2561" = "*"
 adafruit-gpio = "*"
+adafruit-bmp = "*"
 pytz = "*"
 schedule = "*"
 

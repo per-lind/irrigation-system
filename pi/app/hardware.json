@@ -10,6 +10,11 @@
     "driver": "TSL2561"
   },
   {
+    "id": "pressure",
+    "name": "Pressure and temperature sensor",
+    "driver": "BMP085"
+  },
+  {
     "id": "chip",
     "name": "Chip",
     "driver": "MCP23017",

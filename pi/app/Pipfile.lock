@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "86a0fa7e544cf01218aa8e2bd037b78d911c971fd1721c6f0159649d09e464e0"
+            "sha256": "c9bc3d2f7516100c79f9ecd53216a40c49ae0b4b2799278f3e25b07567ec6db4"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -16,6 +16,13 @@
         ]
     },
     "default": {
+        "adafruit-bmp": {
+            "hashes": [
+                "sha256:eded0dbd503b5347152f7381e3ee2bb659ab5bb743731af9cc4f8e6b9c8bf754"
+            ],
+            "index": "pypi",
+            "version": "==1.5.4"
+        },
         "adafruit-gpio": {
             "hashes": [
                 "sha256:d6465b92c866c51ca8f3bc1e8f2ec36f5ccdb46d0fd54101c1109756d4a2dcd0"
@@ -25,42 +32,43 @@
         },
         "adafruit-pureio": {
             "hashes": [
+                "sha256:e38646eb912c253d3e13d3d03f688e13254ee116ee741c50392c657baafd2a51",
                 "sha256:e65cd929f1d8e109513ed1e457c2742bf4f15349c1a9b7f5b1e04191624d7488"
             ],
             "version": "==0.2.3"
         },
         "azure-iothub-device-client": {
             "hashes": [
-                "sha256:0be627987bf3c9368161ff88c4cff08e47ceed40cb968d0eb87ea176e8a6637e",
-                "sha256:35124fffa866323dc2029ae1745c1dbd302d05e0f38c746c75be549c92842e16",
-                "sha256:6054e82801b53852ffecf54d53c52b6a83b0ed3b82ca25831075e8eab4410b19",
-                "sha256:6cf79c0fb56fb66ed7e9ab4b5e8377dab3ee9a72325141685b754e26dab933ee",
-                "sha256:7d0cfaa9ca37451922cc73afc04732b71719320b5dac39f5e92866bdfa243cec",
-                "sha256:96f607771e0aae5c3a5e94cd2586a1de8035e81919b3f69075656292c9221bea",
-                "sha256:99e8fd11bbb14ca180396621f2916133487b337d4a42e00787cb2f519a0e38c3",
-                "sha256:99f60d314afce38d008a705721531e0f6636bb79f452d037cb95e8271e043b28",
-                "sha256:ab4a601a0f0076a422f508a43c957e212e2563150bdee052fd59bd8208d824e0",
-                "sha256:b56dbfa7ac6ad6997553892185ac55646cf670de2bc196b2a0d9569516465ab7",
-                "sha256:e3683615c64695f2dbd3e4fc4fe2cec780a565927a5b334d9483aa130b2594d7",
-                "sha256:f27f94404ebccc7f7d1de72b3278974979736aa74920d7c30ba9e22a47bdd607"
+                "sha256:215dd17549c34d9587ebf51808a29ded6d85e1c7502050cc09c093ce9f8036b9",
+                "sha256:2670262aa39b17a469a3ca79e3098dc3258289fc44c54533d03d8c81690221a3",
+                "sha256:2af21b667d7266bbd993f5398840d5a5115d5f67a6595a248c0816ef3ac8bdbf",
+                "sha256:2c1630ff57f08eabbbaf917d6970cfbab0c55746754a59d26264ff5bbf63ad1b",
+                "sha256:37ddff2a1de10f640b0192c6fd1a3ace3e11d4851992a2222aa1ccca781974c4",
+                "sha256:388d9ecedc445070f8618e42b4dceff94e72e9bf97c3439e6642fd50f4299978",
+                "sha256:39ee73daf1b1290c88084e72ff272bc3142f8ca259604c0f89687f0c621d426f",
+                "sha256:cf380af9df478a61006c957670602cfe19a9e57bd6ec9d4e1ee380fc80b21838",
+                "sha256:d2d785c69deba82530fdb8abec69cd3c0e294716a944c724eadefa45b7aa224f",
+                "sha256:de3a2387bd7ee723d02b5458f41f6a02ac31ddd273c07c41882ad30823cc5b76",
+                "sha256:e05facf315c0b9beb9c2113dd9342210648ac87b406a998798edc3f616b7dcf6",
+                "sha256:f4c59ef96985d4f18afe3e11866a5806f53b5ec95501c37ead01d9cab142627e"
             ],
             "index": "pypi",
-            "version": "==1.4.4"
+            "version": "==1.4.6"
         },
         "peewee": {
             "hashes": [
-                "sha256:a91c3ccff43ab71f08196aba1d17dd2548079744d54adc33d511db1c30b446ba"
+                "sha256:c80208d6ba2191728654cb5d2e85cd58e7dcad6a2fa1807868dd984ccef2586d"
             ],
             "index": "pypi",
-            "version": "==3.7.1"
+            "version": "==3.8.1"
         },
         "pytz": {
             "hashes": [
-                "sha256:31cb35c89bd7d333cd32c5f278fca91b523b0834369e757f4c5641ea252236ca",
-                "sha256:8e0f8568c118d3077b46be7d654cc8167fa916092e28320cde048e54bfc9f1e6"
+                "sha256:32b0891edff07e28efe91284ed9c31e123d84bea3fd98e1f72be2508f43ef8d9",
+                "sha256:d5f05e487007e29e03409f9398d074e158d920d36eb82eaf66fb1136b0c5374c"
             ],
             "index": "pypi",
-            "version": "==2018.7"
+            "version": "==2018.9"
         },
         "schedule": {
             "hashes": [
