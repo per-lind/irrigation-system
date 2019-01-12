@@ -3,7 +3,8 @@ import TopMenu from './components/layout/TopMenu';
 import Section from './components/layout/Section';
 import LoginPopup from './components/LoginPopup';
 import HardwareList from './components/HardwareList';
-import { logout, getHardwareList } from './actions';
+import Graph from './components/Graph';
+import { getGraphData, logout, getHardwareList } from './actions';
 import { auth } from './utilities';
 
 class App extends Component {
@@ -21,6 +22,7 @@ class App extends Component {
     this.closeDialogs = this.closeDialogs.bind(this);
     this.loadUser = this.loadUser.bind(this);
     this.retrieveHardware = this.retrieveHardware.bind(this);
+    this.retrieveGraphData = this.retrieveGraphData.bind(this);
   }
 
   openDialog(name) {
@@ -47,6 +49,7 @@ class App extends Component {
 
   componentDidMount() {
     this.loadUser();
+    this.retrieveGraphData();
   }
 
   retrieveHardware() {
@@ -58,8 +61,17 @@ class App extends Component {
       })
   }
 
+  retrieveGraphData() {
+    getGraphData()
+      .then(data => this.setState({ data }))
+      .catch(error => {
+        console.log('Error retrieving data!')
+        console.log(error)
+      })
+  }
+
   render() {
-    const { hardware, user } = this.state;
+    const { hardware, user, data } = this.state;
 
     const userProps = {
       user: user,
@@ -77,7 +89,7 @@ class App extends Component {
         <TopMenu {...userProps}/>
         <LoginPopup {...userProps} {...modalProps('login')} />
         <Section title={"Data"} >
-          <p>(graph)</p>
+          <Graph data={data} hardware={hardware} />
         </Section>
         {user &&
           <Section title={"Hardware"}>

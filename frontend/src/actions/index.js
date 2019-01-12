@@ -19,6 +19,13 @@ const logout = () => {
   });
 };
 
+const getGraphData = () => {
+  return request({
+    url: '/api/data',
+  })
+  .then(response => response.data.Response)
+}
+
 const getHardwareList = () => {
   return request({
     url: '/api/invoke',
@@ -43,6 +50,7 @@ const invoke = (method, payload) => {
 export {
   login,
   logout,
+  getGraphData,
   getHardwareList,
   invoke,
 };
