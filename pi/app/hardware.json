@@ -20,10 +20,29 @@
     "driver": "MCP23017",
     "relays": [
       {
+        "id": "pow1",
+        "name": "Power",
+        "pin": 10,
+        "methods": {
+          "status": {},
+          "switch": {}
+        }
+      },
+      {
         "id": "pump1",
         "name": "Pump 1",
-        "type": "Pump",
-        "pin": 9
+        "pin": 9,
+        "methods": {
+          "run": {
+            "min_pause": 60,
+            "payload": {
+              "duration": {
+                "min": 1,
+                "max": 60
+              }
+            }
+          }
+        }
       }
     ]
   }

@@ -34,8 +34,6 @@ class Hardware:
     items = []
     for h in self.hardware.values():
       item = {**h, 'driver': h['driver'].to_json()}
-      if 'relays' in item:
-        item['relays'] = [{**r, 'type': r['type'].to_json()} for r in item['relays']]
       items.append(item)
 
     return items
