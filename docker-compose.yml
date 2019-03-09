@@ -9,6 +9,7 @@ services:
     environment:
       MOCK_HARDWARE: 'true'
       API_ENDPOINT: http://api:3001
+      API_TOKEN: pi_auth_token
 
   api:
     build:
@@ -23,6 +24,7 @@ services:
       MONGODB_PASSWORD: password
       MONGODB_SERVICE_HOST: mongodb
       MONGODB_SERVICE_PORT: 27017
+      AUTH_TOKEN: pi_auth_token
 
     ports:
       - 3001:3001

@@ -13,6 +13,9 @@ const MONGODB_SERVICE_PORT = process.env.MONGODB_SERVICE_PORT;
 const MONGODB_CONNECTION = `mongodb://${MONGODB_USER}:${MONGODB_PASSWORD}@${MONGODB_SERVICE_HOST}:${MONGODB_SERVICE_PORT}`;
 const MONGODB_DATABASE = process.env.MONGODB_DATABASE;
 
+// Tokens for pi app
+const AUTH_TOKEN = process.env.AUTH_TOKEN;
+
 module.exports = {
   PORT,
   JWT_SECRET,
@@ -20,4 +23,5 @@ module.exports = {
   IOTHUB_DEVICE_ID,
   MONGODB_CONNECTION,
   MONGODB_DATABASE,
+  AUTH_TOKEN,
 };

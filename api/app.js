@@ -7,7 +7,7 @@ const piRouter = express.Router();
 const bodyParser = require('body-parser');
 const app = express();
 const controllers = require('./controllers');
-const { database } = require('./utilities');
+const utilities = require('./utilities');
 
 // Helmet for security best practise
 const helmet = require('helmet')
@@ -20,12 +20,12 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Authentication
-const passport = require('./utilities/passport');
-app.use(passport.initialize());
-
 // Connect to database
-database().then(db => {
+utilities.database().then(db => {
+  // Authentication
+  const passport = utilities.passport(db)
+  app.use(passport.initialize());
+
   const {
     usersController,
     iothubController,
