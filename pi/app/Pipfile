@@ -11,6 +11,7 @@ adafruit-gpio = "*"
 adafruit-bmp = "*"
 pytz = "*"
 schedule = "*"
+requests = "*"
 
 [dev-packages]
 

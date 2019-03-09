@@ -9,12 +9,12 @@ MOCK_HARDWARE = os.getenv('MOCK_HARDWARE', False)
 IOTHUB_CONNECTION = os.environ.get('IOTHUB_CONNECTION')
 IOTHUB_MESSAGE_TIMEOUT = os.getenv('IOTHUB_MESSAGE_TIMEOUT', 10000)
 
+# Api settings (db connection)
+API_ENDPOINT = os.environ.get('API_ENDPOINT')
+API_TOKEN = os.environ.get('API_TOKEN')
+
 # Interval (in seconds) between periodic readings
-PERIODIC_READING_INTERVAL = os.getenv('PERIODIC_READING_INTERVAL', 15 * 60)
-# How frequently (in seconds) stuff should be uploaded to iothub
-UPLOAD_INTERVAL = os.getenv('UPLOAD_INTERVAL', 15)
-# How old (in days) data should be deleted
-PURGE_DATA = os.getenv('PURGE_DATA', 2)
+PERIODIC_READING_INTERVAL = int(os.getenv('PERIODIC_READING_INTERVAL', 15 * 60))
 
 with open('hardware.json') as f:
   hardware_config = json.load(f)
