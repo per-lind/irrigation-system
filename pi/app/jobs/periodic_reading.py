@@ -19,9 +19,9 @@ def run(hardware):
 
     print("Uploading data to db")
     print("Data to upload: {}".format(to_upload))
-    status = database_api.upload(to_upload)
+    response = database_api.upload(to_upload)
 
-    print("Upload status: %s" % status)
+    print("Upload status: %s" % response.status_code)
 
   except Exception as inst:
     print('Unexpected error with periodic reading!')

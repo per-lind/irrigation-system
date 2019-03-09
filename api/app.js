@@ -19,6 +19,7 @@ app.use(helmet())
 const cors = require('cors');
 app.use(cors());
 
+// Configure the app to use bodyParser
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -52,7 +53,7 @@ app.use('/api', userRouter);
 // Authentication for pi
 piRouter.use('/', passport.authenticatePi());
 
-// Invoke device method
+// Upload data
 piRouter.post('/upload', dbController.upload);
 
 // Namespace routes
