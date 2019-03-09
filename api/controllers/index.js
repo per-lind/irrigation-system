@@ -1,7 +1,9 @@
-const apiController = require('./apiController');
+const dbController = require('./dbController');
+const iothubController = require('./iothubController');
 const usersController = require('./usersController');
 
 module.exports = {
-  apiController,
+  dbController,
+  iothubController,
   usersController,
 };

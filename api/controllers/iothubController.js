@@ -1,14 +1,5 @@
 const { iothub } = require('../utilities');
 
-exports.data = (req, res) => {
-  // TODO fetch this from db
-  res.status(200).json({
-    data: {
-      Response: []
-    }
-  });
-}
-
 exports.invoke = (req, res) => {
   const payload = req.query.payload;
   iothub.invoke({ methodName: req.query.method, payload: payload ? JSON.parse(payload) : {} })
