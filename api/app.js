@@ -6,11 +6,8 @@ const userRouter = express.Router();
 const piRouter = express.Router();
 const bodyParser = require('body-parser');
 const app = express();
-const {
-  usersController,
-  iothubController,
-  dbController,
-} = require('./controllers');
+const controllers = require('./controllers');
+const { database } = require('./utilities');
 
 // Helmet for security best practise
 const helmet = require('helmet')
@@ -27,40 +24,53 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const passport = require('./utilities/passport');
 app.use(passport.initialize());
 
-/************ ROUTES FOR FRONTEND APP ************/
+// Connect to database
+database().then(db => {
+  const {
+    usersController,
+    iothubController,
+    dbController,
+  } = controllers(db);
 
-// Login with username and password
-app.use('/api/login', passport.authenticateLocal());
-app.post('/api/login', usersController.login);
+  /************ ROUTES FOR FRONTEND APP ************/
 
-// Retrieve graph data
-app.get('/api/data', dbController.data);
+  // Login with username and password
+  app.use('/api/login', passport.authenticateLocal());
+  app.post('/api/login', usersController.login);
 
-// Use bearer authentication for other routes
-userRouter.use('/', passport.authenticateBearer());
+  // Retrieve graph data
+  app.get('/api/data', dbController.data);
 
-// Logout route
-userRouter.get('/logout', usersController.logout);
+  // Use bearer authentication for other routes
+  userRouter.use('/', passport.authenticateBearer());
 
-// Invoke device method
-userRouter.get('/invoke', iothubController.invoke);
+  // Logout route
+  userRouter.get('/logout', usersController.logout);
 
-// Namespace routes
-app.use('/api', userRouter);
+  // Invoke device method
+  userRouter.get('/invoke', iothubController.invoke);
 
-/************ ROUTES FOR RASPBERRY PI ************/
+  // Namespace routes
+  app.use('/api', userRouter);
 
-// Authentication for pi
-piRouter.use('/', passport.authenticatePi());
+  /************ ROUTES FOR RASPBERRY PI ************/
 
-// Upload data
-piRouter.post('/upload', dbController.upload);
+  // Authentication for pi
+  piRouter.use('/', passport.authenticatePi());
 
-// Namespace routes
-app.use('/pi', piRouter);
+  // Upload data
+  piRouter.post('/upload', dbController.upload);
 
-/*************************************************/
+  // Namespace routes
+  app.use('/pi', piRouter);
 
-app.listen(PORT);
-console.log(`Api app listening on port ${PORT}!`)
+  /*************************************************/
+
+  app.listen(PORT);
+  console.log(`Api app listening on port ${PORT}!`)
+}).catch(error => {
+  console.log("Failed to connect to MongoDB: ", error);
+  process.exit(1);
+});
+
 module.exports = app;

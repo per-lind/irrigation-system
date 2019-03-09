@@ -1,6 +1,4 @@
-const { database } = require('../utilities');
-
-exports.data = (req, res) => {
+const data = db => (req, res) => {
   // TODO fetch this from db
   res.status(200).json({
     data: {
@@ -9,13 +7,18 @@ exports.data = (req, res) => {
   });
 }
 
-exports.upload = (req, res) => {
-  // TODO send data to db
-  console.log("received data!");
-  console.log(req.body);
+const upload = db => (req, res) => {
+  db.collection('measures').insertOne(req.body);
   res.status(200).json({
     data: {
       Response: []
     }
   });
 }
+
+const dbController = db => ({
+  data: data(db),
+  upload: upload(db),
+});
+
+module.exports = dbController;
