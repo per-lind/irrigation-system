@@ -18,7 +18,14 @@ class MCP23017(Driver):
 
   def _connect_to_hardware(self):
     for relay in self.config['relays']:
-      self.relays[relay['id']] = relay
+      # Transform methods and their payloads to dictionaries
+      methods = {item['id']:item for item in relay['methods']}
+      for id, method in methods.items():
+        if 'payload' in method:
+          methods[id]['payload'] = {item['id']:item for item in method['payload']}
+      self.relays[relay['id']] = {
+        'methods': methods,
+      }
 
   def invoke(self, method, payload={}):
     relay = payload['relay']

@@ -31,7 +31,7 @@ function Input(props) {
           id={id}
           label={label}
           value={value || ''}
-          onChange={event => onChange(id, event.target.value)}
+          onChange={event => onChange(id, parseInt(event.target.value))}
           type="number"
           InputLabelProps={{
             shrink: true,

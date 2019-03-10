@@ -30,11 +30,8 @@ class RenderItem extends Component {
       data,
     } = this.props;
 
-    const definitions = (type || driver);
-    const {
-      methods,
-      healthy,
-    } = definitions;
+    const { methods, healthy } = driver || this.props;
+    const { name: driverName } = driver || {};
 
     return (
       <Card className={classes.card}>
@@ -43,7 +40,7 @@ class RenderItem extends Component {
             {name}
           </Typography>
           <Typography className={classes.pos} color="textSecondary">
-            {definitions.name}
+            {driverName}
           </Typography>
           <Typography className={classes.pos} color="textSecondary">
             Healthy: {healthy ? 'true': 'false'}
@@ -94,7 +91,7 @@ class Hardware extends Component {
         {...rest}
         classes={classes}
         data={this.state.data}
-        invokeMethod={(method, payload) => this.handleInvoke(method, { ...payload, id: rest.id })}
+        invokeMethod={(method, payload) => this.handleInvoke(method, { payload, id: rest.id })}
       >
         {rest.relays &&
           <Grid container spacing={16}>
@@ -105,7 +102,12 @@ class Hardware extends Component {
                   {...relay}
                   data={this.state.data}
                   classes={classes}
-                  invokeMethod={(method, payload) => this.handleInvoke(method, { ...payload, relay: relay.id, id: rest.id })}
+                  invokeMethod={(method, payload) =>
+                    this.handleInvoke(
+                      method,
+                      { payload: { ...payload, relay: relay.id }, id: rest.id }
+                    )
+                  }
                 />
               </Grid>
             ))}

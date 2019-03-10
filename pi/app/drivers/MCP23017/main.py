@@ -25,7 +25,15 @@ class MCP23017(Driver):
     for relay in self.config['relays']:
       self.pins[relay['id']] = relay['pin']
       self.sensor.setup(relay['pin'], GPIO.OUT)
-      self.relays[relay['id']] = relay
+      # Transform methods and their payloads to dictionaries
+      methods = {item['id']:item for item in relay['methods']}
+      for id, method in methods.items():
+        if 'payload' in method:
+          methods[id]['payload'] = {item['id']:item for item in method['payload']}
+      self.relays[relay['id']] = {
+        **relay,
+        'methods': methods,
+      }
 
   def _input(self, pin):
     try:

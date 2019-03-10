@@ -23,26 +23,29 @@
         "id": "pow1",
         "name": "Power",
         "pin": 10,
-        "methods": {
-          "status": {},
-          "switch": {}
-        }
+        "methods": [
+          { "id": "status" },
+          { "id": "switch" }
+        ]
       },
       {
         "id": "pump1",
         "name": "Pump 1",
         "pin": 9,
-        "methods": {
-          "run": {
+        "methods": [
+          {
+            "id": "run",
             "min_pause": 60,
-            "payload": {
-              "duration": {
+            "payload": [
+              {
+                "id": "duration",
+                "type": "integer",
                 "min": 1,
                 "max": 60
               }
-            }
+            ]
           }
-        }
+        ]
       }
     ]
   }
