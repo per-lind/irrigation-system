@@ -19,11 +19,12 @@ class MCP23017(Driver):
   def _connect_to_hardware(self):
     for relay in self.config['relays']:
       # Transform methods and their payloads to dictionaries
-      methods = {item['id']:item for item in relay['methods']}
+      methods = {item['id']:item.copy() for item in relay['methods']}
       for id, method in methods.items():
         if 'payload' in method:
           methods[id]['payload'] = {item['id']:item for item in method['payload']}
       self.relays[relay['id']] = {
+        **relay,
         'methods': methods,
       }
 

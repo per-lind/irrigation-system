@@ -26,7 +26,7 @@ class MCP23017(Driver):
       self.pins[relay['id']] = relay['pin']
       self.sensor.setup(relay['pin'], GPIO.OUT)
       # Transform methods and their payloads to dictionaries
-      methods = {item['id']:item for item in relay['methods']}
+      methods = {item['id']:item.copy() for item in relay['methods']}
       for id, method in methods.items():
         if 'payload' in method:
           methods[id]['payload'] = {item['id']:item for item in method['payload']}
