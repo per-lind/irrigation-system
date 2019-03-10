@@ -34,6 +34,7 @@ class App extends Component {
     this.setState({ user });
     if (user) {
       this.retrieveHardware();
+      this.retrieveGraphData();
     }
   }
 
@@ -49,7 +50,6 @@ class App extends Component {
 
   componentDidMount() {
     this.loadUser();
-    this.retrieveGraphData();
   }
 
   retrieveHardware() {
@@ -88,13 +88,15 @@ class App extends Component {
       <div>
         <TopMenu {...userProps}/>
         <LoginPopup {...userProps} {...modalProps('login')} />
-        <Section title={"Data"} >
-          <Graph data={data} hardware={hardware} />
-        </Section>
         {user &&
-          <Section title={"Hardware"}>
-            <HardwareList hardware={hardware} />
-          </Section>
+          <React.Fragment>
+            <Section title={"Data"} >
+              <Graph data={data} hardware={hardware} />
+            </Section>
+            <Section title={"Hardware"}>
+              <HardwareList hardware={hardware} />
+            </Section>
+          </React.Fragment>
         }
       </div>
     );
