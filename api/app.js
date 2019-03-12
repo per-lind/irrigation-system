@@ -38,11 +38,11 @@ utilities.database().then(db => {
   app.use('/api/login', passport.authenticateLocal());
   app.post('/api/login', usersController.login);
 
-  // Retrieve graph data
-  app.get('/api/data', dbController.data);
-
   // Use bearer authentication for other routes
   userRouter.use('/', passport.authenticateBearer());
+
+  // Retrieve graph data
+  app.get('/api/data', dbController.data);
 
   // Logout route
   userRouter.get('/logout', usersController.logout);

@@ -10,6 +10,7 @@ services:
       MOCK_HARDWARE: 'true'
       API_ENDPOINT: http://api:3001
       API_TOKEN: pi_auth_token
+      # PERIODIC_READING_INTERVAL: 5
 
   api:
     build:

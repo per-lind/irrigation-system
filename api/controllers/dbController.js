@@ -1,9 +1,11 @@
 const data = db => (req, res) => {
-  // TODO fetch this from db
-  res.status(200).json({
-    data: {
-      Response: []
-    }
+  // Fetch data from db
+  db.collection('measures').find().limit( 100 ).toArray(function(error, documents) {
+    if (error) return res.status(500);
+
+    res.status(200).json({
+      Response: documents
+    });
   });
 }
 
