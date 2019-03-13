@@ -12,7 +12,7 @@ import {
   CartesianGrid,
   Tooltip,
   Legend } from 'recharts';
-import moment from 'moment';
+
 import { formatter } from '../../utilities';
 import _ from 'lodash';
 
@@ -85,7 +85,8 @@ class Graph extends Component {
             height={400}
             data={data}
           >
-            <XAxis dataKey="timestamp" name="Date" reversed={true} x={formatter.shortDateTime}/>
+            <Legend verticalAlign="top" height={36}/>
+            <XAxis dataKey="timestamp" name="Date" reversed={false} tickFormatter={formatter.shortDateTime}/>
             <YAxis yAxisId="temp" orientation={width === 'xs' ? 'right' : 'left'} type="number" domain={[10,35]} tickCount={6}/>
             <YAxis yAxisId="light" orientation="right"/>
             <YAxis yAxisId="pressure" orientation="right" type="number" domain={[975,1025]}/>

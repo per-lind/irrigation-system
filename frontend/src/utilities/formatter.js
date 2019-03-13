@@ -1,7 +1,7 @@
 import moment from 'moment';
 import numeral from 'numeral';
 
-const percent = item => `${numeral(item).format('0.00 %')}`;
+const percent = item => `${numeral(item).format('0.00')} %`;
 
 const celsius = item => `${numeral(item).format('0.00')} °C`;
 

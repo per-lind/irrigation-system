@@ -1,6 +1,6 @@
 const data = db => (req, res) => {
   // Fetch data from db
-  db.collection('measures').find().limit( 100 ).toArray(function(error, documents) {
+  db.collection('measures').find().sort({timestamp:-1}).limit( 100 ).toArray(function(error, documents) {
     if (error) return res.status(500);
 
     res.status(200).json({
