@@ -21,6 +21,7 @@ services:
       PORT: 3001
       JWT_SECRET: jwt_secret
       MONGODB_DATABASE: iotdb
+      MONGODB_AUTHENTICATION_DATABASE: admin
       MONGODB_USER: user
       MONGODB_PASSWORD: password
       MONGODB_SERVICE_HOST: mongodb
