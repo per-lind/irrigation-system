@@ -1,7 +1,9 @@
 from utils.Driver import Driver
-from random import uniform
+import board
+import busio
+import adafruit_bmp280
 
-class BMP085(Driver):
+class BMP280(Driver):
   def __init__(self, config):
     methods = [{
       'id': 'read',
@@ -19,10 +21,15 @@ class BMP085(Driver):
         }
       ]
     }]
-    Driver.__init__(self, name='BMP085', methods=methods)
+    Driver.__init__(self, name='BMP280', methods=methods)
+
+  def _connect_to_hardware(self):
+    i2c = busio.I2C(board.SCL, board.SDA)
+    #bmp280.sea_level_pressure = 1013.25
+    self.sensor = adafruit_bmp280.Adafruit_BMP280_I2C(i2c, 0x76)
 
   def _read(self, payload={}):
     return {
-      'temperature': uniform(-20.0, 30.0),
-      'pressure': round(uniform(800.0, 1200.0),2)
+      'temperature': round(self.sensor.temperature,2),
+      'pressure': round(self.sensor.pressure,2)
     }

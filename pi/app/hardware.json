@@ -12,7 +12,7 @@
   {
     "id": "pressure",
     "name": "Pressure and temperature sensor",
-    "driver": "BMP085"
+    "driver": "BMP280"
   },
   {
     "id": "chip",

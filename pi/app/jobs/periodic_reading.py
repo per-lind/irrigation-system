@@ -7,7 +7,7 @@ def run(hardware):
   print("Saving periodic reading")
   try:
     # Read sensors
-    ids = ['humidity', 'light']
+    ids = ['humidity', 'light', 'pressure']
     data = hardware.invoke('read', ids)
 
     # Upload data to db

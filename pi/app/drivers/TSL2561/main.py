@@ -1,5 +1,7 @@
 from utils.Driver import Driver
-from tsl2561 import TSL2561 as TSL2561Drv
+import board
+import busio
+import adafruit_tsl2561
 
 class TSL2561(Driver):
   def __init__(self, config):
@@ -17,9 +19,17 @@ class TSL2561(Driver):
     Driver.__init__(self, name='TSL2561', methods=methods)
 
   def _connect_to_hardware(self):
-    self.sensor = TSL2561Drv(autogain=True)
+    i2c = busio.I2C(board.SCL, board.SDA)
+    # Create the TSL2561 instance, passing in the I2C bus
+    self.sensor = adafruit_tsl2561.TSL2561(i2c)
+    # Enable the light sensor
+    self.sensor.enabled = True
+    # Set gain 0=1x, 1=16x
+    self.sensor.gain = 0
+    # Set integration time (0=13.7ms, 1=101ms, 2=402ms, or 3=manual)
+    self.sensor.integration_time = 1
 
   def _read(self, payload={}):
     return {
-      'light': self.sensor.lux()
+      'light': round(self.sensor.lux)
     }

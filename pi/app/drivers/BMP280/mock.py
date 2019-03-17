@@ -1,7 +1,7 @@
 from utils.Driver import Driver
-from Adafruit_BMP.BMP085 import BMP085 as BMP085Drv
+from random import uniform
 
-class BMP085(Driver):
+class BMP280(Driver):
   def __init__(self, config):
     methods = [{
       'id': 'read',
@@ -19,13 +19,10 @@ class BMP085(Driver):
         }
       ]
     }]
-    Driver.__init__(self, name='BMP085', methods=methods)
-
-  def _connect_to_hardware(self):
-    self.sensor = BMP085Drv()
+    Driver.__init__(self, name='BMP280', methods=methods)
 
   def _read(self, payload={}):
     return {
-      'temperature': self.sensor.read_temperature(),
-      'pressure': round((self.sensor.read_sealevel_pressure(58.0)/100),2)
+      'temperature': uniform(-20.0, 30.0),
+      'pressure': round(uniform(800.0, 1200.0),2)
     }
