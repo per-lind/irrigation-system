@@ -31,5 +31,5 @@ class TSL2561(Driver):
 
   def _read(self, payload={}):
     return {
-      'light': self.sensor.lux()
+      'light': self.sensor.lux
     }
