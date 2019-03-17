@@ -113,7 +113,7 @@ class Graph extends Component {
     }
     // Sensors that are included in periodic readings
     // Light must be first in the list, otherwise it will cover the other lines...
-    const sensors = ['light', 'humidity'];
+    const sensors = ['light', 'humidity', 'pressure'];
     const hardware = sensors.map(id => {
       const sensor = props.hardware.find(h => h.id === id);
       const { response } = sensor.driver.methods.find(m => m.id === 'read') || [];
