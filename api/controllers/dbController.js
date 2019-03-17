@@ -1,12 +1,19 @@
 const data = db => (req, res) => {
-  // Fetch data from db
-  db.collection('measures').find().sort({timestamp:-1}).limit( 100 ).toArray(function(error, documents) {
-    if (error) return res.status(500);
-
-    res.status(200).json({
-      Response: documents
+  // By default, fetch data from the last 3 days
+  const endTime = req.query.endTime || new Date().getTime();
+  const startTime = req.query.startTime || Date.now().setDate(endTime.getDate() - 3).getTime();
+  // Build query
+  db
+    .collection('measures')
+    .find({ "timestamp": { $gte: startTime, $lt: endTime } })
+    .sort({timestamp:1})
+    .limit(2000) // Just in case...
+    .toArray(function(error, documents) {
+      if (error) return res.status(500);
+      res.status(200).json({
+        Response: documents
+      });
     });
-  });
 }
 
 const upload = db => (req, res) => {
