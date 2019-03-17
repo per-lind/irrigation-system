@@ -25,7 +25,6 @@ class RenderItem extends Component {
       invokeMethod,
       id,
       name,
-      type,
       driver,
       data,
     } = this.props;
@@ -48,7 +47,7 @@ class RenderItem extends Component {
           {methods && methods.map(method => {
             const responseData = _.get(data, [method.id, id]);
             return (
-              <div>
+              <div key={method.id}>
                 <div className={classes.divider}><Divider /></div>
                 <Action
                   onClick={payload => invokeMethod(method.id, payload)}
