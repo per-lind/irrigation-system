@@ -4,7 +4,7 @@ import Section from './components/layout/Section';
 import LoginPopup from './components/LoginPopup';
 import HardwareList from './components/HardwareList';
 import Graph from './components/Graph';
-import { getGraphData, logout, getHardwareList } from './actions';
+import { logout, getHardwareList } from './actions';
 import { auth } from './utilities';
 
 class App extends Component {
@@ -22,7 +22,6 @@ class App extends Component {
     this.closeDialogs = this.closeDialogs.bind(this);
     this.loadUser = this.loadUser.bind(this);
     this.retrieveHardware = this.retrieveHardware.bind(this);
-    this.retrieveGraphData = this.retrieveGraphData.bind(this);
   }
 
   openDialog(name) {
@@ -34,7 +33,6 @@ class App extends Component {
     this.setState({ user });
     if (user) {
       this.retrieveHardware();
-      this.retrieveGraphData();
     }
   }
 
@@ -61,17 +59,8 @@ class App extends Component {
       })
   }
 
-  retrieveGraphData() {
-    getGraphData()
-      .then(data => this.setState({ data }))
-      .catch(error => {
-        console.log('Error retrieving data!')
-        console.log(error)
-      })
-  }
-
   render() {
-    const { hardware, user, data } = this.state;
+    const { hardware, user } = this.state;
 
     const userProps = {
       user: user,
@@ -91,7 +80,7 @@ class App extends Component {
         {user &&
           <React.Fragment>
             <Section title={"Data"} >
-              <Graph data={data} hardware={hardware} />
+              <Graph hardware={hardware} />
             </Section>
             <Section title={"Hardware"}>
               <HardwareList hardware={hardware} />

@@ -19,9 +19,10 @@ const logout = () => {
   });
 };
 
-const getGraphData = () => {
+const getGraphData = params => {
   return request({
     url: '/api/data',
+    params,
   })
   .then(response => response.data.Response)
 }
