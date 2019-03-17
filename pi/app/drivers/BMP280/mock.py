@@ -1,7 +1,7 @@
 from utils.Driver import Driver
 from random import uniform
 
-class BMP085(Driver):
+class BMP280(Driver):
   def __init__(self, config):
     methods = [{
       'id': 'read',
@@ -19,7 +19,7 @@ class BMP085(Driver):
         }
       ]
     }]
-    Driver.__init__(self, name='BMP085', methods=methods)
+    Driver.__init__(self, name='BMP280', methods=methods)
 
   def _read(self, payload={}):
     return {
