@@ -29,8 +29,7 @@ class BMP280(Driver):
     self.sensor = adafruit_bmp280.Adafruit_BMP280_I2C(i2c, 0x76)
 
   def _read(self, payload={}):
-    SLpressure_mB = (((self.sensor.pressure)/pow((1.0-((58.0))/44330.0), 5.255))/100.0)
     return {
-      'temperature': self.sensor.temperature,
-      'pressure': round(SLpressure_mB,2)
+      'temperature': round(self.sensor.temperature,2),
+      'pressure': round(self.sensor.pressure,2)
     }
