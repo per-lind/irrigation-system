@@ -13,6 +13,8 @@ def main_loop():
     print('\n')
     print(hardware.invoke('read', 'humidity'))
     print(hardware.invoke('read', 'pressure'))
+    print(hardware.invoke('read', 'light'))
+    
     #print(hardware.invoke('status', 'chip', { 'relay': 'pow1' }))
     #print(hardware.invoke('switch', 'chip', { 'relay': 'pow1', 'status': 'on' }))
     time.sleep(10)
