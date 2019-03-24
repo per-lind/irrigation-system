@@ -52,7 +52,10 @@ function Tooltip(props) {
                 <Avatar className={classes.avatar} style={{ backgroundColor: color }}>
                   <Waves className={classes.listIcon}/>
                 </Avatar>
-                <ListItemText primary={name} secondary={formatter(value)} />
+                <ListItemText
+                  primary={name}
+                  secondary={formatter ? formatter(value) : value}
+                />
               </ListItem>
             )
           })}
@@ -67,4 +70,3 @@ Tooltip.propTypes = {
 };
 
 export default withStyles(styles)(Tooltip);
-

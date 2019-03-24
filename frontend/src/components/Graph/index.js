@@ -23,6 +23,8 @@ import {
   amber,
   lightBlue,
   red,
+  teal,
+  indigo,
 } from '@material-ui/core/colors';
 
 const styles = {
@@ -54,7 +56,7 @@ const settings = {
     yAxisId: "temp",
     type: "monotone",
     formatter: formatter.percent,
-    stroke: lightBlue[500],
+    stroke: indigo[300],
   },
   lux: {
     component: Bar,
@@ -62,6 +64,12 @@ const settings = {
     barSize: 30,
     formatter: formatter.lux,
     fill: amber[300],
+  },
+  hPa: {
+    yAxisId: "pressure",
+    type: "monotone",
+    formatter: formatter.hPa,
+    stroke: teal[300],
   },
   default: {
     yAxisId: "temp",
