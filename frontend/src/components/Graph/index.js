@@ -90,7 +90,12 @@ class Graph extends Component {
       visible: [],
       data: [],
       hardware: [],
-      selected: ['measures.light.light', 'measures.humidity.temperature'],
+      selected: [
+        'measures.light.light',
+        'measures.pressure.pressure',
+        'measures.humidity.humidity',
+        'measures.humidity.temperature',
+      ],
       startTime,
       endTime,
       interval,

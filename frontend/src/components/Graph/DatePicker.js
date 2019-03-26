@@ -23,7 +23,7 @@ function DatePicker(props) {
         value={value}
         onChange={onChange}
         clearable={false}
-        format={"YYYY/MM/DD H:mm"}
+        format={"YYYY/MM/DD HH:mm"}
         mask={[/\d/, /\d/, /\d/, /\d/, "/", /\d/, /\d/, "/", /\d/, /\d/, " ", /\d/, /\d/, ":", /\d/, /\d/]}
       />
     </div>

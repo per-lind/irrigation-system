@@ -56,10 +56,7 @@ function Filters(props) {
           <MuiPickersUtilsProvider utils={DateUtils}>
             <DatePicker
               label="Start time"
-              onChange={value => {
-                console.log(value)
-                handleChange("custom", value, endTime)
-              }}
+              onChange={value => handleChange("custom", value, endTime)}
               value={startTime}
             />
             <DatePicker
