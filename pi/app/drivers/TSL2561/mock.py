@@ -1,20 +1,9 @@
-from utils.Driver import Driver
+from drivers.TSL2561.main import TSL2561 as Main
 from random import random
 
-class TSL2561(Driver):
-  def __init__(self, config):
-    methods = [
-      {
-        'id': 'read',
-        'min_pause': 2,
-        'response': [{
-          'id': 'light',
-          'name': 'Light',
-          'unit': 'lux',
-        }]
-      }
-    ]
-    Driver.__init__(self, name='TSL2561', methods=methods)
+class TSL2561(Main):
+  def _connect_to_hardware(self):
+    pass
 
   def _read(self, payload={}):
     return {

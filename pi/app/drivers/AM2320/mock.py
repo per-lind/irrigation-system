@@ -1,25 +1,9 @@
-from utils.Driver import Driver
+from drivers.AM2320.main import AM2320 as Main
 from random import random
 
-class AM2320(Driver):
-  def __init__(self, config):
-    methods = [
-      {
-        'id': 'read',
-        'min_pause': 2,
-        'response': [{
-          'id': 'humidity',
-          'name': 'Humidity',
-          'unit': 'percent',
-        },
-        {
-          'id': 'temperature',
-          'name': 'Temperature',
-          'unit': 'celsius',
-        }]
-      }
-    ]
-    Driver.__init__(self, name='AM2320', methods=methods)
+class AM2320(Main):
+  def _connect_to_hardware(self):
+    pass
 
   def _read(self, payload={}):
     return {

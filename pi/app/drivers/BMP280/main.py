@@ -1,7 +1,4 @@
 from utils.Driver import Driver
-import board
-import busio
-import adafruit_bmp280
 
 class BMP280(Driver):
   def __init__(self, config):
@@ -24,6 +21,10 @@ class BMP280(Driver):
     Driver.__init__(self, name='BMP280', methods=methods)
 
   def _connect_to_hardware(self):
+    import board
+    import busio
+    import adafruit_bmp280
+
     i2c = busio.I2C(board.SCL, board.SDA)
     #bmp280.sea_level_pressure = 1013.25
     self.sensor = adafruit_bmp280.Adafruit_BMP280_I2C(i2c, 0x76)

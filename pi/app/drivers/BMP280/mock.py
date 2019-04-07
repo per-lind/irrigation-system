@@ -1,25 +1,9 @@
-from utils.Driver import Driver
+from drivers.BMP280.main import BMP280 as Main
 from random import uniform
 
-class BMP280(Driver):
-  def __init__(self, config):
-    methods = [{
-      'id': 'read',
-      'min_pause': 2,
-      'response': [
-        {
-          'id': 'pressure',
-          'name': 'Pressure',
-          'unit': 'hPa',
-        },
-        {
-          'id': 'temperature',
-          'name': 'Temperature',
-          'unit': 'celsius',
-        }
-      ]
-    }]
-    Driver.__init__(self, name='BMP280', methods=methods)
+class BMP280(Main):
+  def _connect_to_hardware(self):
+    pass
 
   def _read(self, payload={}):
     return {
