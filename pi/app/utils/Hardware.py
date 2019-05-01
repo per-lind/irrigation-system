@@ -33,7 +33,11 @@ class Hardware:
   def list(self):
     items = []
     for h in self.hardware.values():
-      item = {**h, 'driver': h['driver'].to_json()}
+      item = {
+        'id': h['id'],
+        'name': h['name'],
+        'driver': h['driver'].to_json()
+      }
       items.append(item)
 
     return items
