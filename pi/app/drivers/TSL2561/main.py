@@ -6,11 +6,13 @@ class TSL2561(Driver):
       {
         'id': 'read',
         'min_pause': 2,
-        'response': [{
-          'id': 'light',
-          'name': 'Light',
-          'unit': 'lux',
-        }]
+        'response': {
+          'light': {
+            'id': 'light',
+            'name': 'Light',
+            'unit': 'lux',
+          }
+        }
       }
     ]
     Driver.__init__(self, name='TSL2561', methods=methods)

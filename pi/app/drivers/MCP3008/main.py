@@ -6,12 +6,11 @@ class MCP3008(Driver):
     methods = [{
       'id': 'read',
       'min_pause': 2,
-      'response': [
-        {
-          'id': 'output',
+      'response': {
+        'output': {
           'name': 'Output',
         }
-      ]
+      }
     }]
     self.cs = cs
     self.miso = miso

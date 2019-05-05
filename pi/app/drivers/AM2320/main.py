@@ -5,18 +5,16 @@ class AM2320(Driver):
     methods = [{
       'id': 'read',
       'min_pause': 2,
-      'response': [
-        {
-          'id': 'humidity',
+      'response': {
+        'humidity': {
           'name': 'Humidity',
           'unit': 'percent',
         },
-        {
-          'id': 'temperature',
+        'temperature': {
           'name': 'Temperature',
           'unit': 'celsius',
         }
-      ]
+      }
     }]
     Driver.__init__(self, name='AM2320', methods=methods)
 

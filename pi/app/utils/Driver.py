@@ -16,22 +16,26 @@ class Driver:
     return self.connected
 
   def invoke(self, method, payload={}):
-    # If method not available, do nothing
+    print("Invoking method {} on {} with payload {}".format(method, self.name, payload))
+    # Method not available
     if method not in self.methods:
-      return None
+      print("Method {} does not exist for {}!".format(method, self.name))
+      raise NotImplementedError
 
     self._can_invoke_method(method)
     self._validate_payload(method, payload)
     self._enough_time_elapsed(method)
 
     self.method_calls[method] = {'timestamp': datetime.now()}
-
     try:
-      return getattr(self, "_{}".format(method))(payload)
+      result = getattr(self, "_{}".format(method))(payload)
+      self.method_calls[method]['value'] = result
+      return result
     except AttributeError:
       raise NotImplementedError
 
   def _validate_payload(self, method, payload):
+    # Call _validate_{method}_payload if it is defined
     try:
       getattr(self, "_validate_{}_payload".format(method))(payload)
     except AttributeError:
@@ -48,6 +52,7 @@ class Driver:
       raise Exception('not enough time elapsed since last call!')
 
   def _can_invoke_method(self, method):
+    # Call _can_invoke_{method}_method if it is defined
     try:
       getattr(self, "_can_invoke_{}_method".format(method))()
     except AttributeError:
@@ -89,6 +94,7 @@ class Driver:
   def to_json(self):
     return {
       'name': self.name,
-      'methods': list(self.methods.values()),
+      'methods': self.methods,
       'healthy': self.is_healthy(),
+      'last_method_calls': self.method_calls,
     }

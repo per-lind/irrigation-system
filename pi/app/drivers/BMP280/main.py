@@ -5,18 +5,16 @@ class BMP280(Driver):
     methods = [{
       'id': 'read',
       'min_pause': 2,
-      'response': [
-        {
-          'id': 'pressure',
+      'response': {
+        'pressure': {
           'name': 'Pressure',
           'unit': 'hPa',
         },
-        {
-          'id': 'temperature',
+        'temperature': {
           'name': 'Temperature',
           'unit': 'celsius',
         }
-      ]
+      }
     }]
     Driver.__init__(self, name='BMP280', methods=methods)
 

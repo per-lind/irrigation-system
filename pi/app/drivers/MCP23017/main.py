@@ -38,11 +38,8 @@ class MCP23017(Driver):
       else:
         self.pins[relay['id']] = relay['pin']
         self.setup_pin(relay['pin'])
-        # Transform methods and their payloads to dictionaries
+        # Transform methods to dictionaries
         methods = {item['id']:item.copy() for item in relay['methods']}
-        for id, method in methods.items():
-          if 'payload' in method:
-            methods[id]['payload'] = {item['id']:item for item in method['payload']}
         self.relays[relay['id']] = {
           **relay,
           'methods': methods,
@@ -78,7 +75,8 @@ class MCP23017(Driver):
       return False
 
   def invoke(self, method, payload={}):
-    relay = payload['relay']
+    print("Invoking method {} on {} with payload {}".format(method, self.name, payload))
+    relay = payload.pop("relay", None)
     # Relay must exist
     self._relay_exists(relay)
     # If relay has no driver, use methods in this file
@@ -89,7 +87,7 @@ class MCP23017(Driver):
       except AttributeError:
         raise NotImplementedError
     else:
-      self.relays[relay]['driver'].invoke(method, payload)
+      return self.relays[relay]['driver'].invoke(method, payload)
 
   def _relay_exists(self, relay):
     if not relay or relay not in self.relays:
@@ -128,8 +126,8 @@ class MCP23017(Driver):
 
   def _validate_run_payload(self, relay, payload):
     duration = payload['duration']
-    min_duration = self.relays[payload['relay']]['methods']['run']['payload']['duration']['min']
-    max_duration = self.relays[payload['relay']]['methods']['run']['payload']['duration']['max']
+    min_duration = self.relays[relay]['methods']['run']['payload']['duration']['min']
+    max_duration = self.relays[relay]['methods']['run']['payload']['duration']['max']
     if not isinstance(duration, int):
       raise ValueError("Duration must be integer (given: {})".format(duration))
     if duration >= max_duration:
@@ -139,15 +137,15 @@ class MCP23017(Driver):
 
   def _run(self, relay, payload={}):
     # On
-    self._output(self.pins[payload['relay']], 1)
+    self._output(self.pins[relay], 1)
 
     # Wait for `duration` seconds
     time.sleep(payload['duration'])
 
     # Off
-    self._output(self.pins[payload['relay']], 0)
+    self._output(self.pins[relay], 0)
 
-    return True
+    return { relay: True }
 
   def _shutdown(self):
     success = True
@@ -165,18 +163,16 @@ class MCP23017(Driver):
       result = {
         'id': relay['id'],
         'name': relay['name'],
-        'healthy': True,
       }
       if 'driver' in relay:
         result['driver'] = relay['driver'].to_json()
       else:
-        result['methods'] = list(relay['methods'].values())
-
+        result['methods'] = relay['methods']
       return result
 
     return {
       'name': self.name,
-      'methods': list(self.methods.values()),
+      'methods': self.methods,
       'healthy': self.is_healthy(),
-      'relays': [display_relay(relay) for relay in list(self.relays.values())]
+      'relays': {id:display_relay(relay) for id, relay in self.relays.items()}
     }

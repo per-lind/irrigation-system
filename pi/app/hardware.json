@@ -36,14 +36,13 @@
           {
             "id": "run",
             "min_pause": 60,
-            "payload": [
-              {
-                "id": "duration",
+            "payload": {
+              "duration": {
                 "type": "integer",
                 "min": 1,
                 "max": 60
               }
-            ]
+            }
           }
         ]
       },
