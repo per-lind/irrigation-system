@@ -2,8 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
+import Divider from '@material-ui/core/Divider';
 
-const styles = {
+const styles = theme => ({
   root: {
     padding: 10,
   },
@@ -11,10 +12,14 @@ const styles = {
     maxWidth: 1200,
     margin: '0 auto',
     overflow: 'hidden',
+    paddingTop: theme.spacing.unit * 3,
   },
   title: {
   },
-};
+  divider: {
+    marginTop: theme.spacing.unit * 3,
+  },
+});
 
 function Section(props) {
   const {
@@ -31,6 +36,7 @@ function Section(props) {
         </div>
         {children}
       </div>
+      <Divider className={classes.divider} />
     </div>
   );
 }

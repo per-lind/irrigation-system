@@ -129,11 +129,11 @@ class Graph extends Component {
     const sensors = ['light', 'humidity', 'pressure'];
     const hardware = sensors.map(id => {
       const sensor = props.hardware.find(h => h.id === id);
-      const { response } = sensor.driver.methods.find(m => m.id === 'read') || [];
-      return response.map(item => ({
-        name: `${item.name} (${sensor.driver.name})`,
-        dataKey: `measures.${sensor.id}.${item.id}`,
-        ...(settings[item.unit] || settings.default),
+      const { response } = sensor.driver.methods.read || {};
+      return Object.keys(response).map(id => ({
+        name: `${response[id].name} (${sensor.driver.name})`,
+        dataKey: `measures.${sensor.id}.${id}`,
+        ...(settings[response[id].unit] || settings.default),
       }))
     })
     return {
