@@ -19,7 +19,7 @@ class MCP23017(Driver):
     import adafruit_mcp230xx
 
     self.i2c = busio.I2C(board.SCL, board.SDA)
-    self.sensor = adafruit_mcp230xx.MCP23017(i2c)
+    self.sensor = adafruit_mcp230xx.MCP23017(self.i2c)
 
     self.setup_relays()
 
@@ -37,7 +37,8 @@ class MCP23017(Driver):
 
       else:
         self.pins[relay['id']] = relay['pin']
-        self.setup_pin(relay['pin'])
+        output = relay['output'] if 'output' in relay else False
+        self.setup_pin(relay['pin'], output)
         # Transform methods to dictionaries
         methods = {item['id']:item.copy() for item in relay['methods']}
         self.relays[relay['id']] = {
@@ -48,16 +49,18 @@ class MCP23017(Driver):
   def get_pin(self, pin):
     return self.sensor.get_pin(pin)
 
-  def setup_pin(self, pin, value=False):
-    x = self.sensor.get_pin(pin)
-    x.switch_to_output(value=value)
+  def setup_pin(self, pin, output=False):
+    x = self.get_pin(pin)
+    if output:
+      x.switch_to_output(value=False)
     return x
 
   def _input(self, pin):
     try:
-      return self.sensor.input(pin)
+      x = self.get_pin(pin)
+      return x.value
     except Exception as inst:
-      print("Failed to read pin " + pin + " of " + self.name)
+      print("Failed to read pin " + str(pin) + " of " + self.name)
       print(type(inst))
       print(inst.args)
       print(inst)
@@ -65,10 +68,11 @@ class MCP23017(Driver):
 
   def _output(self, pin, status):
     try:
-      self.sensor.output(pin, status)
+      x = self.get_pin(pin)
+      x.value = status
       return True
     except Exception as inst:
-      print("Failed to call pin " + pin + " of " + self.name)
+      print("Failed to call pin " + str(pin) + " of " + self.name)
       print(type(inst))
       print(inst.args)
       print(inst)

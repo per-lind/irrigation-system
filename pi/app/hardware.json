@@ -23,6 +23,7 @@
         "id": "pow1",
         "name": "Power",
         "pin": 10,
+        "output": true,
         "methods": [
           { "id": "status" },
           { "id": "switch" }
@@ -32,6 +33,7 @@
         "id": "pump1",
         "name": "Pump 1",
         "pin": 9,
+        "output": true,
         "methods": [
           {
             "id": "run",

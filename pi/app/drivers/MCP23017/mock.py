@@ -8,7 +8,7 @@ class MCP23017(Main):
   def get_pin(self, pin):
     return 0
 
-  def setup_pin(self, pin, value=False):
+  def setup_pin(self, pin, output=False):
     pass
 
   def _input(self, pin):

@@ -12,6 +12,7 @@ adafruit-bmp = "*"
 pytz = "*"
 schedule = "*"
 requests = "*"
+python-dotenv = "*"
 
 [dev-packages]
 
