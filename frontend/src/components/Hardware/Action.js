@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
+import Input from '../Input';
 import { formatter } from '../../utilities';
+import Divider from '@material-ui/core/Divider';
 import CardActions from '@material-ui/core/CardActions';
 import Collapse from '@material-ui/core/Collapse';
 import IconButton from '@material-ui/core/IconButton';
@@ -76,15 +78,16 @@ class Action extends Component {
 
     return (
       <React.Fragment>
+        <Divider />
         <CardActions className={classes.actions} disableActionSpacing>
           <Button
             size="small"
             color="primary"
-            onClick={this.handleClick}
+            onClick={payload ? this.handleExpandClick : this.handleClick}
           >
             {method}
           </Button>
-          {value &&
+          {(value || payload) &&
             <IconButton
               className={classnames(classes.expand, {
                 [classes.expandOpen]: expanded,
@@ -99,6 +102,30 @@ class Action extends Component {
         </CardActions>
         <Collapse in={expanded} timeout="auto" unmountOnExit>
           <CardContent>
+            {payload &&
+              Object.keys(payload).map((payloadId, index) => {
+                const item = payload[payloadId];
+                return (
+                  <Input
+                    key={index}
+                    {...item}
+                    label={item.name || payloadId}
+                    id={payloadId}
+                    onChange={this.handleChange}
+                    value={this.state.selected[payloadId]}
+                  />
+                );
+              })
+            }
+            {payload &&
+              <Button
+                size="small"
+                color="primary"
+                onClick={this.handleClick}
+              >
+                GO
+              </Button>
+            }
             {value &&
               Object.keys(value).map(key => {
                 const { name, unit } = response[key] || {};
