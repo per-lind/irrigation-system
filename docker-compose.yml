@@ -6,17 +6,23 @@ services:
       context: ./pi/app
     env_file:
       - env.pi-app
+    depends_on:
+      - api
     environment:
       MOCK_HARDWARE: 'true'
       API_ENDPOINT: http://api:3001
       API_TOKEN: pi_auth_token
       # PERIODIC_READING_INTERVAL: 5
+    # command: ["python3", "-u", "./test.py"]
 
   api:
     build:
       context: ./api
     env_file:
       - env.api
+    depends_on:
+      - mongodb
+      - mongo-express
     environment:
       PORT: 3001
       JWT_SECRET: jwt_secret

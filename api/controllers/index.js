@@ -4,6 +4,6 @@ const usersController = require('./usersController');
 
 module.exports = db => ({
   dbController: dbController(db),
-  iothubController,
+  iothubController: iothubController(db),
   usersController,
 });
