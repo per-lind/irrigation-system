@@ -1,5 +1,6 @@
-from utils import Hardware
+from utils import Hardware, json_dumps
 import time
+import traceback
 
 def main_loop():
   hardware = None
@@ -7,18 +8,18 @@ def main_loop():
     print('Setting up hardware...')
     hardware = Hardware()
 
-    print('Connected hardware:')
-    print(hardware.list())
-
-    print('\n')
     print(hardware.invoke('read', 'humidity'))
     print(hardware.invoke('read', 'pressure'))
     print(hardware.invoke('read', 'light'))
-    
-    #print(hardware.invoke('status', 'chip', { 'relay': 'pow1' }))
-    #print(hardware.invoke('switch', 'chip', { 'relay': 'pow1', 'status': 'on' }))
-    time.sleep(10)
-    #print(hardware.invoke('switch', 'chip', { 'relay': 'pow1', 'status': 'off' }))
+
+    print(hardware.invoke('run', 'chip', { 'relay': 'pump1', 'duration': 1 }))
+    print(hardware.invoke('switch', 'chip', { 'relay': 'pow1', 'status': 'on' }))
+    time.sleep(5)
+    print(hardware.invoke('switch', 'chip', { 'relay': 'pow1', 'status': 'off' }))
+    print(hardware.invoke('read', 'chip', { 'relay': 'mcp3008' }))
+
+    print('Connected hardware:')
+    print(json_dumps(hardware.list()))
 
   except KeyboardInterrupt:
     print('Process ended by user.')
@@ -28,6 +29,7 @@ def main_loop():
     print(type(inst))
     print(inst.args)
     print(inst)
+    print(traceback.format_exc())
 
   finally:
     shutdown_gracefully(hardware)
