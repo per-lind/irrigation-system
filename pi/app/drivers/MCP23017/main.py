@@ -7,6 +7,61 @@ import pytz
 from config import MOCK_HARDWARE
 filename = 'mock' if MOCK_HARDWARE else 'main'
 
+method_defaults = {
+  'run': {
+    'min_pause': 60,
+    'response': {
+      'success': {
+        'name': 'Success',
+        'unit': 'boolean',
+      },
+      'duration': {
+        'name': 'Duration',
+        'unit': 'seconds',
+      }
+    },
+    'payload': {
+      'duration': {
+        'type': 'integer',
+        'min': 1,
+        'max': 60,
+      }
+    }
+  },
+  'switch': {
+    'min_pause': 1,
+    'response': {
+      'success': {
+        'name': 'Success',
+        'unit': 'boolean',
+      },
+      'target': {
+        'name': 'Current status',
+        'unit': 'switch',
+      }
+    },
+    'payload': {
+      'state': {
+        'type': 'select',
+        'options': [
+          { 'value': 'on', 'label': 'On' },
+          { 'value': 'off', 'label': 'Off' },
+          { 'value': 'toggle', 'label': 'Toggle' },
+        ],
+      }
+    }
+  },
+  'status': {
+    'min_pause': 1,
+    'response': {
+      'status': {
+        'name': 'Status',
+        'unit': 'switch',
+      }
+    }
+  }
+}
+
 class MCP23017(Driver):
   def __init__(self, config):
     self.pins = {}
@@ -42,7 +97,13 @@ class MCP23017(Driver):
         output = relay['output'] if 'output' in relay else False
         self.setup_pin(relay['pin'], output)
         # Transform methods to dictionaries
-        methods = {item['id']:item.copy() for item in relay['methods']}
+        methods = {
+          item['id']: {
+            **method_defaults[item['id']],
+            **item,
+          }
+          for item in relay['methods']
+        }
         self.relays[relay['id']] = {
           **relay,
           'methods': methods,
@@ -97,11 +158,15 @@ class MCP23017(Driver):
       try:
         result = getattr(self, "_{}".format(method))(relay, payload)
         self.method_calls[relay][method]['value'] = result
-        return result
+        return {
+          relay: result,
+        }
       except AttributeError:
         raise NotImplementedError
     else:
-      return self.relays[relay]['driver'].invoke(method, payload)
+      return {
+        relay: self.relays[relay]['driver'].invoke(method, payload)
+      }
 
   def _relay_exists(self, relay):
     if not relay or relay not in self.relays:
@@ -130,7 +195,9 @@ class MCP23017(Driver):
       raise Exception('not enough time elapsed since last call!')
 
   def _status(self, relay, payload={}):
-    return { relay: self._input(self.relays[relay]['pin']) }
+    return {
+      'status': self._input(self.relays[relay]['pin']),
+    }
 
   def _validate_switch_payload(self, relay, payload):
     if payload['status'] not in ['on', 'off', 'toggle']:
@@ -146,7 +213,10 @@ class MCP23017(Driver):
       if current == 0:
         target = 1
 
-    return { relay: self._output(self.relays[relay]['pin'], target) }
+    return {
+      'success': self._output(self.relays[relay]['pin'], target),
+      'target': target == 1,
+    }
 
   def _validate_run_payload(self, relay, payload):
     duration = payload['duration']
@@ -160,16 +230,25 @@ class MCP23017(Driver):
       raise ValueError("Duration must be at least {}".format(min_duration))
 
   def _run(self, relay, payload={}):
-    # On
-    self._output(self.pins[relay], 1)
+    try:
+      # On
+      self._output(self.pins[relay], 1)
 
-    # Wait for `duration` seconds
-    time.sleep(payload['duration'])
+      # Wait for `duration` seconds
+      time.sleep(payload['duration'])
 
-    # Off
-    self._output(self.pins[relay], 0)
+      # Off
+      self._output(self.pins[relay], 0)
 
-    return { relay: True }
+      return {
+        'success': True,
+        'duration': payload['duration'],
+      }
+    except:
+      return {
+        'success': False,
+        'duration': payload['duration'],
+      }
 
   def _shutdown(self):
     success = True

@@ -18,13 +18,21 @@ class MCP23017(Main):
     return True
 
   def _status(self, relay, payload={}):
-    return { relay: True }
+    return {
+      status: True
+    }
 
   def _switch(self, relay, payload={}):
-    return { relay: True }
+    return {
+      success: True,
+      target: True,
+    }
 
   def _run(self, relay, payload={}):
     # Wait for `duration` seconds
     time.sleep(payload['duration'])
 
-    return { relay: True }
+    return {
+      'success': True,
+      'duration': payload['duration'],
+    }
