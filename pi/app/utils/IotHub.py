@@ -46,7 +46,11 @@ class IotHub:
         response = self.hardware.list()
       else:
         payload = msg['payload'] if 'payload' in msg else {}
-        response = self.hardware.invoke(method_name, msg['id'], payload)
+        result = self.hardware.invoke(method_name, msg['id'], payload)
+        response = {
+          'timestamp': datetime.now(pytz.timezone('Europe/Stockholm')),
+          **result,
+        }
 
       status = 200
 
@@ -64,11 +68,6 @@ class IotHub:
 
     return_value = DeviceMethodReturnValue()
     return_value.status = status
-    return_value.response = json_dumps({
-      'Response': {
-        'timestamp': datetime.now(pytz.timezone('Europe/Stockholm')),
-        **response,
-      }
-    })
+    return_value.response = json_dumps({ 'Response': response })
 
     return return_value

@@ -19,13 +19,13 @@ class MCP23017(Main):
 
   def _status(self, relay, payload={}):
     return {
-      status: True
+      'status': True
     }
 
   def _switch(self, relay, payload={}):
     return {
-      success: True,
-      target: True,
+      'success': True,
+      'target': True,
     }
 
   def _run(self, relay, payload={}):

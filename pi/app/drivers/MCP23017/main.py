@@ -37,7 +37,7 @@ method_defaults = {
       },
       'target': {
         'name': 'Current status',
-        'unit': 'switch',
+        'unit': 'onoff',
       }
     },
     'payload': {
@@ -56,7 +56,7 @@ method_defaults = {
     'response': {
       'status': {
         'name': 'Status',
-        'unit': 'switch',
+        'unit': 'onoff',
       }
     }
   }

@@ -13,6 +13,12 @@ const shortDateTime = item => moment(item).format('ddd D/M HH:mm');
 
 const longDateTime = item => moment(item).format('dddd Y-MM-DD HH:mm');
 
+const boolean = item => item ? "TRUE" : "FALSE";
+
+const seconds = item => `${numeral(item).format('0')} seconds`;
+
+const onoff = item => item ? "ON" : "OFF";
+
 export default {
   percent,
   celsius,
@@ -20,4 +26,7 @@ export default {
   hPa,
   shortDateTime,
   longDateTime,
+  boolean,
+  seconds,
+  onoff,
 };
