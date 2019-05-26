@@ -2,6 +2,8 @@ from utils.Driver import Driver
 from config import MOCK_HARDWARE
 import time
 import drivers.MCP3008 as MCP3008
+from datetime import datetime
+import pytz
 from config import MOCK_HARDWARE
 filename = 'mock' if MOCK_HARDWARE else 'main'
 
@@ -86,8 +88,16 @@ class MCP23017(Driver):
     # If relay has no driver, use methods in this file
     if 'driver' not in self.relays[relay]:
       self._validate_payload(method, relay, payload)
+      self._enough_time_elapsed(method, relay)
+
+      if relay not in self.method_calls:
+        self.method_calls[relay] = {}
+      self.method_calls[relay][method] = {'timestamp': datetime.now(pytz.timezone('Europe/Stockholm'))}
+
       try:
-        return getattr(self, "_{}".format(method))(relay, payload)
+        result = getattr(self, "_{}".format(method))(relay, payload)
+        self.method_calls[relay][method]['value'] = result
+        return result
       except AttributeError:
         raise NotImplementedError
     else:
@@ -108,6 +118,16 @@ class MCP23017(Driver):
       getattr(self, "_validate_{}_payload".format(method))(relay, payload)
     except AttributeError:
       return True
+
+  # Make sure enough time has passed since last call
+  def _enough_time_elapsed(self, method, relay):
+    last_call = self.method_calls.get(relay, {}).get(method)
+    # Minimum pause between calls (defaults to 60 seconds)
+    min_pause = self.relays[relay]['methods'][method].get('min_pause', 60)
+
+    if last_call is not None and last_call['timestamp'] is not None and \
+       (datetime.now() - last_call['timestamp']).total_seconds() < min_pause:
+      raise Exception('not enough time elapsed since last call!')
 
   def _status(self, relay, payload={}):
     return { relay: self._input(self.relays[relay]['pin']) }
@@ -136,7 +156,7 @@ class MCP23017(Driver):
       raise ValueError("Duration must be integer (given: {})".format(duration))
     if duration >= max_duration:
       raise ValueError("Duration must be less than {}".format(max_duration))
-    if duration <= min_duration:
+    if duration < min_duration:
       raise ValueError("Duration must be at least {}".format(min_duration))
 
   def _run(self, relay, payload={}):
@@ -164,14 +184,16 @@ class MCP23017(Driver):
 
   def to_json(self):
     def display_relay(relay):
+      id = relay['id']
       result = {
-        'id': relay['id'],
+        'id': id,
         'name': relay['name'],
       }
       if 'driver' in relay:
         result['driver'] = relay['driver'].to_json()
       else:
         result['methods'] = relay['methods']
+        result['last_method_calls'] = self.method_calls[id] if id in self.method_calls else {}
       return result
 
     return {

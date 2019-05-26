@@ -1,5 +1,4 @@
 import time
-import json
 import drivers
 from config import hardware_config, MOCK_HARDWARE
 

@@ -1,5 +1,5 @@
 from datetime import datetime
-import json
+import pytz
 
 class Driver:
   def __init__(self, name, methods=[]):
@@ -26,7 +26,7 @@ class Driver:
     self._validate_payload(method, payload)
     self._enough_time_elapsed(method)
 
-    self.method_calls[method] = {'timestamp': datetime.now()}
+    self.method_calls[method] = {'timestamp': datetime.now(pytz.timezone('Europe/Stockholm'))}
     try:
       result = getattr(self, "_{}".format(method))(payload)
       self.method_calls[method]['value'] = result

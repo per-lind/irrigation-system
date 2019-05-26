@@ -1,5 +1,6 @@
 from uuid import uuid4
 from iothub_client import IoTHubClient, IoTHubTransportProvider, IoTHubMessage, DeviceMethodReturnValue
+from utils.json_serializer import json_dumps
 import json
 
 from config import IOTHUB_CONNECTION, IOTHUB_MESSAGE_TIMEOUT
@@ -61,6 +62,6 @@ class IotHub:
 
     return_value = DeviceMethodReturnValue()
     return_value.status = status
-    return_value.response = json.dumps({ 'Response': response })
+    return_value.response = json_dumps({ 'Response': response })
 
     return return_value

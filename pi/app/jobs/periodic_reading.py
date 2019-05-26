@@ -1,4 +1,4 @@
-import json
+from utils import json_dumps
 from datetime import datetime
 from utils import database_api
 import pytz
@@ -11,9 +11,9 @@ def run(hardware):
     data = hardware.invoke('read', ids)
 
     # Upload data to db
-    to_upload = json.dumps({
+    to_upload = json_dumps({
       "deviceId": "Huvudsta",
-      "timestamp": datetime.now(pytz.timezone('Europe/Stockholm')).isoformat(),
+      "timestamp": datetime.now(pytz.timezone('Europe/Stockholm')),
       "measures": data,
     })
 
