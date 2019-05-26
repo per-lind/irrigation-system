@@ -191,7 +191,7 @@ class MCP23017(Driver):
     min_pause = self.relays[relay]['methods'][method].get('min_pause', 60)
 
     if last_call is not None and last_call['timestamp'] is not None and \
-       (datetime.now() - last_call['timestamp']).total_seconds() < min_pause:
+       (datetime.now(pytz.timezone('Europe/Stockholm')) - last_call['timestamp']).total_seconds() < min_pause:
       raise Exception('not enough time elapsed since last call!')
 
   def _status(self, relay, payload={}):
