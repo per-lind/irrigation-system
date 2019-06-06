@@ -36,24 +36,12 @@ const local = db => new localStrategy({ passReqToCallback: true }, (req, usernam
 });
 
 // Authentication with token
-const bearer = db => new bearerStrategy({ passReqToCallback: true }, (req, token, done) => {
+const bearer = new bearerStrategy({ passReqToCallback: true }, (req, token, done) => {
   // Verify JWT token
   jwt.verify(token, JWT_SECRET, (err, decoded) => {
     // If token was invalid
     if (err) return done(null, false);
-    // If user not found in db
-    getUser(db, decoded.id)
-    .then(user => {
-      if (user && user.username) {
-        done(null, { username: decoded.id }, { scope: 'all' });
-      } else {
-        done(null, false);
-      }
-    })
-    .catch(error => {
-      console.log("Failed to retrieve user from db: ", error);
-      done(null, false);
-    });
+    done(null, { username: decoded.id }, { scope: 'all' });
   });
 });
 
@@ -67,7 +55,7 @@ const pi = new bearerStrategy({ passReqToCallback: true }, (req, token, done) =>
 
 module.exports = db => {
   passport.use('local', local(db));
-  passport.use('bearer', bearer(db));
+  passport.use('bearer', bearer);
   passport.use('pi', pi);
 
   return {
