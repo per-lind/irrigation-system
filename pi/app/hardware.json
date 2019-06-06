@@ -40,9 +40,11 @@
             "min_pause": 60,
             "payload": {
               "duration": {
+                "name": "Duration",
                 "type": "integer",
+                "unit": "seconds",
                 "min": 1,
-                "max": 60
+                "max": 15
               }
             }
           }
