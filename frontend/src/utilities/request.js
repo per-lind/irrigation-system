@@ -10,9 +10,14 @@ const request = (options) => {
   options.headers = { 'Content-Type': 'application/json' };
   // Authentication token
   const token = auth.getToken();
-  if (token) options.headers.Authorization = `Bearer ${token}`
+  if (token) options.headers.Authorization = `Bearer ${token}`;
 
-  return axios({ method: 'get', ...options, url: url(options.url) })
+  return axios({
+    method: 'get',
+    timeout: 30000,
+    ...options,
+    url: url(options.url)
+  });
 }
 
 export { url };

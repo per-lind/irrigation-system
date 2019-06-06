@@ -74,6 +74,7 @@ class Action extends Component {
       payload,
       response,
       value,
+      loading,
     } = this.props;
 
     const {
@@ -83,11 +84,12 @@ class Action extends Component {
     return (
       <React.Fragment>
         <Divider />
-        <CardActions className={classes.actions} disableActionSpacing>
+        <CardActions className={classes.actions}>
           <Button
             size="small"
             color="primary"
             onClick={payload ? this.handleExpandClick : this.handleClick}
+            disabled={!payload && loading}
           >
             {method}
           </Button>
@@ -128,6 +130,7 @@ class Action extends Component {
                   size="small"
                   color="primary"
                   onClick={this.handleClick}
+                  disabled={loading}
                 >
                   GO
                 </Button>

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import TopMenu from './components/layout/TopMenu';
 import Section from './components/layout/Section';
+import Loader from './components/layout/Loader';
 import LoginPopup from './components/LoginPopup';
 import HardwareList from './components/HardwareList';
 import Graph from './components/Graph';
@@ -15,6 +16,7 @@ class App extends Component {
       user: undefined,
       dialog: undefined,
       hardware: [],
+      loading: false,
     }
 
     this.logout = this.logout.bind(this);
@@ -22,6 +24,7 @@ class App extends Component {
     this.closeDialogs = this.closeDialogs.bind(this);
     this.loadUser = this.loadUser.bind(this);
     this.retrieveHardware = this.retrieveHardware.bind(this);
+    this.setLoading = this.setLoading.bind(this);
   }
 
   openDialog(name) {
@@ -59,8 +62,12 @@ class App extends Component {
       })
   }
 
+  setLoading(loading) {
+    this.setState({ loading });
+  }
+
   render() {
-    const { hardware, user } = this.state;
+    const { hardware, user, loading } = this.state;
 
     const userProps = {
       user: user,
@@ -68,6 +75,10 @@ class App extends Component {
       openLoginPopup: () => this.openDialog('login'),
       logout: this.logout,
     };
+    const loaderProps = {
+      loading,
+      setLoading: this.setLoading,
+    }
     const modalProps = (name) => ({
       isOpen: this.state.dialog === name,
       onClose: this.closeDialogs,
@@ -83,10 +94,11 @@ class App extends Component {
               <Graph hardware={hardware} />
             </Section>
             <Section title={"Hardware"}>
-              <HardwareList hardware={hardware} />
+              <HardwareList hardware={hardware} {...loaderProps} />
             </Section>
           </React.Fragment>
         }
+        <Loader loading={loading} />
       </div>
     );
   }

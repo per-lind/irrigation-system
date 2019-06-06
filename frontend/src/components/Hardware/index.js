@@ -24,7 +24,8 @@ const styles = theme => ({
 class Hardware extends Component {
   state = { data: {} };
 
-  handleInvoke = (method, payload) =>
+  handleInvoke = (method, payload) => {
+    this.props.setLoading(true);
     invoke(method, payload)
       .then(result => {
         const data = this.state.data[method] || {};
@@ -37,7 +38,11 @@ class Hardware extends Component {
       })
       .catch(error => {
         console.log(error);
+      })
+      .finally(() => {
+        this.props.setLoading(false);
       });
+  }
 
   render() {
     const {
@@ -45,6 +50,7 @@ class Hardware extends Component {
       id,
       name,
       driver,
+      loading,
     } = this.props;
 
     const {
@@ -77,6 +83,7 @@ class Hardware extends Component {
               method={method.id}
               {...method}
               id={id}
+              loading={loading}
             />
           )
         })}
@@ -101,6 +108,7 @@ class Hardware extends Component {
                     method={method.id}
                     {...method}
                     id={id}
+                    loading={loading}
                   />
                 )
               })}

@@ -7,7 +7,7 @@ import _ from 'lodash';
 
 const styles = theme => ({
   root: {
-    padding: theme.spacing.unit,
+    padding: theme.spacing(1),
   },
 });
 
@@ -24,7 +24,7 @@ function HardwareList(props) {
       <Grid container className={classes.container} spacing={1}>
         {hardware.map((item, index) => (
           <Grid key={index} item xs={12} md={_.get(item, "driver.relays") ? 12 : 6}>
-            <Hardware key={index} {...item} />
+            <Hardware key={index} {...props} {...item} />
           </Grid>
         ))}
       </Grid>
