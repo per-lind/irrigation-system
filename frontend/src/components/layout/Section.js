@@ -12,12 +12,12 @@ const styles = theme => ({
     maxWidth: 1200,
     margin: '0 auto',
     overflow: 'hidden',
-    paddingTop: theme.spacing.unit * 3,
+    paddingTop: theme.spacing(3),
   },
   title: {
   },
   divider: {
-    marginTop: theme.spacing.unit * 3,
+    marginTop: theme.spacing(3),
   },
 });
 

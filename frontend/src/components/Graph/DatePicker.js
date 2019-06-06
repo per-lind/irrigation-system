@@ -5,8 +5,8 @@ import { InlineDateTimePicker } from "material-ui-pickers";
 
 const styles = theme => ({
   picker: {
-    marginLeft: theme.spacing.unit,
-    marginRight: theme.spacing.unit,
+    marginLeft: theme.spacing(1),
+    marginRight: theme.spacing(1),
   },
 });
 

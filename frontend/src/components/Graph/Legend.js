@@ -12,7 +12,7 @@ const styles = theme => ({
     display: 'flex',
   },
   formControl: {
-    margin: theme.spacing.unit * 2,
+    margin: theme.spacing(2),
   },
   checkboxRoot: {
     paddingTop: 3,

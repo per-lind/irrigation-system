@@ -26,7 +26,6 @@ function Input(props) {
   } = props;
 
   let item;
-  const val = value || Math.round((min + max) / 2);
 
   switch(type) {
     case 'integer':
@@ -43,7 +42,7 @@ function Input(props) {
           <Grid item xs={12} md={6}>
             <Slider
               className={classes.slider}
-              value={val}
+              value={value}
               min={min}
               max={max}
               step={1}
@@ -51,7 +50,7 @@ function Input(props) {
             />
           </Grid>
           <Grid item>
-            <Typography variant="caption">{formatter[unit] ? formatter[unit](val) : val}</Typography>
+            <Typography variant="caption">{formatter[unit] ? formatter[unit](value) : value}</Typography>
           </Grid>
         </Grid>
       )

@@ -15,19 +15,19 @@ const styles = theme => ({
     display: 'flex',
   },
   formControl: {
-    margin: theme.spacing.unit * 2,
+    margin: theme.spacing(2),
   },
   button: {
     marginLeft: 0,
-    marginRight: theme.spacing.unit * 2,
+    marginRight: theme.spacing(2),
   },
   formGroup: {
-    marginTop: theme.spacing.unit,
+    marginTop: theme.spacing(1),
   },
   showDate: {
     display: "flex",
-    marginTop: theme.spacing.unit * 2,
-    marginBottom: theme.spacing.unit * 3,
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(3),
   },
 });
 
