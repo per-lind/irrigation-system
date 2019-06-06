@@ -1,9 +1,8 @@
 import React from 'react';
-import Grid from '@material-ui/core/Grid';
+import Tooltip from '@material-ui/core/Tooltip';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import { Done, Warning } from '@material-ui/icons';
-import Typography from '@material-ui/core/Typography';
+import { Done, Close } from '@material-ui/icons';
 
 const styles = theme => ({
   ok: {
@@ -21,22 +20,9 @@ function Health(props) {
   } = props;
 
   return (
-    <div className={classes.root}>
-      <Grid
-        container
-        spacing={8}
-        direction="row"
-        justify="flex-start"
-        alignItems="center"
-      >
-        <Grid item>
-          {healthy ? <Done className={classes.ok} /> : <Warning className={classes.notOk} />}
-        </Grid>
-        <Grid item>
-          <Typography color="textSecondary">{healthy ? "healthy" : "disconnected"}</Typography>
-        </Grid>
-      </Grid>
-    </div>
+    <Tooltip title={healthy ? "healthy" : "disconnected"}>
+      {healthy ? <Done className={classes.ok} /> : <Close className={classes.notOk} />}
+    </Tooltip>
   );
 }
 

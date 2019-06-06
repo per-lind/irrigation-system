@@ -1,11 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import TextField from '@material-ui/core/TextField';
+import Slider from '@material-ui/lab/Slider';
+import Typography from '@material-ui/core/Typography';
+import Grid from '@material-ui/core/Grid';
+import { formatter } from '../utilities';
 
 const styles = {
-  root: {
-    overflow: 'scroll',
+  slider: {
+    padding: '0px 0px',
   },
 };
 
@@ -14,30 +17,43 @@ function Input(props) {
     classes,
     id,
     label,
-    required,
     type,
     min,
     max,
     onChange,
     value,
+    unit,
   } = props;
 
   let item;
+  const val = value || Math.round((min + max) / 2);
 
   switch(type) {
     case 'integer':
       item = (
-        <TextField
-          id={id}
-          label={label}
-          value={value || ''}
-          onChange={event => onChange(id, parseInt(event.target.value))}
-          type="number"
-          InputLabelProps={{
-            shrink: true,
-          }}
-          margin="normal"
-        />
+        <Grid container
+          direction="row"
+          justify="flex-start"
+          alignItems="center"
+          spacing={3}
+        >
+          <Grid item>
+            <Typography variant="subtitle1">{label}: </Typography>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <Slider
+              className={classes.slider}
+              value={val}
+              min={min}
+              max={max}
+              step={1}
+              onChange={(event, value) => onChange(id, value)}
+            />
+          </Grid>
+          <Grid item>
+            <Typography variant="caption">{formatter[unit] ? formatter[unit](val) : val}</Typography>
+          </Grid>
+        </Grid>
       )
       break;
     default:

@@ -42,6 +42,10 @@ const styles = theme => ({
   avatar: {
     backgroundColor: red[500],
   },
+  go: {
+    display: "flex",
+    justifyContent: "flex-end",
+  }
 });
 
 class Action extends Component {
@@ -118,13 +122,16 @@ class Action extends Component {
               })
             }
             {payload &&
-              <Button
-                size="small"
-                color="primary"
-                onClick={this.handleClick}
-              >
-                GO
-              </Button>
+              <div className={classes.go}>
+                <Button
+                  variant="contained"
+                  size="small"
+                  color="primary"
+                  onClick={this.handleClick}
+                >
+                  GO
+                </Button>
+              </div>
             }
             {value &&
               Object.keys(value).map(key => {

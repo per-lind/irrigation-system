@@ -63,12 +63,10 @@ class Hardware extends Component {
               {name[0]}
             </Avatar>
           }
+          action={<Health healthy={healthy} />}
           title={name}
           subheader={driverName}
         />
-        <CardContent>
-          <Health healthy={healthy} />
-        </CardContent>
         {methods && Object.values(methods).map(method => {
           const responseData = _.get(data, [method.id, id]);
           return (
