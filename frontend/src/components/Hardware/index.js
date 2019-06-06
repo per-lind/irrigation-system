@@ -38,6 +38,7 @@ class Hardware extends Component {
       })
       .catch(error => {
         console.log(error);
+        this.props.setAlert(error.toString());
       })
       .finally(() => {
         this.props.setLoading(false);
