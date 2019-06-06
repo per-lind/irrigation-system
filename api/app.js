@@ -32,6 +32,9 @@ utilities.database().then(db => {
     dbController,
   } = controllers(db);
 
+  /************ HEALTH CHECK ************/
+  app.get('/health', (req, res) => res.send("OK"));
+
   /************ ROUTES FOR FRONTEND APP ************/
 
   // Login with username and password
@@ -42,7 +45,7 @@ utilities.database().then(db => {
   userRouter.use('/', passport.authenticateBearer());
 
   // Retrieve graph data
-  app.get('/api/data', dbController.data);
+  userRouter.get('/data', dbController.data);
 
   // Logout route
   userRouter.get('/logout', usersController.logout);
