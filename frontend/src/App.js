@@ -6,6 +6,7 @@ import Alert from './components/layout/Alert';
 import LoginPopup from './components/LoginPopup';
 import HardwareList from './components/HardwareList';
 import Graph from './components/Graph';
+import Events from './components/Events';
 import { logout, getHardwareList } from './actions';
 import { auth } from './utilities';
 
@@ -107,6 +108,9 @@ class App extends Component {
             </Section>
             <Section title={"Hardware"}>
               <HardwareList setAlert={this.setAlert} hardware={hardware} {...loaderProps} />
+            </Section>
+            <Section title={"Irrigation history"}>
+              <Events hardware={hardware}/>
             </Section>
           </React.Fragment>
         }

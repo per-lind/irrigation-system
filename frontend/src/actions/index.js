@@ -27,6 +27,14 @@ const getGraphData = params => {
   .then(response => response.data.Response)
 }
 
+const getEvents = params => {
+  return request({
+    url: '/api/events',
+    params,
+  })
+  .then(response => response.data.Response)
+}
+
 const getHardwareList = () => {
   return request({
     url: '/api/invoke',
@@ -52,6 +60,7 @@ export {
   login,
   logout,
   getGraphData,
+  getEvents,
   getHardwareList,
   invoke,
 };

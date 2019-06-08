@@ -53,6 +53,9 @@ utilities.database().then(db => {
   // Invoke device method
   userRouter.get('/invoke', iothubController.invoke);
 
+  // Method invoke history
+  userRouter.get('/events', dbController.events);
+
   // Namespace routes
   app.use('/api', userRouter);
 
