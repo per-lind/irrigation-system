@@ -1,5 +1,5 @@
 from jobs import periodic_reading
-from utils import Hardware, IotHub
+from utils import Hardware, IotHub, Queue
 from config import PERIODIC_READING_INTERVAL
 import json
 import schedule
@@ -10,16 +10,23 @@ def main_loop():
   try:
     print('Setting up hardware...')
     hardware = Hardware()
-    print('Connecting to Iot Hub...')
-    iothub = IotHub(hardware=hardware)
+
+    # Set up job queue
+    queue = Queue(hardware)
+
+    print('Connecting to IotHub...')
+    IotHub(hardware=hardware, queue=queue)
 
     print('Setting up background jobs...')
-    schedule.every(PERIODIC_READING_INTERVAL).seconds.do(lambda: periodic_reading.run(hardware))
+    schedule.every(PERIODIC_READING_INTERVAL).seconds.do(lambda: queue.append("periodic_reading"))
 
     print('App ready!')
 
     while True:
+      # Add scheduled jobs to queue
       schedule.run_pending()
+      # Pop queue
+      queue.work()
       time.sleep(1)
 
   except KeyboardInterrupt:

@@ -17,22 +17,25 @@ const data = db => (req, res) => {
 }
 
 const upload = db => (req, res) => {
-  const data = req.body;
-  console.log("Received new data: ", data)
-  // Validate presence of measures and timestamp
-  const { timestamp, measures } = data;
+  const obj = req.body;
+  console.log("Received new data: ", obj)
+  // Validate presence of model, data and timestamp
+  const { timestamp, model, data, deviceId } = obj;
   const errors = [];
   if (typeof timestamp !== 'string' || timestamp === '') {
     errors.push("timestamp must be given and have type string");
   }
-  if (typeof measures !== 'object') {
-    errors.push("measures must be given and have type json");
+  if (!["events", "measures"].includes(model)) {
+    errors.push("model must be 'events' or 'measures'");
+  }
+  if (typeof data !== 'object') {
+    errors.push("data must be given and have type json");
   }
   if (errors.length > 0) {
     console.log("Payload not valid: ", errors)
     return res.status(400).json({ errors })
   }
-  return db.collection('measures').insertOne(data)
+  return db.collection(model).insertOne({ timestamp, deviceId, [model]: data })
     .then(res.status(200).json({}))
     .catch(error => {
       console.log("Error when inserting document: ", error);

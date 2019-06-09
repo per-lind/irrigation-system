@@ -6,9 +6,6 @@ const invoke = db => (req, res) => {
     .then(result => {
       // Send response to frontend
       res.status(result.status).json(result.payload);
-      // Save method call in db
-      const data = result.payload && result.payload.Response;
-      if (data && !Array.isArray(data)) db.collection('events').insertOne(data);
     })
     .catch(error => res.status(400).json({ message: 'Failed to invoke method ' + req.query.method }));
 };

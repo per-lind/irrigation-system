@@ -1,9 +1,11 @@
 from uuid import uuid4
 from iothub_client import IoTHubClient, IoTHubTransportProvider, IoTHubMessage, DeviceMethodReturnValue
-from utils.json_serializer import json_dumps
+from helpers import json_dumps
+from jobs import invoke_method
 import json
 from datetime import datetime
 import pytz
+import queue
 
 from config import IOTHUB_CONNECTION, IOTHUB_MESSAGE_TIMEOUT
 
@@ -11,9 +13,10 @@ def send_confirmation_callback(message, result, user_context):
     print("Confirmation received for message with result = %s" % (result))
 
 class IotHub:
-  def __init__(self, hardware):
+  def __init__(self, hardware, queue):
     self.method_callbacks = 0
     self.hardware = hardware
+    self.queue = queue
     self._init_client()
 
   def _init_client(self):
@@ -45,12 +48,13 @@ class IotHub:
       if method_name == 'list':
         response = self.hardware.list()
       else:
-        payload = msg['payload'] if 'payload' in msg else {}
-        result = self.hardware.invoke(method_name, msg['id'], payload)
-        response = {
-          'timestamp': datetime.now(pytz.timezone('Europe/Stockholm')),
-          **result,
-        }
+        method_payload = msg['payload'] if 'payload' in msg else {}
+        self.queue.append("invoke_method", {
+          "method": method_name,
+          "id": msg['id'],
+          "payload": method_payload,
+        })
+        response = "ok"
 
       status = 200
 
@@ -61,6 +65,10 @@ class IotHub:
     except ValueError as inst:
       response = inst.args
       status = 400
+
+    except queue.Full:
+      response = "Too many items in queue"
+      status = 503
 
     except Exception as inst:
       response = inst.args

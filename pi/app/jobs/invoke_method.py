@@ -3,29 +3,30 @@ from utils import database_api
 from datetime import datetime
 import pytz
 
-def run(hardware):
-  print("Saving periodic reading")
+def run(hardware, settings):
   try:
-    # Read sensors
-    ids = ['humidity', 'light', 'pressure']
-    data = hardware.invoke('read', ids)
+    print("Invoking device method")
+    method = settings["method"]
+    id = settings["id"]
+    payload = settings["payload"]
 
-    # Upload data to db
+    result = hardware.invoke(method, id, payload)
+
     to_upload = json_dumps({
       "deviceId": "Huvudsta",
       "timestamp": datetime.now(pytz.timezone('Europe/Stockholm')),
-      "model": "measures",
-      "data": data,
+      "model": "events",
+      "data": result,
     })
 
-    print("Uploading data to db")
+    print("Uploading event data to db")
     print("Data to upload: {}".format(to_upload))
     response = database_api.upload(to_upload)
 
     print("Upload status: %s" % response.status_code)
 
   except Exception as inst:
-    print('Unexpected error with periodic reading!')
+    print('Unexpected error with method invoke!')
     print(type(inst))
     print(inst.args)
     print(inst)
