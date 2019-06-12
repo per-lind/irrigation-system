@@ -1,5 +1,4 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { useContext } from 'react';
 import ErrorIcon from '@material-ui/icons/Error';
 import CloseIcon from '@material-ui/icons/Close';
 import IconButton from '@material-ui/core/IconButton';
@@ -7,6 +6,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import SnackbarContent from '@material-ui/core/SnackbarContent';
 import Slide from '@material-ui/core/Slide';
 import { makeStyles } from '@material-ui/core/styles';
+import { context } from '../../utilities';
 
 const useStyles = makeStyles(theme => ({
   error: {
@@ -25,8 +25,9 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function Alert({ message, onClose }) {
+function Alert() {
   const classes = useStyles();
+  const { alert, update } = useContext(context);
 
   return (
     <div>
@@ -36,8 +37,8 @@ function Alert({ message, onClose }) {
           vertical: 'bottom',
           horizontal: 'left',
         }}
-        open={!!message}
-        onClose={onClose}
+        open={!!alert}
+        onClose={() => update({ alert: undefined })}
       >
         <SnackbarContent
           className={classes.error}
@@ -45,24 +46,18 @@ function Alert({ message, onClose }) {
           message={
             <span id="client-snackbar" className={classes.message}>
               <ErrorIcon className={classes.icon} />
-              {message}
+              {alert}
             </span>
           }
           action={[
-            <IconButton key="close" aria-label="Close" color="inherit" onClick={onClose}>
+            <IconButton key="close" aria-label="Close" color="inherit" onClick={() => update({ alert: undefined })}>
               <CloseIcon className={classes.closeIcon} />
             </IconButton>,
           ]}
         />
       </Snackbar>
-
     </div>
   );
 }
-
-Alert.propTypes = {
-  message: PropTypes.node,
-  onClose: PropTypes.func,
-};
 
 export default Alert;

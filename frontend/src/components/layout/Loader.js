@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Fade from '@material-ui/core/Fade';
+import { context } from '../../utilities';
 
 const useStyles = makeStyles({
   root: {
@@ -11,8 +12,9 @@ const useStyles = makeStyles({
   },
 });
 
-function Loader({ loading }) {
+function Loader() {
   const classes = useStyles();
+  const { loading } = useContext(context);
 
   return (
     <div className={classes.root}>

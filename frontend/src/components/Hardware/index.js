@@ -6,10 +6,10 @@ import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
 import Avatar from '@material-ui/core/Avatar';
 import Action from './Action';
-import { invoke } from '../../actions';
 import _ from 'lodash';
 import Health from './Health';
 import { Typography } from '@material-ui/core';
+import { context } from '../../utilities';
 
 const styles = theme => ({
   divider: {
@@ -25,38 +25,14 @@ class Hardware extends Component {
   state = { data: {} };
 
   handleInvoke = (method, payload) => {
-    this.props.setLoading(true);
-    invoke(method, payload)
-      .then(result => {
-        const data = this.state.data[method] || {};
-        this.setState({
-          data: {
-            ...this.state.data,
-            [method]: { ...data, ...result }
-          }
-        });
-      })
-      .catch(error => {
-        console.log(error);
-        this.props.setAlert(error.toString());
-      })
-      .finally(() => {
-        this.props.setLoading(false);
-      });
+    const { socket } = this.context;
+    socket.send('invoke', { payload, method });
   }
 
   render() {
-    const {
-      classes,
-      id,
-      name,
-      driver,
-      loading,
-    } = this.props;
-
-    const {
-      data,
-    } = this.state;
+    const { classes, id, name, driver } = this.props;
+    const { loading } = this.context;
+    const { data } = this.state;
 
     const { methods, healthy } = driver || this.props;
     const { name: driverName } = driver || {};
@@ -97,7 +73,6 @@ class Hardware extends Component {
               </CardContent>
               {relay.methods && Object.values(relay.methods).map(method => {
                 const responseData = _.get(data, [method.id, id, relay.id]);
-                console.log(responseData)
                 return (
                   <Action
                     key={method.id}
@@ -119,6 +94,8 @@ class Hardware extends Component {
     );
   }
 }
+
+Hardware.contextType = context;
 
 Hardware.propTypes = {
   classes: PropTypes.object.isRequired,

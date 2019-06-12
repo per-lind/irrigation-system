@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+
 import TopMenu from './components/layout/TopMenu';
 import Section from './components/layout/Section';
 import Loader from './components/layout/Loader';
@@ -7,116 +8,83 @@ import LoginPopup from './components/LoginPopup';
 import HardwareList from './components/HardwareList';
 import Graph from './components/Graph';
 import Events from './components/Events';
-import { logout, getHardwareList } from './actions';
-import { auth } from './utilities';
+import { websocket, context, auth } from './utilities';
+
+const initialState = {
+  user: undefined,
+  socket: undefined,
+  dialog: undefined,
+  hardware: [],
+  data: [],
+  loading: false,
+  alert: undefined,
+  events: [],
+};
 
 class App extends Component {
   constructor() {
     super()
 
     this.state = {
-      user: undefined,
-      dialog: undefined,
-      hardware: [],
-      loading: false,
-      alert: undefined,
+      ...initialState,
+      openDialog: dialog => this.setState({ dialog }),
+      closeDialogs: () => this.setState({ dialog: undefined }),
+      connect: this.connect,
+      disconnect: this.disconnect,
+      update: this.update,
     }
-
-    this.logout = this.logout.bind(this);
-    this.openDialog = this.openDialog.bind(this);
-    this.closeDialogs = this.closeDialogs.bind(this);
-    this.loadUser = this.loadUser.bind(this);
-    this.retrieveHardware = this.retrieveHardware.bind(this);
-    this.setLoading = this.setLoading.bind(this);
-    this.setAlert = this.setAlert.bind(this);
-    this.closeAlert = this.closeAlert.bind(this);
-  }
-
-  openDialog(name) {
-    this.setState({ dialog: name });
-  }
-
-  loadUser() {
-    const user = auth.getUser();
-    this.setState({ user });
-    if (user) {
-      this.retrieveHardware();
-    }
-  }
-
-  logout() {
-    logout().then(response => {
-      this.loadUser();
-    });
-  }
-
-  closeDialogs() {
-    this.setState({ dialog: undefined });
   }
 
   componentDidMount() {
-    this.loadUser();
+    this.connect();
   }
 
-  retrieveHardware() {
-    getHardwareList()
-      .then(hardware => this.setState({ hardware: hardware }))
-      .catch(error => {
-        console.log('Error retrieving list of hardware!')
-        console.log(error)
-      })
+  update = (state) => {
+    this.setState(state);
   }
 
-  setLoading(loading) {
-    this.setState({ loading });
+  connect = () => {
+    // Load user
+    const user = auth.getUser();
+    this.setState({ user });
+    // Websocket connection
+    if (user) {
+      websocket(this.update);
+    }
   }
 
-  setAlert(message) {
-    this.setState({ alert: message });
-  }
-
-  closeAlert() {
-    this.setState({ alert: undefined });
+  disconnect = () => {
+    // Empty local store
+    auth.clearAppStorage();
+    // Disconnect socket
+    if (this.state.socket) this.state.socket.disconnect();
+    // Reset state
+    this.setState(initialState);
   }
 
   render() {
-    const { hardware, user, loading, alert } = this.state;
-
-    const userProps = {
-      user: user,
-      loadUser: this.loadUser,
-      openLoginPopup: () => this.openDialog('login'),
-      logout: this.logout,
-    };
-    const loaderProps = {
-      loading,
-      setLoading: this.setLoading,
-    }
-    const modalProps = (name) => ({
-      isOpen: this.state.dialog === name,
-      onClose: this.closeDialogs,
-    });
+    const { user, socket, hardware } = this.state;
 
     return (
-      <div>
-        <TopMenu {...userProps}/>
-        <LoginPopup {...userProps} {...modalProps('login')} />
-        {user &&
+      <context.Provider value={this.state}>
+        <TopMenu />
+        <LoginPopup />
+        {user && socket &&
           <React.Fragment>
             <Section title={"Data"} >
               <Graph hardware={hardware} />
             </Section>
             <Section title={"Hardware"}>
-              <HardwareList setAlert={this.setAlert} hardware={hardware} {...loaderProps} />
+              <HardwareList />
             </Section>
             <Section title={"Irrigation history"}>
-              <Events hardware={hardware}/>
+              <Events />
             </Section>
           </React.Fragment>
         }
-        <Loader loading={loading} />
-        <Alert message={alert} onClose={this.closeAlert} />
-      </div>
+        <Loader />
+        <Alert />
+      </context.Provider>
     );
   }
 }

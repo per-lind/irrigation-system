@@ -10,6 +10,7 @@ import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import withMobileDialog from '@material-ui/core/withMobileDialog';
+import { context } from '../utilities';
 import { login } from '../actions';
 
 class LoginPopup extends Component {
@@ -27,13 +28,15 @@ class LoginPopup extends Component {
   };
 
   handleClose = () => {
+    const { closeDialogs } = this.context;
     this.setState({ password: '', errors: undefined })
-    this.props.onClose();
+    closeDialogs();
   };
 
   submit = () => {
-    login(this.state.password).then(() => {
-      this.props.loadUser();
+    const { connect } = this.context;
+    login({ username: 'user1', password: this.state.password }).then(() => {
+      connect();
       this.handleClose();
     })
     .catch(error => {
@@ -42,14 +45,15 @@ class LoginPopup extends Component {
   }
 
   render() {
-    const { fullScreen, isOpen } = this.props;
+    const { fullScreen } = this.props;
+    const { dialog } = this.context;
 
     return (
       <div>
         <Dialog
           fullScreen={fullScreen}
-          open={isOpen}
-          onClose={this.handleClose}
+          open={dialog === 'login'}
+          onClose={() => this.handleClose()}
         >
           <DialogTitle>Log in to Irrigation System</DialogTitle>
           <DialogContent>
@@ -71,10 +75,10 @@ class LoginPopup extends Component {
             </FormControl>
           </DialogContent>
           <DialogActions>
-            <Button onClick={this.handleClose} color="primary">
+            <Button onClick={() => this.handleClose()} color="primary">
               Cancel
             </Button>
-            <Button onClick={this.submit} color="primary">
+            <Button onClick={() => this.submit()} color="primary">
               Log in
             </Button>
           </DialogActions>
@@ -83,6 +87,8 @@ class LoginPopup extends Component {
     );
   }
 }
+
+LoginPopup.contextType = context;
 
 LoginPopup.propTypes = {
   fullScreen: PropTypes.bool.isRequired,

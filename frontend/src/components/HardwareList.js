@@ -1,22 +1,19 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
+import React, { useContext } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 import Hardware from './Hardware';
 import Grid from '@material-ui/core/Grid';
 import _ from 'lodash';
+import { context } from '../utilities';
 
-const styles = theme => ({
+const useStyles = makeStyles(theme => ({
   root: {
     padding: theme.spacing(1),
   },
-});
+}));
 
-function HardwareList(props) {
-  const {
-    classes,
-    hardware,
-  } = props;
-
+function HardwareList() {
+  const classes = useStyles();
+  const { hardware } = useContext(context);
   if (!hardware || hardware === []) return <div></div>
 
   return (
@@ -24,7 +21,7 @@ function HardwareList(props) {
       <Grid container className={classes.container} spacing={1}>
         {hardware.map((item, index) => (
           <Grid key={index} item xs={12} md={_.get(item, "driver.relays") ? 12 : 6}>
-            <Hardware key={index} {...props} {...item} />
+            <Hardware key={index} {...item} />
           </Grid>
         ))}
       </Grid>
@@ -32,9 +29,4 @@ function HardwareList(props) {
   );
 }
 
-HardwareList.propTypes = {
-  classes: PropTypes.object.isRequired,
-  hardware: PropTypes.array,
-};
-
-export default withStyles(styles)(HardwareList);
+export default HardwareList;

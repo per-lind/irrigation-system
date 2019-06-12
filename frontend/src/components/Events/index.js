@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import { getEvents } from '../../actions';
 import moment from 'moment';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -10,6 +9,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { formatter } from '../../utilities';
 import _ from 'lodash';
+import { context } from '../../utilities';
 
 const styles = theme => ({
   root: {
@@ -55,33 +55,28 @@ class Events extends Component {
   }
 
   retrieveEvents = () => {
+    const { socket } = this.context;
     const { startTime, endTime } = this.state;
-    getEvents({
+    socket.send('events', {
       startTime: startTime.format(),
       endTime: endTime.format(),
       hardware: ['chip.pump1']
-    })
-    .then(events => {
-      // Flatten data
-      const data = _.flatten(events.map(({ timestamp, chip }) =>
-        Object.keys(chip).map(relay => ({
-          timestamp,
-          pump: relay,
-          duration: chip[relay].duration,
-          success: chip[relay].success,
-        }))
-      ));
-      this.setState({ data })
-    })
-    .catch(error => {
-      console.log('Error retrieving data!')
-      console.log(error)
     });
   }
 
   render() {
     const { classes } = this.props;
-    const { data } = this.state;
+    const { events } = this.context;
+
+    const data = _.flatten(events.map(({ timestamp, events }) => {
+      const { chip } = events;
+      return Object.keys(chip).map(relay => ({
+        timestamp,
+        pump: relay,
+        duration: chip[relay].duration,
+        success: chip[relay].success,
+      }))
+    }));
 
     return (
       <div className={classes.root}>
@@ -111,5 +106,7 @@ class Events extends Component {
     );
   }
 }
+
+Events.contextType = context;
 
 export default withStyles(styles)(Events);

@@ -1,66 +1,77 @@
 import { request, auth } from '../utilities';
 
-const login = password => {
+const login = ({ username, password }) => {
   return request({
     url: '/api/login',
     method: 'post',
-    data: { username: 'user1', password: password }
+    data: { username, password }
   }).then(response => {
     auth.setToken(response.data.token);
     auth.setUser(response.data.user);
   });
 };
 
-const logout = () => {
-  return request({
-    url: '/api/logout',
-  }).then(response => {
-    auth.clearAppStorage();
-  });
+const data = ({ socket, message, token, update }) => {
+  const callback = response => {
+    if (response.status === 200) {
+      update({ data: response.data })
+    } else {
+      // TODO: display alert
+    }
+  }
+  socket.emit('message', { action: 'data', message, token }, callback);
 };
 
-const getGraphData = params => {
-  return request({
-    url: '/api/data',
-    params,
-  })
-  .then(response => response.data.Response)
-}
-
-const getEvents = params => {
-  return request({
-    url: '/api/events',
-    params,
-  })
-  .then(response => response.data.Response)
-}
-
-const getHardwareList = () => {
-  return request({
-    url: '/api/invoke',
-    params: {
-      method: 'list',
+const events = ({ socket, message, token, update }) => {
+  const callback = response => {
+    if (response.status === 200) {
+      update({ events: response.data })
+    } else {
+      // TODO: display alert
     }
-  })
-  .then(response => response.data.Response);
-}
+  }
+  socket.emit('message', { action: 'events', message, token }, callback);
+};
 
-const invoke = (method, payload) => {
-  return request({
-    url: '/api/invoke',
-    params: {
-      method,
-      payload,
+const hardware = ({ socket, token, update }) => {
+  const callback = response => {
+    if (response.status === 200) {
+      update({ hardware: response.Response })
+    } else {
+      // TODO: display alert
     }
-  })
-  .then(response => response.data.Response)
+  }
+  socket.emit('message', {
+    action: 'invoke',
+    message: { method: 'list' },
+    token,
+  }, callback);
+};
+
+const invoke = ({ socket, token, message }) => {
+  const callback = response => {
+    console.log("got response", response);
+    if (response.status === 200) {
+      // TODO: update result
+    } else {
+      // TODO: display alert
+    }
+  }
+  socket.emit('message', { action: 'invoke', message, token }, callback);
 };
 
 export {
   login,
-  logout,
-  getGraphData,
-  getEvents,
-  getHardwareList,
+  data,
+  events,
+  hardware,
+  invoke,
+};
+
+export default {
+  login,
+  data,
+  events,
+  hardware,
   invoke,
 };

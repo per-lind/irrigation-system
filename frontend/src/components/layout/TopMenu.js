@@ -1,12 +1,12 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
+import React, { useContext } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
+import { context } from '../../utilities';
 
-const styles = {
+const useStyles = makeStyles({
   root: {
     flexGrow: 1,
   },
@@ -17,15 +17,11 @@ const styles = {
     marginLeft: -12,
     marginRight: 20,
   },
-};
+});
 
-function TopMenu(props) {
-  const {
-    classes,
-    user,
-    openLoginPopup,
-    logout,
-  } = props;
+function TopMenu() {
+  const classes = useStyles();
+  const { user, openDialog, disconnect } = useContext(context);
 
   return (
     <div className={classes.root}>
@@ -35,9 +31,9 @@ function TopMenu(props) {
             Irrigation system
           </Typography>
           {user ?
-            <Button color="inherit" onClick={logout}>Logout</Button>
+            <Button color="inherit" onClick={disconnect}>Logout</Button>
             :
-            <Button color="inherit" onClick={openLoginPopup}>Login</Button>
+            <Button color="inherit" onClick={() => openDialog('login')}>Login</Button>
           }
         </Toolbar>
       </AppBar>
@@ -45,8 +41,4 @@ function TopMenu(props) {
   );
 }
 
-TopMenu.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
-
-export default withStyles(styles)(TopMenu);
+export default TopMenu;

@@ -17,7 +17,7 @@ import {
   Tooltip } from 'recharts';
 import _ from 'lodash';
 import { formatter } from '../../utilities';
-import { getGraphData } from '../../actions';
+import { context } from '../../utilities';
 
 import {
   amber,
@@ -111,13 +111,9 @@ class Graph extends Component {
   }
 
   retrieveGraphData() {
+    const { socket } = this.context;
     const { startTime, endTime } = this.state;
-    getGraphData({ startTime: startTime.format(), endTime: endTime.format() })
-      .then(data => this.setState({ data }))
-      .catch(error => {
-        console.log('Error retrieving data!')
-        console.log(error)
-      })
+    socket.send('data', { startTime: startTime.format(), endTime: endTime.format() });
   }
 
   static getDerivedStateFromProps(props, state) {
@@ -158,8 +154,9 @@ class Graph extends Component {
   }
 
   render() {
-    const { hardware, selected, interval, startTime, endTime, data } = this.state;
+    const { hardware, selected, interval, startTime, endTime } = this.state;
     const { classes, width } = this.props;
+    const { data } = this.context;
 
     return (
       <div className={classes.root}>
@@ -205,10 +202,11 @@ class Graph extends Component {
   }
 }
 
+Graph.contextType = context;
+
 Graph.propTypes = {
   classes: PropTypes.object.isRequired,
   width: PropTypes.string.isRequired,
-  data: PropTypes.array,
 };
 
 export default withWidth()(withStyles(styles)(Graph));
