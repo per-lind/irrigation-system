@@ -1,13 +1,16 @@
 const { PORT } = require('./config');
+const bodyParser = require('body-parser');
+const controllers = require('./controllers');
+const utilities = require('./utilities');
 
 // Express routing
 const express = require('express');
-const userRouter = express.Router();
-const piRouter = express.Router();
-const bodyParser = require('body-parser');
 const app = express();
-const controllers = require('./controllers');
-const utilities = require('./utilities');
+const server = require('http').Server(app);
+const websocket = utilities.websocket(server)
+
+// Router for raspberry pi
+const piRouter = express.Router();
 
 // Helmet for security best practise
 const helmet = require('helmet')
@@ -41,23 +44,18 @@ utilities.database().then(db => {
   app.use('/api/login', passport.authenticateLocal());
   app.post('/api/login', usersController.login);
 
-  // Use bearer authentication for other routes
-  userRouter.use('/', passport.authenticateBearer());
+  // Use bearer authentication for websocket routes
+  websocket.auth(passport.authenticateToken());
+  websocket.use(passport.authenticateToken());
 
   // Retrieve graph data
-  userRouter.get('/data', dbController.data);
-
-  // Logout route
-  userRouter.get('/logout', usersController.logout);
+  websocket.message('data', dbController.data);
 
   // Invoke device method
-  userRouter.get('/invoke', iothubController.invoke);
+  websocket.message('invoke', iothubController.invoke);
 
   // Method invoke history
-  userRouter.get('/events', dbController.events);
-
-  // Namespace routes
-  app.use('/api', userRouter);
+  websocket.message('events', dbController.events);
 
   /************ ROUTES FOR RASPBERRY PI ************/
 
@@ -72,10 +70,10 @@ utilities.database().then(db => {
 
   /*************************************************/
 
-  app.listen(PORT);
+  server.listen(PORT);
   console.log(`Api app listening on port ${PORT}!`)
 }).catch(error => {
-  console.log("Failed to connect to MongoDB: ", error);
+  console.log("Failed to start app: ", error);
   process.exit(1);
 });
 

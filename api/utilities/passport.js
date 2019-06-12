@@ -36,14 +36,14 @@ const local = db => new localStrategy({ passReqToCallback: true }, (req, usernam
 });
 
 // Authentication with token
-const bearer = new bearerStrategy({ passReqToCallback: true }, (req, token, done) => {
+const token = ({ token, done }) => {
   // Verify JWT token
   jwt.verify(token, JWT_SECRET, (err, decoded) => {
     // If token was invalid
-    if (err) return done(null, false);
-    done(null, { username: decoded.id }, { scope: 'all' });
+    if (err) return done(false);
+    done({ username: decoded.id });
   });
-});
+};
 
 // Authentication for raspberry pi
 const pi = new bearerStrategy({ passReqToCallback: true }, (req, token, done) => {
@@ -55,13 +55,12 @@ const pi = new bearerStrategy({ passReqToCallback: true }, (req, token, done) =>
 
 module.exports = db => {
   passport.use('local', local(db));
-  passport.use('bearer', bearer);
   passport.use('pi', pi);
 
   return {
     initialize: () => passport.initialize(),
-    authenticateLocal: () =>passport.authenticate('local', { session: false }),
-    authenticateBearer: () => passport.authenticate('bearer', { session: false }),
+    authenticateLocal: () => passport.authenticate('local', { session: false }),
+    authenticateToken: () => token,
     authenticatePi: () => passport.authenticate('pi', { session: false }),
   }
 };

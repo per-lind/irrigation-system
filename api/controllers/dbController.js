@@ -11,7 +11,7 @@ const data = db => (req, res) => {
     .toArray(function(error, documents) {
       if (error) return res.status(500);
       res.status(200).json({
-        Response: documents
+        data: documents
       });
     });
 }
@@ -52,7 +52,7 @@ const events = db => (req, res) => {
   // Build query
   const conditions = [{ "timestamp": { $gte: startTime, $lt: endTime } }]
   hardware.forEach(item => {
-    conditions.push({ [item]: { $exists: true } });
+    conditions.push({ [`events.${item}`]: { $exists: true } });
   });
   return db
     .collection('events')
@@ -62,7 +62,7 @@ const events = db => (req, res) => {
     .toArray(function (error, documents) {
       if (error) return res.status(500);
       res.status(200).json({
-        Response: documents
+        data: documents
       });
     });
 }
