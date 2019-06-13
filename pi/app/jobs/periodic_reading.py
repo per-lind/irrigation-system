@@ -8,7 +8,16 @@ def run(hardware):
   try:
     # Read sensors
     ids = ['humidity', 'light', 'pressure']
-    data = hardware.invoke('read', ids)
+    data = {}
+    for id in ids:
+      try:
+        result = hardware.invoke('read', id)
+        data = { **data, **result }
+      except Exception as inst:
+        print('Failed to read {}'.format(id))
+        print(type(inst))
+        print(inst.args)
+        print(inst)
 
     # Upload data to db
     to_upload = json_dumps({
