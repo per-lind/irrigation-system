@@ -11,34 +11,40 @@ const login = ({ username, password }) => {
   });
 };
 
-const data = ({ socket, message, token, update }) => {
+const data = ({ socket, message, token, update, addAlert }) => {
+  update({ loading: true });
   const callback = response => {
+    update({ loading: false });
     if (response.status === 200) {
       update({ data: response.data })
     } else {
-      // TODO: display alert
+      addAlert(`Failed to retrieve data! ${JSON.stringify(response)}`);
     }
   }
   socket.emit('message', { action: 'data', message, token }, callback);
 };
 
-const events = ({ socket, message, token, update }) => {
+const events = ({ socket, message, token, update, addAlert }) => {
+  update({ loading: true });
   const callback = response => {
+    update({ loading: false });
     if (response.status === 200) {
-      update({ events: response.data })
+      update({ irrigation: response.data });
     } else {
-      // TODO: display alert
+      addAlert(`Failed to retrieve events! ${JSON.stringify(response)}`);
     }
   }
   socket.emit('message', { action: 'events', message, token }, callback);
 };
 
-const hardware = ({ socket, token, update }) => {
+const hardware = ({ socket, token, update, addAlert }) => {
+  update({ loading: true });
   const callback = response => {
+    update({ loading: false });
     if (response.status === 200) {
-      update({ hardware: response.Response })
+      update({ hardware: response.Response });
     } else {
-      // TODO: display alert
+      addAlert(`Failed to retrieve hardware list! ${JSON.stringify(response)}`);
     }
   }
   socket.emit('message', {
@@ -48,17 +54,20 @@ const hardware = ({ socket, token, update }) => {
   }, callback);
 };
 
-const invoke = ({ socket, token, message }) => {
-  const callback = response => {
-    console.log("got response", response);
-    if (response.status === 200) {
-      // TODO: update result
-    } else {
-      // TODO: display alert
+const invoke = ({ socket, token, message, update, addAlert }) =>
+  new Promise((resolve, reject) => {
+    update({ loading: true });
+    const callback = response => {
+      update({ loading: false });
+      if (response.status === 200) {
+        resolve(response);
+      } else {
+        addAlert(`Failed to invoke method! ${JSON.stringify(response)}`);
+        reject(response);
+      }
     }
-  }
-  socket.emit('message', { action: 'invoke', message, token }, callback);
-};
+    socket.emit('message', { action: 'invoke', message, token }, callback);
+  });
 
 export {
   login,

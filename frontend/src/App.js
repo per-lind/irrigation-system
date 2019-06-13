@@ -9,6 +9,7 @@ import HardwareList from './components/HardwareList';
 import Graph from './components/Graph';
 import Events from './components/Events';
 import { websocket, context, auth } from './utilities';
+import _ from 'lodash';
 
 const initialState = {
   user: undefined,
@@ -17,8 +18,9 @@ const initialState = {
   hardware: [],
   data: [],
   loading: false,
-  alert: undefined,
-  events: [],
+  alerts: [],
+  irrigation: [],
+  events: {},
 };
 
 class App extends Component {
@@ -29,9 +31,12 @@ class App extends Component {
       ...initialState,
       openDialog: dialog => this.setState({ dialog }),
       closeDialogs: () => this.setState({ dialog: undefined }),
+      addAlert: this.addAlert,
+      popAlert: () => this.setState({ alerts: _.drop(this.state.alerts) }),
       connect: this.connect,
       disconnect: this.disconnect,
       update: this.update,
+      addEvent: this.addEvent,
     }
   }
 
@@ -43,13 +48,17 @@ class App extends Component {
     this.setState(state);
   }
 
+  addAlert = message => this.setState({ alerts: [...this.state.alerts, message] })
+
+  addEvent = event => this.setState({ events: _.merge(this.state.events, event) })
+
   connect = () => {
     // Load user
     const user = auth.getUser();
     this.setState({ user });
     // Websocket connection
     if (user) {
-      websocket(this.update);
+      websocket(this.update, this.addAlert, this.addEvent);
     }
   }
 

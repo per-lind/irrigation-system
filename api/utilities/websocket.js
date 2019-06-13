@@ -84,7 +84,7 @@ const websocket = server => {
     // Bind actions to controllers
     message: (action, controller) => routes[action] = controller,
     // Send message to all clients
-    broadcast: () => true,
+    broadcast: (key, message) => io.emit(key, message),
   };
 };
 

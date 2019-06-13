@@ -16,7 +16,9 @@ def run(hardware, settings):
       "deviceId": "Huvudsta",
       "timestamp": datetime.now(pytz.timezone('Europe/Stockholm')),
       "model": "events",
-      "data": result,
+      "data": {
+        method: result
+      },
     })
 
     print("Uploading event data to db")

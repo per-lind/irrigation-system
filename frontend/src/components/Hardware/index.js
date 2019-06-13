@@ -22,17 +22,14 @@ const styles = theme => ({
 });
 
 class Hardware extends Component {
-  state = { data: {} };
-
   handleInvoke = (method, payload) => {
     const { socket } = this.context;
-    socket.send('invoke', { payload, method });
+    return socket.send('invoke', { payload, method });
   }
 
   render() {
     const { classes, id, name, driver } = this.props;
-    const { loading } = this.context;
-    const { data } = this.state;
+    const { loading, events } = this.context;
 
     const { methods, healthy } = driver || this.props;
     const { name: driverName } = driver || {};
@@ -51,7 +48,7 @@ class Hardware extends Component {
           subheader={driverName}
         />
         {methods && Object.values(methods).map(method => {
-          const responseData = _.get(data, [method.id, id]);
+          const responseData = _.get(events, [method.id, id]);
           return (
             <Action
               key={method.id}
@@ -72,7 +69,7 @@ class Hardware extends Component {
                 {relay.driver && <Health healthy={driver.healthy} />}
               </CardContent>
               {relay.methods && Object.values(relay.methods).map(method => {
-                const responseData = _.get(data, [method.id, id, relay.id]);
+                const responseData = _.get(events, [method.id, id, relay.id]);
                 return (
                   <Action
                     key={method.id}

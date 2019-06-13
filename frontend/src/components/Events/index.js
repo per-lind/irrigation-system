@@ -60,16 +60,16 @@ class Events extends Component {
     socket.send('events', {
       startTime: startTime.format(),
       endTime: endTime.format(),
-      hardware: ['chip.pump1']
+      hardware: ['run.chip.pump1']
     });
   }
 
   render() {
     const { classes } = this.props;
-    const { events } = this.context;
+    const { irrigation } = this.context;
 
-    const data = _.flatten(events.map(({ timestamp, events }) => {
-      const { chip } = events;
+    const data = _.flatten(irrigation.map(({ timestamp, events }) => {
+      const chip = _.get(events, 'run.chip', {});
       return Object.keys(chip).map(relay => ({
         timestamp,
         pump: relay,

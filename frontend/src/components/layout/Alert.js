@@ -27,7 +27,8 @@ const useStyles = makeStyles(theme => ({
 
 function Alert() {
   const classes = useStyles();
-  const { alert, update } = useContext(context);
+  const { alerts, popAlert } = useContext(context);
+  const alert = alerts[0];
 
   return (
     <div>
@@ -38,7 +39,7 @@ function Alert() {
           horizontal: 'left',
         }}
         open={!!alert}
-        onClose={() => update({ alert: undefined })}
+        onClose={() => popAlert()}
       >
         <SnackbarContent
           className={classes.error}
@@ -50,7 +51,7 @@ function Alert() {
             </span>
           }
           action={[
-            <IconButton key="close" aria-label="Close" color="inherit" onClick={() => update({ alert: undefined })}>
+            <IconButton key="close" aria-label="Close" color="inherit" onClick={() => popAlert()}>
               <CloseIcon className={classes.closeIcon} />
             </IconButton>,
           ]}

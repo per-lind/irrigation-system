@@ -16,7 +16,7 @@ const data = db => (req, res) => {
     });
 }
 
-const upload = db => (req, res) => {
+const upload = (db, websocket) => (req, res) => {
   const obj = req.body;
   console.log("Received new data: ", obj)
   // Validate presence of model, data and timestamp
@@ -36,14 +36,17 @@ const upload = db => (req, res) => {
     return res.status(400).json({ errors })
   }
   return db.collection(model).insertOne({ timestamp, deviceId, [model]: data })
-    .then(res.status(200).json({}))
+    .then(() => {
+      res.status(200).json({});
+      websocket.broadcast("upload", { timestamp, model, data });
+    })
     .catch(error => {
       console.log("Error when inserting document: ", error);
       res.status(500).json({});
     });
 }
 
-const events = db => (req, res) => {
+const events = (db) => (req, res) => {
   // Time interval for the query
   const endTime = req.query.endTime ;
   const startTime = req.query.startTime;
@@ -67,9 +70,9 @@ const events = db => (req, res) => {
     });
 }
 
-const dbController = db => ({
+const dbController = (db, websocket) => ({
   data: data(db),
-  upload: upload(db),
+  upload: upload(db, websocket),
   events: events(db),
 });
 

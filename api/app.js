@@ -33,7 +33,7 @@ utilities.database().then(db => {
     usersController,
     iothubController,
     dbController,
-  } = controllers(db);
+  } = controllers(db, websocket);
 
   /************ HEALTH CHECK ************/
   app.get('/health', (req, res) => res.send("OK"));

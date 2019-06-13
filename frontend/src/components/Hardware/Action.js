@@ -10,9 +10,9 @@ import Collapse from '@material-ui/core/Collapse';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import red from '@material-ui/core/colors/red';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import classnames from 'classnames';
 import CardContent from '@material-ui/core/CardContent';
+import { Done, Close, ExpandMore } from '@material-ui/icons';
 
 const styles = theme => ({
   buttonContainer: {
@@ -45,13 +45,21 @@ const styles = theme => ({
   go: {
     display: "flex",
     justifyContent: "flex-end",
-  }
+  },
+  success: {
+    color: theme.palette.primary.dark,
+  },
+  failure: {
+    color: theme.palette.error.dark,
+  },
 });
 
 class Action extends Component {
   state = {
     selected: {},
     expanded: false,
+    success: undefined,
+    failure: undefined,
   };
 
   handleExpandClick = () => {
@@ -63,8 +71,17 @@ class Action extends Component {
   };
 
   handleClick = () => {
-    this.setState({ expanded: true });
-    this.props.onClick(this.state.selected);
+    this.setState({ expanded: true, success: undefined, failure: undefined });
+    this.props.onClick(this.state.selected)
+      .then(() => this.setState({ success: true }))
+      .catch(() => this.setState({ failure: true }))
+      .finally(() => {
+        // Clear method invoke feedback
+        setTimeout(
+          () => this.setState({ success: undefined, failure: undefined }),
+          3000
+        );
+      })
   };
 
   render() {
@@ -79,6 +96,8 @@ class Action extends Component {
 
     const {
       expanded,
+      success,
+      failure,
     } = this.state;
 
     return (
@@ -102,7 +121,7 @@ class Action extends Component {
               aria-expanded={expanded}
               aria-label="Show more"
             >
-              <ExpandMoreIcon />
+              <ExpandMore />
             </IconButton>
           }
         </CardActions>
@@ -136,6 +155,8 @@ class Action extends Component {
                 </Button>
               </div>
             }
+            {success && <Done className={classes.success} />}
+            {failure && <Close className={classes.failure} />}
             {value &&
               Object.keys(value).map(key => {
                 const { name, unit } = response[key] || {};
