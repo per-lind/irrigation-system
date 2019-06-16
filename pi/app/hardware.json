@@ -44,7 +44,7 @@
                 "type": "integer",
                 "unit": "seconds",
                 "min": 1,
-                "max": 15
+                "max": 21
               }
             }
           }
@@ -52,7 +52,7 @@
       },
       {
         "id": "pump2",
-        "name": "Pump 2",
+        "name": "Upp",
         "pin": 11,
         "output": true,
         "methods": [
@@ -65,7 +65,7 @@
                 "type": "integer",
                 "unit": "seconds",
                 "min": 1,
-                "max": 15
+                "max": 21
               }
             }
           }
@@ -73,7 +73,7 @@
       },
       {
         "id": "pump3",
-        "name": "Pump 3",
+        "name": "Väster",
         "pin": 13,
         "output": true,
         "methods": [
@@ -86,7 +86,7 @@
                 "type": "integer",
                 "unit": "seconds",
                 "min": 1,
-                "max": 15
+                "max": 21
               }
             }
           }
@@ -94,7 +94,7 @@
       },
       {
         "id": "pump4",
-        "name": "Pump 4",
+        "name": "Stor",
         "pin": 15,
         "output": true,
         "methods": [
@@ -107,7 +107,7 @@
                 "type": "integer",
                 "unit": "seconds",
                 "min": 1,
-                "max": 15
+                "max": 21
               }
             }
           }
