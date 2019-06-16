@@ -51,6 +51,69 @@
         ]
       },
       {
+        "id": "pump2",
+        "name": "Pump 2",
+        "pin": 11,
+        "output": true,
+        "methods": [
+          {
+            "id": "run",
+            "min_pause": 60,
+            "payload": {
+              "duration": {
+                "name": "Duration",
+                "type": "integer",
+                "unit": "seconds",
+                "min": 1,
+                "max": 15
+              }
+            }
+          }
+        ]
+      },
+      {
+        "id": "pump3",
+        "name": "Pump 3",
+        "pin": 13,
+        "output": true,
+        "methods": [
+          {
+            "id": "run",
+            "min_pause": 60,
+            "payload": {
+              "duration": {
+                "name": "Duration",
+                "type": "integer",
+                "unit": "seconds",
+                "min": 1,
+                "max": 15
+              }
+            }
+          }
+        ]
+      },
+      {
+        "id": "pump4",
+        "name": "Pump 4",
+        "pin": 15,
+        "output": true,
+        "methods": [
+          {
+            "id": "run",
+            "min_pause": 60,
+            "payload": {
+              "duration": {
+                "name": "Duration",
+                "type": "integer",
+                "unit": "seconds",
+                "min": 1,
+                "max": 15
+              }
+            }
+          }
+        ]
+      },
+      {
         "id": "mcp3008",
         "name": "MCP3008",
         "driver": "MCP3008",
