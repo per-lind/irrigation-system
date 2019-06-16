@@ -1,4 +1,5 @@
-from utils import Hardware, json_dumps
+from utils import Hardware
+from helpers import json_dumps
 import time
 import traceback
 
@@ -14,9 +15,9 @@ def main_loop():
 
     print(hardware.invoke('run', 'chip', { 'relay': 'pump1', 'duration': 1 }))
     print(hardware.invoke('switch', 'chip', { 'relay': 'pow1', 'status': 'on' }))
-    time.sleep(5)
-    print(hardware.invoke('switch', 'chip', { 'relay': 'pow1', 'status': 'off' }))
+    time.sleep(1)
     print(hardware.invoke('read', 'chip', { 'relay': 'mcp3008' }))
+    print(hardware.invoke('switch', 'chip', { 'relay': 'pow1', 'status': 'off' }))
 
     print('Connected hardware:')
     print(json_dumps(hardware.list()))
