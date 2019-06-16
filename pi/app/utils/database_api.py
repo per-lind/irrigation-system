@@ -7,4 +7,4 @@ def upload(data):
     "Authorization": "Bearer {}".format(API_TOKEN),
     "Content-Type": "application/json",
   }
-  return requests.post(url, data=data, headers=headers, verify=False)
+  return requests.post(url, data=data, headers=headers)
