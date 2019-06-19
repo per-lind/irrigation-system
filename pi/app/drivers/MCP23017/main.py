@@ -224,7 +224,7 @@ class MCP23017(Driver):
     max_duration = self.relays[relay]['methods']['run']['payload']['duration']['max']
     if not isinstance(duration, int):
       raise ValueError("Duration must be integer (given: {})".format(duration))
-    if duration >= max_duration:
+    if duration > max_duration:
       raise ValueError("Duration must be less than {}".format(max_duration))
     if duration < min_duration:
       raise ValueError("Duration must be at least {}".format(min_duration))
