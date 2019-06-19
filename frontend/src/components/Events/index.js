@@ -60,7 +60,7 @@ class Events extends Component {
     socket.send('events', {
       startTime: startTime.format(),
       endTime: endTime.format(),
-      hardware: ['run.chip.pump1']
+      hardware: ['run.chip.pump1', 'run.chip.pump2', 'run.chip.pump3', 'run.chip.pump4']
     });
   }
 

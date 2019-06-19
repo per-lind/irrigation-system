@@ -32,3 +32,20 @@ def run(hardware, settings):
     print(type(inst))
     print(inst.args)
     print(inst)
+    try:
+      print('Sending error message api')
+      to_upload = json_dumps({
+          "deviceId": "Huvudsta",
+          "timestamp": datetime.now(pytz.timezone('Europe/Stockholm')),
+          "model": "errors",
+          "data": {
+            'message': inst.args
+          },
+      })
+      print("Data to upload: {}".format(to_upload))
+      response = database_api.upload(to_upload)
+    except Exception as inst:
+      print('Failed to upload error')
+      print(type(inst))
+      print(inst.args)
+      print(inst)

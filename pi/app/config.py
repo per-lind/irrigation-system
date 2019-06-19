@@ -18,5 +18,5 @@ API_TOKEN = os.environ.get('API_TOKEN')
 # Interval (in seconds) between periodic readings
 PERIODIC_READING_INTERVAL = int(os.getenv('PERIODIC_READING_INTERVAL', 15 * 60))
 
-with open('hardware.json') as f:
+with open('hardware.json', encoding='utf-8') as f:
   hardware_config = json.load(f)

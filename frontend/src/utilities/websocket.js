@@ -21,6 +21,8 @@ const connect = ({ token, update, addAlert, addEvent }) => {
       // TODO force irrigation history to reload
       // Add data to context
       addEvent(data);
+    } else if (model === 'errors') {
+      addAlert(data.message);
     }
   });
   return {
