@@ -82,7 +82,7 @@ class Graph extends Component {
   constructor() {
     super();
 
-    const interval = 3;
+    const interval = 1;
     const endTime = moment();
     const startTime = moment().subtract(interval, 'days');
 

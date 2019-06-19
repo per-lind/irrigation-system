@@ -39,7 +39,7 @@ function Filters(props) {
       <FormControl component="fieldset" className={classes.formControl}>
         <FormLabel component="legend">Date interval</FormLabel>
         <FormGroup row className={classes.formGroup}>
-          {[3, 5, 7].map(i => (
+          {[1, 3, 7].map(i => (
             <Button
               key={i}
               variant={interval === i ? "contained" : "text"}
