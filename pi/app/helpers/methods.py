@@ -90,7 +90,7 @@ def watertank_status_definition(hardware):
   driver = hardware.to_json('chip')
   pin = driver['relays']['watertank_empty']
   return {
-    **driver.methods[method],
+    **driver['methods'][method],
     'id': 'watertank_status',
     'name': pin['name'],
     'driver': driver['driver'],
