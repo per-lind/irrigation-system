@@ -7,11 +7,11 @@ def run(hardware):
   print("Saving periodic reading")
   try:
     # Read sensors
-    ids = ['humidity', 'light', 'pressure']
+    methods = ['read_humidity', 'read_light', 'read_pressure']
     data = {}
-    for id in ids:
+    for method in methods:
       try:
-        result = hardware.invoke('read', id)
+        result = hardware.invoke_method(method)
         data = { **data, **result }
       except Exception as inst:
         print('Failed to read {}'.format(id))

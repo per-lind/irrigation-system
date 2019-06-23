@@ -5,7 +5,8 @@ class MCP3008(Main):
   def _connect_to_hardware(self):
     pass
 
-  def _read(self, pin):
-    return {
-      'output': 10 + random() * 20,
-    }
+  def _get_pin(self, pin):
+    return 0
+
+  def _read_pin(self, pin):
+    return 10 + random() * 20

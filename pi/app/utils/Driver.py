@@ -75,6 +75,19 @@ class Driver:
   def _connect_to_hardware(self):
     return True
 
+  def setup_child(self, settings):
+    try:
+      return self._setup_child(settings)
+    except Exception as inst:
+      print("Failed to setup child driver " + self.name)
+      print(type(inst))
+      print(inst.args)
+      print(inst)
+      return False
+
+  def _setup_child(self, settings):
+    raise NotImplementedError
+
   def disconnect(self):
     try:
       self._shutdown()
@@ -96,5 +109,4 @@ class Driver:
       'name': self.name,
       'methods': self.methods,
       'healthy': self.is_healthy(),
-      'last_method_calls': self.method_calls,
     }

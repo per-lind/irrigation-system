@@ -5,6 +5,14 @@ class MCP23017(Main):
   def _connect_to_hardware(self):
     self.setup_relays()
 
+  def _setup_child(self, settings):
+    return {
+      'cs': 'cs',
+      'miso': 'miso',
+      'mosi': 'mosi',
+      'clk': 'clk',
+    }
+
   def get_pin(self, pin):
     return 0
 
@@ -26,13 +34,4 @@ class MCP23017(Main):
     return {
       'success': True,
       'target': True,
-    }
-
-  def _run(self, relay, payload={}):
-    # Wait for `duration` seconds
-    time.sleep(payload['duration'])
-
-    return {
-      'success': True,
-      'duration': payload['duration'],
     }

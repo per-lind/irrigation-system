@@ -23,106 +23,90 @@
         "id": "pow1",
         "name": "Power",
         "pin": 10,
-        "output": true,
-        "methods": [
-          { "id": "status" },
-          { "id": "switch" }
-        ]
+        "output": true
       },
       {
         "id": "pump1",
-        "name": "Pump 1",
+        "name": "Höger kruka",
         "pin": 9,
         "output": true,
-        "methods": [
-          {
-            "id": "run",
-            "min_pause": 60,
-            "payload": {
-              "duration": {
-                "name": "Duration",
-                "type": "integer",
-                "unit": "seconds",
-                "min": 1,
-                "max": 21
-              }
-            }
-          }
-        ]
+        "min_pause": 60
       },
       {
         "id": "pump2",
         "name": "Upp",
         "pin": 11,
         "output": true,
-        "methods": [
-          {
-            "id": "run",
-            "min_pause": 60,
-            "payload": {
-              "duration": {
-                "name": "Duration",
-                "type": "integer",
-                "unit": "seconds",
-                "min": 1,
-                "max": 21
-              }
-            }
-          }
-        ]
+        "min_pause": 60
       },
       {
         "id": "pump3",
-        "name": "Väster",
+        "name": "Vänster kruka",
         "pin": 13,
         "output": true,
-        "methods": [
-          {
-            "id": "run",
-            "min_pause": 60,
-            "payload": {
-              "duration": {
-                "name": "Duration",
-                "type": "integer",
-                "unit": "seconds",
-                "min": 1,
-                "max": 21
-              }
-            }
-          }
-        ]
+        "min_pause": 60
       },
       {
         "id": "pump4",
-        "name": "Stor",
+        "name": "Stora krukan",
         "pin": 15,
         "output": true,
-        "methods": [
-          {
-            "id": "run",
-            "min_pause": 60,
-            "payload": {
-              "duration": {
-                "name": "Duration",
-                "type": "integer",
-                "unit": "seconds",
-                "min": 1,
-                "max": 21
-              }
-            }
-          }
-        ]
+        "min_pause": 60
+      }
+    ]
+  },
+  {
+    "id": "mcp3008",
+    "name": "MCP3008",
+    "driver": "MCP3008",
+    "parent": {
+      "id": "chip",
+      "pins": {
+        "CLK" : 5,
+        "MISO": 4,
+        "MOSI": 2,
+        "CS": 3
+      }
+    },
+    "relays": [
+      {
+        "id": "soil_moisture1",
+        "name": "Soil moisture 1",
+        "pin": 3,
+        "max": 1023,
+        "conversion": "percent",
+        "unit": "percent"
       },
       {
-        "id": "mcp3008",
-        "name": "MCP3008",
-        "driver": "MCP3008",
-        "pins": {
-          "CLK" : 5,
-          "MISO": 4,
-          "MOSI": 2,
-          "CS": 3
-        }
+        "id": "soil_moisture2",
+        "name": "Soil moisture 2",
+        "pin": 4,
+        "max": 1023,
+        "conversion": "percent",
+        "unit": "percent"
+      },
+      {
+        "id": "soil_moisture3",
+        "name": "Soil moisture 3",
+        "pin": 5,
+        "max": 1023,
+        "conversion": "percent",
+        "unit": "percent"
+      },
+      {
+        "id": "soil_moisture4",
+        "name": "Soil moisture 4",
+        "pin": 6,
+        "max": 1023,
+        "conversion": "percent",
+        "unit": "percent"
+      },
+      {
+        "id": "temperature",
+        "name": "Analog temperature",
+        "pin": 7,
+        "conversion": "temperature",
+        "unit": "celsius"
       }
     ]
   }

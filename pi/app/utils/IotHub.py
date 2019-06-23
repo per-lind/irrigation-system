@@ -46,12 +46,11 @@ class IotHub:
 
     try:
       if method_name == 'list':
-        response = self.hardware.list()
+        response = self.hardware.list_methods()
       else:
         method_payload = msg['payload'] if 'payload' in msg else {}
         self.queue.append("invoke_method", {
           "method": method_name,
-          "id": msg['id'],
           "payload": method_payload,
         })
         response = "ok"

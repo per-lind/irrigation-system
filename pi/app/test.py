@@ -9,18 +9,19 @@ def main_loop():
     print('Setting up hardware...')
     hardware = Hardware()
 
-    print(hardware.invoke('read', 'humidity'))
-    print(hardware.invoke('read', 'pressure'))
-    print(hardware.invoke('read', 'light'))
-
-    print(hardware.invoke('run', 'chip', { 'relay': 'pump1', 'duration': 1 }))
-    print(hardware.invoke('switch', 'chip', { 'relay': 'pow1', 'status': 'on' }))
-    time.sleep(1)
-    print(hardware.invoke('read', 'chip', { 'relay': 'mcp3008' }))
-    print(hardware.invoke('switch', 'chip', { 'relay': 'pow1', 'status': 'off' }))
+    # print(hardware.invoke('read', 'humidity'))
+    # print(hardware.invoke('read', 'pressure'))
+    # print(hardware.invoke('read', 'light'))
 
     print('Connected hardware:')
     print(json_dumps(hardware.list()))
+
+    print(hardware.invoke_method('read_humidity'))
+    print(hardware.invoke_method('read_pressure'))
+    print(hardware.invoke_method('read_light'))
+    print(hardware.invoke_method('run_pump1', payload={'duration':4}))
+    print(hardware.invoke_method('read_mcp3008_temperature'))
+    print(hardware.invoke_method('read_mcp3008_soil_moisture'))
 
   except KeyboardInterrupt:
     print('Process ended by user.')

@@ -7,17 +7,17 @@ def run(hardware, settings):
   try:
     print("Invoking device method")
     method = settings["method"]
-    id = settings["id"]
     payload = settings["payload"]
 
-    result = hardware.invoke(method, id, payload)
+    result = hardware.invoke_method(method, payload)
 
     to_upload = json_dumps({
       "deviceId": "Huvudsta",
       "timestamp": datetime.now(pytz.timezone('Europe/Stockholm')),
       "model": "events",
       "data": {
-        method: result
+        'method': method,
+        **result,
       },
     })
 
