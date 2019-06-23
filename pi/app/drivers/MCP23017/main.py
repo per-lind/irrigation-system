@@ -128,6 +128,8 @@ class MCP23017(Driver):
   def _validate_switch_payload(self, payload):
     relay = payload.get("relay", None)
     self._relay_exists(relay)
+    if !self.relays[relay]['output']:
+      raise ValueError("Relay {} is not an output".format(relay))
     if payload['status'] not in ['on', 'off', 'toggle']:
       raise ValueError("Status {} not allowed. Must be on, off or toggle".format(payload['status']))
 
@@ -151,10 +153,7 @@ class MCP23017(Driver):
   def _shutdown(self):
     success = True
     for _, relay in self.relays.items():
-      if 'driver' in relay:
-        stopped = relay['driver'].disconnect()
-        success = success and stopped
-      else:
+      if relay['output']:
         status = self._output(relay['pin'], 0)
         success = success and status
     return success

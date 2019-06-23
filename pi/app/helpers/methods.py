@@ -85,6 +85,19 @@ def run_pump(hardware, id):
 
   return run
 
+# Check water level on MCP23017
+def watertank_status_definition(hardware):
+  driver = hardware.to_json('chip')
+  pin = driver['relays']['watertank_empty']
+  return {
+    **driver.methods[method],
+    'id': 'watertank_status',
+    'name': pin['name'],
+    'driver': driver['driver'],
+  }
+def watertank_status(hardware):
+  return lambda payload={}: hardware.invoke('status', 'chip', {'relay': 'watertank_empty'})['chip']
+
 # Read temperature on MCP3008
 def read_mcp3008_temperature_definition(hardware):
   driver = hardware.to_json('mcp3008')
@@ -154,6 +167,7 @@ def methods(hardware):
     run_pump_definition(hardware, 'pump2'),
     run_pump_definition(hardware, 'pump3'),
     run_pump_definition(hardware, 'pump4'),
+    watertank_status_definition(hardware),
     read_mcp3008_temperature_definition(hardware),
     read_mcp3008_soil_moisture_definition(hardware),
   ]
@@ -164,6 +178,7 @@ def invoke(hardware):
     'run_pump2': run_pump(hardware, 'pump2'),
     'run_pump3': run_pump(hardware, 'pump3'),
     'run_pump4': run_pump(hardware, 'pump4'),
+    'watertank_status': watertank_status(hardware),
     'read_humidity': read_humidity(hardware),
     'read_pressure': read_pressure(hardware),
     'read_light': read_light(hardware),

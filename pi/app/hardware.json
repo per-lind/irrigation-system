@@ -57,6 +57,34 @@
         "pin": 15,
         "output": true,
         "min_pause": 60
+      },
+      {
+        "id": "empty0",
+        "name": "Pin 0 empty",
+        "pin": 0,
+        "output": false,
+        "min_pause": 0
+      },
+      {
+        "id": "empty1",
+        "name": "Pin 1 empty",
+        "pin": 1,
+        "output": false,
+        "min_pause": 0
+      },
+      {
+        "id": "empty6",
+        "name": "Pin 6 empty",
+        "pin": 6,
+        "output": false,
+        "min_pause": 0
+      },
+      {
+        "id": "watertank_empty",
+        "name": "Vatten finns",
+        "pin": 7,
+        "output": false,
+        "min_pause": 0
       }
     ]
   },
