@@ -91,10 +91,10 @@ class Graph extends Component {
       data: [],
       hardware: [],
       selected: [
-        'measures.light.light',
-        'measures.pressure.pressure',
-        'measures.humidity.humidity',
-        'measures.humidity.temperature',
+        'measures.read_light.light',
+        'measures.read_pressure.pressure',
+        'measures.read_humidity.humidity',
+        'measures.read_humidity.temperature',
       ],
       startTime,
       endTime,
@@ -122,12 +122,12 @@ class Graph extends Component {
     }
     // Sensors that are included in periodic readings
     // Light must be first in the list, otherwise it will cover the other lines...
-    const sensors = ['light', 'humidity', 'pressure'];
+    const sensors = ['read_light', 'read_humidity', 'read_pressure'];
     const hardware = sensors.map(id => {
       const sensor = props.hardware.find(h => h.id === id);
-      const { response } = sensor.driver.methods.read || {};
+      const { response } = sensor;
       return Object.keys(response).map(id => ({
-        name: `${response[id].name} (${sensor.driver.name})`,
+        name: `${response[id].name} (${sensor.driver})`,
         dataKey: `measures.${sensor.id}.${id}`,
         ...(settings[response[id].unit] || settings.default),
       }))

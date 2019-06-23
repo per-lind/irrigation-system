@@ -87,7 +87,6 @@ class Action extends Component {
   render() {
     const {
       classes,
-      method,
       payload,
       response,
       value,
@@ -110,7 +109,7 @@ class Action extends Component {
             onClick={payload ? this.handleExpandClick : this.handleClick}
             disabled={!payload && loading}
           >
-            {method}
+            {payload ? "OPEN" : "READ"}
           </Button>
           {(value || payload) &&
             <IconButton

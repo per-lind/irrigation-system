@@ -20,7 +20,7 @@ function HardwareList() {
     <div className={classes.root}>
       <Grid container className={classes.container} spacing={1}>
         {hardware.map((item, index) => (
-          <Grid key={index} item xs={12} md={_.get(item, "driver.relays") ? 12 : 6}>
+          <Grid key={index} item xs={12} md={6}>
             <Hardware key={index} {...item} />
           </Grid>
         ))}

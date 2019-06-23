@@ -6,7 +6,7 @@ import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 import FormGroup from '@material-ui/core/FormGroup';
 import moment from 'moment';
-import DatePicker from './DatePicker';
+import DatePicker from '../DatePicker';
 import { MuiPickersUtilsProvider } from "material-ui-pickers";
 import DateUtils from "@date-io/moment";
 

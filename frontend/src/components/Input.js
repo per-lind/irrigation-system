@@ -42,7 +42,7 @@ function Input(props) {
           <Grid item xs={12} md={6}>
             <Slider
               className={classes.slider}
-              value={value}
+              value={value || 0}
               min={min}
               max={max}
               step={1}
