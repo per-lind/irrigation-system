@@ -128,7 +128,7 @@ class MCP23017(Driver):
   def _validate_switch_payload(self, payload):
     relay = payload.get("relay", None)
     self._relay_exists(relay)
-    if !self.relays[relay]['output']:
+    if not self.relays[relay]['output']:
       raise ValueError("Relay {} is not an output".format(relay))
     if payload['status'] not in ['on', 'off', 'toggle']:
       raise ValueError("Status {} not allowed. Must be on, off or toggle".format(payload['status']))
