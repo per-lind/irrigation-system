@@ -21,7 +21,7 @@ class IotHub:
 
   def _init_client(self):
     # Connect to iot-hub
-    self.client = IoTHubClient(IOTHUB_CONNECTION, IoTHubTransportProvider.MQTT)
+    self.client = IoTHubClient(IOTHUB_CONNECTION, IoTHubTransportProvider.AMQP)
     # Settings
     self.client.set_option("messageTimeout", IOTHUB_MESSAGE_TIMEOUT)
     self.client.set_device_method_callback(self.device_method_callback, 0)
