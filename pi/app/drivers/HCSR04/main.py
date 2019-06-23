@@ -20,10 +20,10 @@ class HCSR04(Driver):
     self.GPIO = GPIO
     GPIO.setmode(GPIO.BCM)
     self.TRIG = 23
-	  self.ECHO = 24
-	  GPIO.setup(self.TRIG, GPIO.OUT)
-	  GPIO.setup(self.ECHO, GPIO.IN)
-	  GPIO.output(self.TRIG, False)
+    self.ECHO = 24
+    GPIO.setup(self.TRIG, GPIO.OUT)
+    GPIO.setup(self.ECHO, GPIO.IN)
+    GPIO.output(self.TRIG, False)
 
   def _read(self, payload={}):
     # Number of attempts to read sensor before giving up
