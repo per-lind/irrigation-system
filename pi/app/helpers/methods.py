@@ -20,6 +20,12 @@ def read_light_definition(hardware):
 def read_light(hardware):
   return lambda payload={}: hardware.invoke('read', 'light')['light']
 
+# Read HCSR04
+def read_water_level_definition(hardware):
+  return {**hardware.to_json('water_level', 'read'), 'id': 'read_water_level'}
+def read_water_level(hardware):
+  return lambda payload={}: hardware.invoke('read', 'water_level')['water_level']
+
 # Run pump on MCP23017
 def run_pump_definition(hardware, id):
   driver = hardware.to_json('chip')

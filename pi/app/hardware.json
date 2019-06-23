@@ -15,6 +15,11 @@
     "driver": "BMP280"
   },
   {
+    "id": "water_level",
+    "name": "Water level",
+    "driver": "HCSR04"
+  },
+  {
     "id": "chip",
     "name": "Chip",
     "driver": "MCP23017",
