@@ -149,6 +149,7 @@ def methods(hardware):
     read_humidity_definition(hardware),
     read_pressure_definition(hardware),
     read_light_definition(hardware),
+    read_water_level_definition(hardware),
     run_pump_definition(hardware, 'pump1'),
     run_pump_definition(hardware, 'pump2'),
     run_pump_definition(hardware, 'pump3'),
@@ -166,6 +167,7 @@ def invoke(hardware):
     'read_humidity': read_humidity(hardware),
     'read_pressure': read_pressure(hardware),
     'read_light': read_light(hardware),
+    'read_water_level': read_water_level(hardware),
     'read_mcp3008_temperature': read_mcp3008_temperature(hardware),
     'read_mcp3008_soil_moisture': read_mcp3008_soil_moisture(hardware),
   }
