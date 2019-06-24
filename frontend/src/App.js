@@ -7,6 +7,7 @@ import Alert from './components/layout/Alert';
 import LoginPopup from './components/LoginPopup';
 import HardwareList from './components/HardwareList';
 import Graph from './components/Graph';
+import CancelJobs from './components/CancelJobs';
 import Events from './components/Events';
 import { websocket, context, auth } from './utilities';
 import _ from 'lodash';
@@ -82,6 +83,9 @@ class App extends Component {
           <React.Fragment>
             <Section title={"Data"} >
               <Graph hardware={hardware} />
+            </Section>
+            <Section title={"Cancel jobs"} >
+              <CancelJobs />
             </Section>
             <Section title={"Hardware"}>
               <HardwareList />

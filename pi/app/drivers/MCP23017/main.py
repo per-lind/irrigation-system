@@ -41,6 +41,15 @@ class MCP23017(Driver):
           'unit': 'onoff',
         }
       }
+    }, {
+      'id': 'close',
+      'min_pause': 0,
+      'response': {
+        'success': {
+          'name': 'Success',
+          'unit': 'boolean',
+        }
+      }
     }]
 
     self.pins = {}
@@ -149,6 +158,21 @@ class MCP23017(Driver):
       'success': self._output(self.relays[relay]['pin'], target),
       'target': target == 1,
     }
+
+  def _close(self, payload={}):
+    # Make sure all relays are off
+    success = True
+    for _, relay in self.relays.items():
+      if relay['output']:
+        # Check if relay is already off
+        status = self._input(relay['pin'])
+        print("Relay {} status: {}".format(relay['id'], status))
+        # If not, try to turn it off
+        if status == 1:
+          status = self._output(relay['pin'], 0)
+          print("Relay {} shutdown successful: {}".format(relay['id'], status))
+          success = success and status
+    return {'success': success}
 
   def _shutdown(self):
     success = True

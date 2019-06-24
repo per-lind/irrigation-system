@@ -65,23 +65,22 @@ def run_pump(hardware, id):
       raise ValueError("Duration must be at least {}".format(min_duration))
 
     # Run pump
-    try:
-      # On
-      hardware.invoke('switch', 'chip', {'relay': id, 'status': 'on'})
-      # Wait for `duration` seconds
-      time.sleep(duration)
-      # Off
-      hardware.invoke('switch', 'chip', {'relay': id, 'status': 'off'})
+    # On
+    hardware.invoke('switch', 'chip', {'relay': id, 'status': 'on'})
+    # Wait for `duration` seconds
+    time.sleep(duration)
+    # Check if pump is on
+    status = hardware.invoke('status', 'chip', {'relay': id})['chip']['status']
+    print(status)
+    if status == 0:
+      raise Exception("Failed to run pump - could not turn on relay or job cancelled")
+    # Off
+    hardware.invoke('switch', 'chip', {'relay': id, 'status': 'off'})
 
-      return {
-        'success': True,
-        'duration': duration,
-      }
-    except:
-      return {
-        'success': False,
-        'duration': duration,
-      }
+    return {
+      'success': True,
+      'duration': duration,
+    }
 
   return run
 
@@ -97,6 +96,10 @@ def watertank_status_definition(hardware):
   }
 def watertank_status(hardware):
   return lambda payload={}: hardware.invoke('status', 'chip', {'relay': 'watertank_empty'})['chip']
+
+# Close all relays on MCP23017
+def close_relays(hardware):
+  return lambda payload={}: hardware.invoke('close', 'chip')['chip']
 
 # Read temperature on MCP3008
 def read_mcp3008_temperature_definition(hardware):
@@ -152,9 +155,12 @@ def read_mcp3008_soil_moisture(hardware):
       **hardware.invoke('read', 'mcp3008', {'relay': 'soil_moisture3'})['mcp3008'],
       **hardware.invoke('read', 'mcp3008', {'relay': 'soil_moisture4'})['mcp3008'],
     }
+    status = hardware.invoke('status', 'chip', {'relay': 'pow1'})['chip']['status']
+    if status == 0:
+      raise Exception("failed to get reading - pow1 not on")
+
     hardware.invoke('switch', 'chip', {'relay': 'pow1', 'status': 'off'})
     return result
-
   return read
 
 def methods(hardware):
@@ -178,6 +184,7 @@ def invoke(hardware):
     'run_pump2': run_pump(hardware, 'pump2'),
     'run_pump3': run_pump(hardware, 'pump3'),
     'run_pump4': run_pump(hardware, 'pump4'),
+    'close_relays': close_relays(hardware),
     'watertank_status': watertank_status(hardware),
     'read_humidity': read_humidity(hardware),
     'read_pressure': read_pressure(hardware),

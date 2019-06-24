@@ -7,3 +7,6 @@ class HCSR04(Main):
 
   def _raw_read(self):
     return 10 + random() * 20
+
+  def _shutdown(self):
+    return True

@@ -20,18 +20,7 @@ class MCP23017(Main):
     pass
 
   def _input(self, pin):
-    return True
+    return 1
 
   def _output(self, pin, status):
     return True
-
-  def _status(self, relay, payload={}):
-    return {
-      'status': True
-    }
-
-  def _switch(self, relay, payload={}):
-    return {
-      'success': True,
-      'target': True,
-    }
