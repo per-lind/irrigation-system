@@ -5,7 +5,6 @@ import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import Avatar from '@material-ui/core/Avatar';
 import Action from './Action';
-import _ from 'lodash';
 import { context } from '../../utilities';
 
 const styles = theme => ({

@@ -18,7 +18,21 @@ def main_loop():
     IotHub(hardware=hardware, queue=queue)
 
     print('Setting up background jobs...')
-    schedule.every(PERIODIC_READING_INTERVAL).seconds.do(lambda: queue.append("periodic_reading"))
+
+    def sensor_reading(): return queue.append(
+      "periodic_reading",
+      {"methods": ['read_humidity', 'read_light', 'read_pressure']}
+    )
+    def soil_moisture_reading(): return queue.append(
+      "periodic_reading",
+      {"methods": ['read_mcp3008_soil_moisture', 'read_water_level']}
+    )
+
+    # Read humidity, light, pressure and temperature frequently
+    schedule.every(PERIODIC_READING_INTERVAL).seconds.do(sensor_reading)
+    # Read soil moisture and water level twice a day
+    schedule.every().day.at("06:00").do(soil_moisture_reading) # 08:00 Swedish summer time
+    schedule.every().day.at("18:00").do(soil_moisture_reading) # 20:00 Swedish summer time
 
     print('App ready!')
 

@@ -11,18 +11,21 @@ const login = ({ username, password }) => {
   });
 };
 
-const data = ({ socket, message, token, update, addAlert }) => {
-  update({ loading: true });
-  const callback = response => {
-    update({ loading: false });
-    if (response.status === 200) {
-      update({ data: response.data })
-    } else {
-      addAlert(`Failed to retrieve data! ${JSON.stringify(response)}`);
+const data = ({ socket, message, token, update, addAlert }) =>
+  new Promise((resolve, reject) => {
+    update({ loading: true });
+    const callback = response => {
+      update({ loading: false });
+      if (response.status === 200) {
+        resolve({ data: response.data })
+      } else {
+        const msg = `Failed to retrieve data! ${JSON.stringify(response)}`;
+        addAlert(msg);
+        reject(msg);
+      }
     }
-  }
-  socket.emit('message', { action: 'data', message, token }, callback);
-};
+    socket.emit('message', { action: 'data', message, token }, callback);
+  });
 
 const events = ({ socket, message, token, update, addAlert }) => {
   update({ loading: true });

@@ -3,11 +3,11 @@ from utils import database_api
 from datetime import datetime
 import pytz
 
-def run(hardware):
-  print("Saving periodic reading")
+def run(hardware, settings):
   try:
     # Read sensors
-    methods = ['read_humidity', 'read_light', 'read_pressure']
+    methods = settings['methods']
+    print("Saving periodic reading", methods)
     data = {}
     for method in methods:
       try:

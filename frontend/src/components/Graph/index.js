@@ -25,6 +25,7 @@ import {
   red,
   teal,
   indigo,
+  grey,
 } from '@material-ui/core/colors';
 
 const styles = {
@@ -71,6 +72,13 @@ const settings = {
     formatter: formatter.hPa,
     stroke: teal[300],
   },
+  cm: {
+    component: Bar,
+    yAxisId: "light",
+    barSize: 30,
+    formatter: formatter.cm,
+    fill: grey[300],
+  },
   default: {
     yAxisId: "temp",
     type: "monotone",
@@ -90,12 +98,7 @@ class Graph extends Component {
       visible: [],
       data: [],
       hardware: [],
-      selected: [
-        'measures.read_light.light',
-        'measures.read_pressure.pressure',
-        'measures.read_humidity.humidity',
-        'measures.read_humidity.temperature',
-      ],
+      selected: [],
       startTime,
       endTime,
       interval,
@@ -113,17 +116,19 @@ class Graph extends Component {
   retrieveGraphData() {
     const { socket } = this.context;
     const { startTime, endTime } = this.state;
-    socket.send('data', { startTime: startTime.format(), endTime: endTime.format() });
+    const { methods } = this.props;
+    socket.send('data', { startTime: startTime.format(), endTime: endTime.format(), methods })
+      .then(({ data }) => this.setState({ data }))
+      .catch(err => console.log(err));
   }
 
   static getDerivedStateFromProps(props, state) {
     if (props.hardware.length === 0) {
       return null;
     }
-    // Sensors that are included in periodic readings
+    // Methods that are included in periodic readings
     // Light must be first in the list, otherwise it will cover the other lines...
-    const sensors = ['read_light', 'read_humidity', 'read_pressure'];
-    const hardware = sensors.map(id => {
+    const hardware = props.methods.map(id => {
       const sensor = props.hardware.find(h => h.id === id);
       const { response } = sensor;
       return Object.keys(response).map(id => ({
@@ -132,9 +137,11 @@ class Graph extends Component {
         ...(settings[response[id].unit] || settings.default),
       }))
     })
-    return {
-      hardware: _.flatten(hardware),
-    };
+    const derived = { hardware: _.flatten(hardware) };
+    if (state.selected.length === 0) {
+      derived.selected = derived.hardware.map(item => item.dataKey);
+    }
+    return derived;
   }
 
   handleSelect(id, event) {
@@ -154,9 +161,8 @@ class Graph extends Component {
   }
 
   render() {
-    const { hardware, selected, interval, startTime, endTime } = this.state;
+    const { hardware, selected, interval, startTime, endTime, data } = this.state;
     const { classes, width } = this.props;
-    const { data } = this.context;
 
     return (
       <div className={classes.root}>

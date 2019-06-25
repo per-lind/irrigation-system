@@ -2,10 +2,25 @@ const data = db => (req, res) => {
   // Time interval for the query
   const endTime = req.query.endTime;
   const startTime = req.query.startTime;
+  // Which methods we're interested in (default: all)
+  const methods = req.query.methods || [];
+  // Build query
+  const timestamp = { "timestamp": { $gte: startTime, $lt: endTime } };
+  const measures = []
+  methods.forEach(item => {
+    measures.push({ [`measures.${item}`]: { $exists: true } });
+  });
   // Build query
   db
     .collection('measures')
-    .find({ "timestamp": { $gte: startTime, $lt: endTime } })
+    .find({
+      $and: [
+        timestamp,
+        {
+          $or: measures
+        }
+      ]
+    })
     .sort({timestamp:1})
     .limit(2000) // Just in case...
     .toArray(function(error, documents) {

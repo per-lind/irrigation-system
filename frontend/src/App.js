@@ -82,13 +82,22 @@ class App extends Component {
         {user && socket &&
           <React.Fragment>
             <Section title={"Data"} >
-              <Graph hardware={hardware} />
+              <Graph
+                hardware={hardware}
+                methods={['read_light', 'read_humidity', 'read_pressure']}
+              />
             </Section>
             <Section title={"Cancel jobs"} >
               <CancelJobs />
             </Section>
             <Section title={"Hardware"}>
               <HardwareList />
+            </Section>
+            <Section title={"Soil moisture"} >
+              <Graph
+                hardware={hardware}
+              methods={['read_water_level', 'read_mcp3008_soil_moisture']}
+              />
             </Section>
             <Section title={"Irrigation history"}>
               <Events />

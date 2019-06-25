@@ -27,10 +27,11 @@ class Queue:
       settings = job["settings"]
 
       if name == "periodic_reading":
-        periodic_reading.run(self.hardware)
+        periodic_reading.run(self.hardware, settings)
+        close_relays.run(self.hardware)
       elif name == "invoke_method":
         invoke_method.run(self.hardware, settings)
-        close_relays.run(self.hardware) # Make sure relays are off after method invoke
+        close_relays.run(self.hardware)
       else:
         print("Do not recognize task '{}', ignoring...".format(name))
         return

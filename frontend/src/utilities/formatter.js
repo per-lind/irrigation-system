@@ -17,7 +17,9 @@ const boolean = item => item ? "TRUE" : "FALSE";
 
 const seconds = item => `${numeral(item).format('0')} seconds`;
 
-const onoff = item => item === 1 ? "ON" : "OFF";
+const onoff = item => item ? "ON" : "OFF";
+
+const cm = item => `${numeral(item).format('0.00')} cm`;
 
 export default {
   percent,
@@ -29,4 +31,5 @@ export default {
   boolean,
   seconds,
   onoff,
+  cm,
 };

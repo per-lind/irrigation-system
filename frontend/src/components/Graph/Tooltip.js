@@ -26,6 +26,7 @@ const styles = {
     fontSize: 15,
   },
   avatar: {
+    marginRight: 5,
     height: 25,
     width: 25,
   },
