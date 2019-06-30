@@ -96,7 +96,8 @@ class App extends Component {
             <Section title={"Soil moisture"} >
               <Graph
                 hardware={hardware}
-              methods={['read_water_level', 'read_mcp3008_soil_moisture']}
+                methods={['read_water_level', 'read_mcp3008_soil_moisture']}
+                defaultInterval={7}
               />
             </Section>
             <Section title={"Irrigation history"}>

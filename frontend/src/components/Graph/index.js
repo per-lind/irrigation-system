@@ -5,6 +5,7 @@ import withWidth from '@material-ui/core/withWidth';
 import Legend from './Legend'
 import RenderTooltip from './Tooltip'
 import Filters from './Filters'
+import Typography from '@material-ui/core/Typography';
 import moment from 'moment';
 import {
   ResponsiveContainer,
@@ -46,62 +47,57 @@ const common = {
   dot: false,
 }
 
-const settings = {
+const getShade = (count, base=300) => base + (count - 1)*200;
+
+const settings = count => ({
   celsius: {
     yAxisId: "temp",
     type: "monotone",
     formatter: formatter.celsius,
-    stroke: red[500],
+    stroke: red[getShade(count)],
   },
   percent: {
     yAxisId: "temp",
     type: "monotone",
     formatter: formatter.percent,
-    stroke: indigo[300],
+    stroke: indigo[getShade(count, 100)],
   },
   lux: {
     component: Bar,
     yAxisId: "light",
     barSize: 30,
     formatter: formatter.lux,
-    fill: amber[300],
+    fill: amber[getShade(count)],
   },
   hPa: {
     yAxisId: "pressure",
     type: "monotone",
     formatter: formatter.hPa,
-    stroke: teal[300],
+    stroke: teal[getShade(count)],
   },
   cm: {
     component: Bar,
     yAxisId: "light",
     barSize: 30,
     formatter: formatter.cm,
-    fill: grey[300],
+    fill: grey[getShade(count)],
   },
   default: {
     yAxisId: "temp",
     type: "monotone",
-    stroke: lightBlue[500],
+    stroke: lightBlue[getShade(count, 500)],
   },
-};
+});
 
 class Graph extends Component {
   constructor() {
     super();
-
-    const interval = 1;
-    const endTime = moment();
-    const startTime = moment().subtract(interval, 'days');
 
     this.state = {
       visible: [],
       data: [],
       hardware: [],
       selected: [],
-      startTime,
-      endTime,
-      interval,
     };
 
     this.handleSelect = this.handleSelect.bind(this);
@@ -110,7 +106,15 @@ class Graph extends Component {
   }
 
   componentDidMount() {
-    this.retrieveGraphData();
+    const { defaultInterval } = this.props;
+    const interval = defaultInterval || 1;
+    const endTime = moment();
+    const startTime = moment().subtract(interval, 'days');
+    this.setState({
+      startTime,
+      endTime,
+      interval,
+    }, () => this.retrieveGraphData());
   }
 
   retrieveGraphData() {
@@ -126,16 +130,21 @@ class Graph extends Component {
     if (props.hardware.length === 0) {
       return null;
     }
+    const count = {};
     // Methods that are included in periodic readings
     // Light must be first in the list, otherwise it will cover the other lines...
     const hardware = props.methods.map(id => {
       const sensor = props.hardware.find(h => h.id === id);
       const { response } = sensor;
-      return Object.keys(response).map(id => ({
-        name: `${response[id].name} (${sensor.driver})`,
-        dataKey: `measures.${sensor.id}.${id}`,
-        ...(settings[response[id].unit] || settings.default),
-      }))
+      return Object.keys(response).map(id => {
+        const unit = response[id].unit || 'default';
+        count[unit] = _.get(count, unit, 0) + 1;
+        return {
+          name: `${response[id].name} (${sensor.driver})`,
+          dataKey: `measures.${sensor.id}.${id}`,
+          ...(settings(count[unit])[unit]),
+        }
+      })
     })
     const derived = { hardware: _.flatten(hardware) };
     if (state.selected.length === 0) {
@@ -166,7 +175,7 @@ class Graph extends Component {
 
     return (
       <div className={classes.root}>
-        <div>Last reading: {data[data.length -1] && formatter.longDateTime(data[data.length -1].timestamp)}</div>
+        <Typography>Last reading: {data[data.length - 1] && formatter.longDateTime(data[data.length - 1].timestamp)}</Typography>
         <Legend
           hardware={hardware}
           selected={selected}
