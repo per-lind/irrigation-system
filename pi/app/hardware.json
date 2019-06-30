@@ -104,7 +104,7 @@
     "relays": [
       {
         "id": "soil_moisture1",
-        "name": "Soil moisture 1",
+        "name": "Stora krukan",
         "pin": 3,
         "max": 1023,
         "conversion": "percent",
@@ -112,7 +112,7 @@
       },
       {
         "id": "soil_moisture2",
-        "name": "Soil moisture 2",
+        "name": "Upp",
         "pin": 4,
         "max": 1023,
         "conversion": "percent",
@@ -120,7 +120,7 @@
       },
       {
         "id": "soil_moisture3",
-        "name": "Soil moisture 3",
+        "name": "Vänster kruka",
         "pin": 5,
         "max": 1023,
         "conversion": "percent",
@@ -128,7 +128,7 @@
       },
       {
         "id": "soil_moisture4",
-        "name": "Soil moisture 4",
+        "name": "Höger kruka",
         "pin": 6,
         "max": 1023,
         "conversion": "percent",
