@@ -81,7 +81,7 @@ class App extends Component {
         <LoginPopup />
         {user && socket &&
           <React.Fragment>
-            <Section title={"Data"} >
+            <Section>
               <Graph
                 hardware={hardware}
                 methods={['read_light', 'read_humidity', 'read_pressure']}

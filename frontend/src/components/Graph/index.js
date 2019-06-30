@@ -166,6 +166,7 @@ class Graph extends Component {
 
     return (
       <div className={classes.root}>
+        <div>Last reading: {data[data.length -1] && formatter.longDateTime(data[data.length -1].timestamp)}</div>
         <Legend
           hardware={hardware}
           selected={selected}
