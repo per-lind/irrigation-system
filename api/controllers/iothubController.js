@@ -1,11 +1,19 @@
 const { iothub } = require('../utilities');
 
+let _list;
+
 const invoke = db => (req, res) => {
-  const payload = req.query.payload;
-  iothub.invoke({ methodName: req.query.method, payload })
-    .then(result => {
+  const { payload, method } = req.query;
+  if (method === 'list' && _list) {
+    return res.status(200).json(_list);
+  }
+  iothub.invoke({ methodName: method, payload })
+    .then(({ status, payload }) => {
+      if (method === 'list') {
+        _list = payload;
+      }
       // Send response to frontend
-      res.status(result.status).json(result.payload);
+      res.status(status).json(payload);
     })
     .catch(error => res.status(400).json({ message: 'Failed to invoke method ' + req.query.method }));
 };
