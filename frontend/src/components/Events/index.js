@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import moment from 'moment';
+import Filters from './Filters'
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -22,9 +23,18 @@ const styles = theme => ({
     marginBottom: theme.spacing(2),
   },
   table: {
-    minWidth: 650,
   },
 });
+
+const events = [
+  'run_pump1',
+  'run_pump2',
+  'run_pump3',
+  'run_pump4',
+  'read_light',
+  'read_humidity',
+  'read_pressure',
+];
 
 class Events extends Component {
   constructor() {
@@ -35,14 +45,11 @@ class Events extends Component {
     const startTime = moment().subtract(interval, 'days');
 
     this.state = {
-      visible: [],
-      data: [],
-      hardware: [],
       selected: [
-        'measures.light.light',
-        'measures.pressure.pressure',
-        'measures.humidity.humidity',
-        'measures.humidity.temperature',
+        'run_pump1',
+        'run_pump2',
+        'run_pump3',
+        'run_pump4',
       ],
       startTime,
       endTime,
@@ -56,37 +63,60 @@ class Events extends Component {
 
   retrieveEvents = () => {
     const { socket } = this.context;
-    const { startTime, endTime } = this.state;
+    const { startTime, endTime, selected } = this.state;
     socket.send('events', {
       startTime: startTime.format(),
       endTime: endTime.format(),
-      hardware: ['run.chip.pump1', 'run.chip.pump2', 'run.chip.pump3', 'run.chip.pump4']
+      hardware: selected,
     });
+  }
+
+  handleChange = values => {
+    this.setState(values, () => this.retrieveEvents());
+  }
+
+  handleSelect = (id, event) => {
+    const checked = event.target.checked;
+    let selected;
+    if (checked) {
+      selected = [...this.state.selected, id];
+    } else {
+      selected = _.without(this.state.selected, id);
+    }
+    this.setState({ selected }, () => this.retrieveEvents());
   }
 
   render() {
     const { classes } = this.props;
-    const { irrigation } = this.context;
-
+    const { irrigation, hardware } = this.context;
+    const { startTime, endTime, interval, selected } = this.state;
     const data = _.flatten(irrigation.map(({ timestamp, events }) => {
-      const chip = _.get(events, 'run.chip', {});
-      return Object.keys(chip).map(relay => ({
+      const { name } = hardware.find(h => h.id === events.method);
+      return {
         timestamp,
-        pump: relay,
-        duration: chip[relay].duration,
-        success: chip[relay].success,
-      }))
+        method: `${name} (${events.method})`,
+        result: JSON.stringify(events[events.method]),
+      }
     }));
 
     return (
       <div className={classes.root}>
+        <Filters
+          events={events}
+          selected={selected}
+          interval={interval}
+          startTime={startTime}
+          endTime={endTime}
+          handleChange={this.handleChange}
+          handleSelect={this.handleSelect}
+        />
         <Paper className={classes.paper}>
           <Table className={classes.table} size="small">
             <TableHead>
               <TableRow>
                 <TableCell>Timestamp</TableCell>
-                <TableCell>Pump</TableCell>
-                <TableCell align="right">Duration (s)</TableCell>
+                <TableCell>Method</TableCell>
+                <TableCell align="right">Result</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -95,8 +125,8 @@ class Events extends Component {
                   <TableCell component="th" scope="row">
                     {formatter.longDateTime(row.timestamp)}
                   </TableCell>
-                  <TableCell>{row.pump}</TableCell>
-                  <TableCell align="right">{row.duration}</TableCell>
+                  <TableCell>{row.method}</TableCell>
+                  <TableCell align="right">{row.result}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
