@@ -35,7 +35,7 @@ const connect = ({ token, update, addAlert, addEvent }) => {
         addAlert("Unknown action");
       }
     },
-    disconnect: socket.disconnect,
+    disconnect: () => socket.disconnect(),
   };
 };
 

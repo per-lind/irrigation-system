@@ -91,7 +91,7 @@ class Events extends Component {
     const { irrigation, hardware } = this.context;
     const { startTime, endTime, interval, selected } = this.state;
     const data = _.flatten(irrigation.map(({ timestamp, events }) => {
-      const { name } = hardware.find(h => h.id === events.method);
+      const { name } = hardware.find(h => h.id === events.method) || {};
       return {
         timestamp,
         method: `${name} (${events.method})`,
