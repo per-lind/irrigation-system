@@ -47,6 +47,10 @@ def run_pump_definition(hardware, id):
       'success': {
         'name': 'Success',
         'unit': 'boolean',
+      },
+      'duration': {
+        'name': 'Duration',
+        'unit': 'seconds',
       }
     }
   }
