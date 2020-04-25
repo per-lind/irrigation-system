@@ -5,6 +5,8 @@ SHELL ["/bin/bash", "-c"]
 
 RUN apt-get update && apt-get install -y --no-install-recommends libcurl4-openssl-dev python3-pip python3 libboost-python-dev python3-dev
 
+RUN pip3 install --upgrade setuptools
+
 RUN pip3 install -U pipenv
 
 RUN mkdir -p app
